@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour, IAlive
+public class Unit : MonoBehaviour, IAlive, IInteractable
 {
 	float IDestructible.Health { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 	Vector3 IAlive.Position { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
@@ -14,6 +14,16 @@ public class Unit : MonoBehaviour, IAlive
 	}
 
 	public void Destoy()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void Interact()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void Select()
 	{
 		throw new System.NotImplementedException();
 	}
