@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IAlive : IDestroyable
+public interface IAlive : IDestructible
 {
-	public float health { get; protected set; }
+	public Vector3 Position { get; protected set; }
 }
