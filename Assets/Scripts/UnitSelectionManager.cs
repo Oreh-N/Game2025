@@ -33,17 +33,16 @@ public class UnitSelectionManager : MonoBehaviour
 
 	private void Update()
 	{
-
+		RaycastHit hit;
 		if (Input.GetMouseButtonDown(0))
 		{
-			RaycastHit hit;
 			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
+			Debug.DrawRay(ray.origin, ray.direction, Color.red);
 			// If we are hitting a clickble object
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
 			{
 				if (Input.GetKey(KeyCode.LeftControl))
-				{ MiltiSelect(hit.collider.gameObject); }
+				{ MultiSelect(hit.collider.gameObject); }
 				else
 				{ SelectByClicking(hit.collider.gameObject); }
 			}
@@ -53,11 +52,8 @@ public class UnitSelectionManager : MonoBehaviour
 				{ DeselectAll(); }
 			}
 		}
-
-
-		if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
+		else if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
 		{
-			RaycastHit hit;
 			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a ground with right button
@@ -70,7 +66,7 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 	}
 
-	private void MiltiSelect(GameObject unit)
+	private void MultiSelect(GameObject unit)
 	{
 		if (!unitsSelected.Contains(unit))
 		{
@@ -107,15 +103,9 @@ public class UnitSelectionManager : MonoBehaviour
 	}
 
 	private void EnableUnitMovement(GameObject unit, bool canMove)
-	{
-		unit.GetComponent<UnitMovement>().enabled = canMove;
-
-
-	}
+	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
 
 	private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
-	{
-		unit.transform.GetChild(0).gameObject.SetActive(isVisible);
-	}
+	{ unit.transform.GetChild(0).gameObject.SetActive(isVisible); }
 
 }
