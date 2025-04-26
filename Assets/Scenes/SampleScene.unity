@@ -133,7 +133,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5422833330073792910, guid: 2f56cbc203194c24a9500c33a8f57d0a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.38
+      value: 12.48
       objectReference: {fileID: 0}
     - target: {fileID: 5422833330073792910, guid: 2f56cbc203194c24a9500c33a8f57d0a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -454,6 +454,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitsSelected: []
   allUnits: []
+  clickable:
+    serializedVersion: 2
+    m_Bits: 128
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
+  groundMarker: {fileID: 0}
 --- !u!4 &1013475458
 Transform:
   m_ObjectHideFlags: 0
@@ -660,7 +667,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5422833330073792910, guid: 2f56cbc203194c24a9500c33a8f57d0a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 8.15
       objectReference: {fileID: 0}
     - target: {fileID: 5422833330073792910, guid: 2f56cbc203194c24a9500c33a8f57d0a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -668,7 +675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5422833330073792910, guid: 2f56cbc203194c24a9500c33a8f57d0a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2
+      value: 15.14
       objectReference: {fileID: 0}
     - target: {fileID: 5422833330073792910, guid: 2f56cbc203194c24a9500c33a8f57d0a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -715,7 +722,7 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1697610667}
   - {fileID: 1054852063923275237}
-  - {fileID: 1013475458}
   - {fileID: 730223880}
   - {fileID: 246948304}
   - {fileID: 1279234186}
+  - {fileID: 1013475458}
