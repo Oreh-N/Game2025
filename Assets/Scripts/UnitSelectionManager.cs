@@ -55,7 +55,7 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 
 
-		if (Input.GetMouseButtonDown(1))
+		if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
 		{
 			RaycastHit hit;
 			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -63,7 +63,7 @@ public class UnitSelectionManager : MonoBehaviour
 			// If we are hitting a ground with right button
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
 			{
-				groundMarker.transform.position = hit.point;
+				groundMarker.transform.position = new Vector3(hit.point.x, .001f, hit.point.z);
 				groundMarker.SetActive(false);
 				groundMarker.SetActive(true);
 			}
@@ -75,11 +75,13 @@ public class UnitSelectionManager : MonoBehaviour
 		if (!unitsSelected.Contains(unit))
 		{
 			unitsSelected.Add(unit);
+			TriggerSelectionIndicator(unit, true);
 			EnableUnitMovement(unit, true);
 		}
 		else
 		{
 			EnableUnitMovement(unit, false);
+			TriggerSelectionIndicator(unit, false);
 			unitsSelected.Remove(unit);
 		}
 	}
@@ -89,13 +91,18 @@ public class UnitSelectionManager : MonoBehaviour
 		DeselectAll();
 
 		unitsSelected.Add(unit);
+		TriggerSelectionIndicator(unit, true);
 		EnableUnitMovement(unit, true);
 	}
 	private void DeselectAll()
 	{
 		foreach (var unit in unitsSelected)
-		{ EnableUnitMovement(unit, false); }
+		{ 
+			EnableUnitMovement(unit, false);
+			TriggerSelectionIndicator(unit, false);
+		}
 
+		groundMarker.SetActive(false);
 		unitsSelected.Clear();
 	}
 
@@ -104,6 +111,11 @@ public class UnitSelectionManager : MonoBehaviour
 		unit.GetComponent<UnitMovement>().enabled = canMove;
 
 
+	}
+
+	private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
+	{
+		unit.transform.GetChild(0).gameObject.SetActive(isVisible);
 	}
 
 }
