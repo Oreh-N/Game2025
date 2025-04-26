@@ -8,6 +8,17 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	Vector3 IAlive.Position { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 	string IAlive.Name { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
+
+	private void Start()
+	{
+		UnitSelectionManager.Instance.allUnits.Add(gameObject);
+	}
+
+	private void OnDestroy()
+	{
+		UnitSelectionManager.Instance.allUnits.Remove(gameObject);
+	}
+
 	public void Damage(float damage)
 	{
 		throw new System.NotImplementedException();
