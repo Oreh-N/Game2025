@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class UnitSelectionManager : MonoBehaviour
 {
-	public static UnitSelectionManager Instance {  get; set; }
+	public static UnitSelectionManager Instance { get; set; }
 
 	public List<GameObject> unitsSelected = new List<GameObject>();
 	public List<GameObject> allUnits = new List<GameObject>();
@@ -21,7 +21,7 @@ public class UnitSelectionManager : MonoBehaviour
 	{
 		if (Instance != null && Instance != this)
 		{ Destroy(gameObject); }
-		else 
+		else
 		{ Instance = this; }
 	}
 
@@ -41,9 +41,46 @@ public class UnitSelectionManager : MonoBehaviour
 
 			// If we are hitting a clickble object
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
-			{ SelectByClicking(hit.collider.gameObject); }
+			{
+				if (Input.GetKey(KeyCode.LeftControl))
+				{ MiltiSelect(hit.collider.gameObject); }
+				else
+				{ SelectByClicking(hit.collider.gameObject); }
+			}
 			else  // Deselect all the units
-			{ DeselectAll(); }
+			{
+				if (!Input.GetKey(KeyCode.LeftControl))
+				{ DeselectAll(); }
+			}
+		}
+
+
+		if (Input.GetMouseButtonDown(1))
+		{
+			RaycastHit hit;
+			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+			// If we are hitting a ground with right button
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+			{
+				groundMarker.transform.position = hit.point;
+				groundMarker.SetActive(false);
+				groundMarker.SetActive(true);
+			}
+		}
+	}
+
+	private void MiltiSelect(GameObject unit)
+	{
+		if (!unitsSelected.Contains(unit))
+		{
+			unitsSelected.Add(unit);
+			EnableUnitMovement(unit, true);
+		}
+		else
+		{
+			EnableUnitMovement(unit, false);
+			unitsSelected.Remove(unit);
 		}
 	}
 
@@ -56,7 +93,10 @@ public class UnitSelectionManager : MonoBehaviour
 	}
 	private void DeselectAll()
 	{
-		
+		foreach (var unit in unitsSelected)
+		{ EnableUnitMovement(unit, false); }
+
+		unitsSelected.Clear();
 	}
 
 	private void EnableUnitMovement(GameObject unit, bool canMove)
