@@ -37,18 +37,18 @@ public class UnitSelectionManager : MonoBehaviour
 		if (Input.GetMouseButtonDown(0))
 		{
 			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-			Debug.DrawRay(ray.origin, ray.direction, Color.red);
+
 			// If we are hitting a clickble object
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
 			{
-				if (Input.GetKey(KeyCode.LeftControl))
+				if (Input.GetKey(KeyCode.LeftShift))
 				{ MultiSelect(hit.collider.gameObject); }
 				else
 				{ SelectByClicking(hit.collider.gameObject); }
 			}
 			else  // Deselect all the units
 			{
-				if (!Input.GetKey(KeyCode.LeftControl))
+				if (!Input.GetKey(KeyCode.LeftShift))
 				{ DeselectAll(); }
 			}
 		}
