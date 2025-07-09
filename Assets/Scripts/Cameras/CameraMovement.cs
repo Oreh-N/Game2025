@@ -22,15 +22,15 @@ public class CameraMovement : MonoBehaviour
 
 	private void TryMove()
 	{
-		int fact = 1;
+		float speed = 0.05f; // 1 = 100 % (full speed)
 
-		if (Input.GetKeyDown(KeyCode.A))
-        { mainCam.transform.position += Vector3.left * fact; }
-		else if (Input.GetKeyDown(KeyCode.S))
-		{ mainCam.transform.position += Vector3.back * fact; }
-		else if (Input.GetKeyDown(KeyCode.D))
-		{ mainCam.transform.position += Vector3.right * fact; }
-		else if (Input.GetKeyDown(KeyCode.W))
-		{ mainCam.transform.position += Vector3.fwd * fact; }
+		if (Input.GetKey(KeyCode.A))
+        { mainCam.transform.position += Vector3.left * speed; }
+		if (Input.GetKey(KeyCode.S))
+		{ mainCam.transform.position += Vector3.back * speed; }
+		if (Input.GetKey(KeyCode.D))
+		{ mainCam.transform.position += Vector3.right * speed; }
+		if (Input.GetKey(KeyCode.W))
+		{ mainCam.transform.position += Vector3.forward * speed; }
 	}
 }
