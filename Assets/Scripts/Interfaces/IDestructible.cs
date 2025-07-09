@@ -9,5 +9,5 @@ public interface IDestructible
 
 	public void Damage(float damage);
 
-	public void Destoy();
+	public void Destroy();
 }

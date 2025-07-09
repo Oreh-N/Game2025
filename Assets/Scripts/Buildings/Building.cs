@@ -17,7 +17,7 @@ public class Building : IBuilding
 		throw new System.NotImplementedException();
 	}
 
-	public void Destoy()
+	public void Destroy()
 	{
 		throw new System.NotImplementedException();
 	}

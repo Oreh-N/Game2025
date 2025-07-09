@@ -6,11 +6,12 @@ TagManager:
   tags:
   - Ground
   - Unit
+  - Minimap
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - MainCamera
   - Water
   - UI
   - Ground
