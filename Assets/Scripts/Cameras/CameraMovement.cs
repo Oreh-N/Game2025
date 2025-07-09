@@ -5,21 +5,32 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    Camera main;
+    GameObject mainCam;
     
     void Start()
     {
-        main = GetComponentInChildren<Camera>();
-    }
+		mainCam = GameObject.FindWithTag("MainCamera");
+		if (mainCam == null) 
+		{ Debug.Log($"No camera found"); }
+	}
 
-    
-    void Update()
+
+	void Update()
     {
-        TryMove();
+		TryMove();
     }
 
 	private void TryMove()
 	{
-		throw new NotImplementedException();
+		int fact = 1;
+
+		if (Input.GetKeyDown(KeyCode.A))
+        { mainCam.transform.position += Vector3.left * fact; }
+		else if (Input.GetKeyDown(KeyCode.S))
+		{ mainCam.transform.position += Vector3.back * fact; }
+		else if (Input.GetKeyDown(KeyCode.D))
+		{ mainCam.transform.position += Vector3.right * fact; }
+		else if (Input.GetKeyDown(KeyCode.W))
+		{ mainCam.transform.position += Vector3.fwd * fact; }
 	}
 }
