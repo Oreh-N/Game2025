@@ -3,34 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
+[RequireComponent(typeof(Canvas))]
 public class InteractionSystem : MonoBehaviour
 {
     public LayerMask npcLayer;
     Camera mainCam;
-    Canvas UICanvas;
+    public Canvas UICanvas;
 
     void Start()
     {
         npcLayer = LayerMask.NameToLayer("NPC");
         mainCam = Camera.main;
-        UICanvas = GetComponent<Canvas>();
+        UICanvas = this.GetComponent<Canvas>();
     }
 
     
     void Update()
 	{
-        Vector3 mousePos = Input.mousePosition;
-		RaycastHit hit;
-		if (Input.GetMouseButtonDown(1))
-        {
-			Ray ray = mainCam.ScreenPointToRay(mousePos);
-
-			// If we are hitting a clickble object
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, npcLayer))
-            {
-
-            }
-
-		}
     }
 }
