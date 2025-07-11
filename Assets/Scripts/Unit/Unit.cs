@@ -4,20 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-
 public class Unit : MonoBehaviour, IAlive, IInteractable
 {
-	enum Task {Rest, MineWood, Build, Destroy, Attack } 
-
 	float health;
 	Vector3 pos;
-	string u_name = "Default";  //unit name
-	Task task;
-
+	string u_name = "Default";	//unit name
 	float IDestructible.Health { get => health; set => health = value; }
 	Vector3 IAlive.Position { get => pos; set => pos = value; }
 	string IAlive.Name { get => u_name; set => u_name = value; }
-
 
 
 	private void Start()

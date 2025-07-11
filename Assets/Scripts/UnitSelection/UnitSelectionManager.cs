@@ -11,9 +11,9 @@ public class UnitSelectionManager : MonoBehaviour
 	public List<GameObject> unitsSelected = new List<GameObject>();
 	public List<GameObject> allUnits = new List<GameObject>();
 
-	private Camera mainCam;
+	private Camera cam;
 
-	private LayerMask npc;
+	public LayerMask clickable;
 	public LayerMask ground;
 	public GameObject groundMarker;
 
@@ -26,10 +26,7 @@ public class UnitSelectionManager : MonoBehaviour
 	}
 
 	private void Start()
-	{ 
-		mainCam = Camera.main;
-		npc = LayerMask.NameToLayer("NPC");
-	}
+	{ cam = Camera.main; }
 
 
 	private void Update()
@@ -37,10 +34,10 @@ public class UnitSelectionManager : MonoBehaviour
 		RaycastHit hit;
 		if (Input.GetMouseButtonDown(0))
 		{
-			Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a clickble object
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, npc))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
 			{
 				if (Input.GetKey(KeyCode.LeftShift))
 				{ MultiSelect(hit.collider.gameObject); }
@@ -55,7 +52,7 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 		else if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
 		{
-			Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a ground with right button
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
