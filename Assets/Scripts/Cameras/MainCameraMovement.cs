@@ -53,7 +53,7 @@ public class MainCameraMovement : MonoBehaviour
 	private bool IsOutOfMap(Vector3 pos)
 	{
 		var cam = GetComponent<Camera>();
-		float camSideLength = Mathf.Cos(transform.rotation.x) * cam.farClipPlane /2;
+		float camSideLength = Mathf.Cos(transform.rotation.x) * cam.farClipPlane /4;
 		if (pos.x < initPos.x - 50		 || pos.z < initPos.z - 50		|| 
 			pos.x > 1000 - camSideLength || pos.z > 1000 - camSideLength)
 			return true;
