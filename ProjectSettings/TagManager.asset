@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Unit
   - Minimap
+  - TaskBars
   layers:
   - Default
   - TransparentFX

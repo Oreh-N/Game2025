@@ -11,14 +11,14 @@ public class UnitSelectionBox : MonoBehaviour
 
 	Rect selectionBox;
 
-	Vector2 startPosition;
-	Vector2 endPosition;
+	Vector3 startPosition;
+	Vector3 endPosition;
 
 	private void Start()
 	{
 		myCam = Camera.main;
-		startPosition = Vector2.zero;
-		endPosition = Vector2.zero;
+		startPosition = Vector3.zero;
+		endPosition = Vector3.zero;
 		DrawVisual();
 	}
 
@@ -52,26 +52,27 @@ public class UnitSelectionBox : MonoBehaviour
 		{
 			SelectUnits();
 
-			startPosition = Vector2.zero;
-			endPosition = Vector2.zero;
+			startPosition = Vector3.zero;
+			endPosition = Vector3.zero;
 			DrawVisual();
 		}
 	}
 
 	void DrawVisual()
 	{
+		// Fixed on X axis
 		// Calculate the starting and ending positions of the selection box.
-		Vector2 boxStart = startPosition;
-		Vector2 boxEnd = endPosition;
+		Vector3 boxStart = startPosition;
+		Vector3 boxEnd = endPosition;
 
 		// Calculate the center of the selection box.
-		Vector2 boxCenter = (boxStart + boxEnd) / 2;
+		Vector3 boxCenter = (boxStart + boxEnd) / 2;
 
 		// Set the position of the visual selection box based on its center.
 		boxVisual.position = boxCenter;
 
 		// Calculate the size of the selection box in both width and height.
-		Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
+		Vector3 boxSize = new Vector3(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y), Mathf.Abs(boxStart.z - boxEnd.z));
 
 		// Set the size of the visual selection box based on its calculated size.
 		boxVisual.sizeDelta = boxSize;
