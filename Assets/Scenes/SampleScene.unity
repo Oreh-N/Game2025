@@ -2406,11 +2406,11 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 48, y: 0, z: 0}
-  - {x: 48, y: 30, z: 30}
-  - {x: -48, y: 30, z: 30}
-  - {x: -48, y: 0, z: 0}
-  - {x: 48, y: 0, z: 0}
+  - {x: 50, y: 0, z: 0}
+  - {x: 50, y: 40, z: 40}
+  - {x: -50, y: 40, z: 40}
+  - {x: -50, y: 0, z: 0}
+  - {x: 50, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 15
