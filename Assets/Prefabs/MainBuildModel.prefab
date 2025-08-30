@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f3d4a940ced52564aaadc0cc8a235580, type: 3}
       propertyPath: m_Name
-      value: BuildModel
+      value: MainBuildModel
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f3d4a940ced52564aaadc0cc8a235580, type: 3}
       propertyPath: m_Layer
@@ -83,6 +83,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f3d4a940ced52564aaadc0cc8a235580, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4083501151425157549, guid: f3d4a940ced52564aaadc0cc8a235580, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
