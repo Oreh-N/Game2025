@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 304564710}
   - component: {fileID: 304564713}
   m_Layer: 0
-  m_Name: Button (Legacy)
+  m_Name: MainBuildButt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -488,7 +488,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 304564710}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 304564713}
+        m_TargetAssemblyTypeName: BuildingCursor, Assembly-CSharp
+        m_MethodName: AllowBuilding
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6510676938692258375, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &304564712
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -509,6 +521,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c26fc0d3f4f05044975f49568c29bff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!4 &310232597 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1213826404311461450, guid: b895b7b957f0d7d40a96cefaee379d42, type: 3}
@@ -741,7 +756,7 @@ GameObject:
   - component: {fileID: 451037948}
   - component: {fileID: 451037947}
   m_Layer: 0
-  m_Name: BuildingText
+  m_Name: BuildingButts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1731,7 +1746,7 @@ GameObject:
   - component: {fileID: 1053805693}
   - component: {fileID: 1053805696}
   m_Layer: 0
-  m_Name: Button (Legacy) (2)
+  m_Name: WarehouseButt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1826,7 +1841,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1053805693}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1053805696}
+        m_TargetAssemblyTypeName: BuildingCursor, Assembly-CSharp
+        m_MethodName: AllowBuilding
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2438493075060060545, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1053805695
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1847,6 +1874,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c26fc0d3f4f05044975f49568c29bff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1087881773
 GameObject:
   m_ObjectHideFlags: 0
@@ -2879,7 +2909,7 @@ GameObject:
   - component: {fileID: 1723013997}
   - component: {fileID: 1723014000}
   m_Layer: 0
-  m_Name: Button (Legacy) (3)
+  m_Name: DefBuildButt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2974,7 +3004,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1723013997}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1723014000}
+        m_TargetAssemblyTypeName: BuildingCursor, Assembly-CSharp
+        m_MethodName: AllowBuilding
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3944675447073620295, guid: 178f2e7c2c3b8af409c0a5db1151af12, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1723013999
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2995,6 +3037,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c26fc0d3f4f05044975f49568c29bff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1742868738
 GameObject:
   m_ObjectHideFlags: 0
@@ -3595,7 +3640,7 @@ GameObject:
   - component: {fileID: 2090926027}
   - component: {fileID: 2090926030}
   m_Layer: 0
-  m_Name: Button (Legacy) (1)
+  m_Name: SpawnerButt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3690,7 +3735,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2090926027}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2090926030}
+        m_TargetAssemblyTypeName: BuildingCursor, Assembly-CSharp
+        m_MethodName: AllowBuilding
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7619158646989798975, guid: f4a71cd542716014380d646fab191d33, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &2090926029
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3711,6 +3768,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c26fc0d3f4f05044975f49568c29bff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1001 &324775679544627479
 PrefabInstance:
   m_ObjectHideFlags: 0
