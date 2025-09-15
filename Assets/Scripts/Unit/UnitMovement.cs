@@ -7,11 +7,9 @@ public class UnitMovement : MonoBehaviour
 {
 	[SerializeField] LayerMask _ground;
 	NavMeshAgent _agent;
-	Camera _cam;
 
 	private void Start()
 	{
-		_cam = Camera.main;
 		_agent = GetComponent<NavMeshAgent>();
 	}
 
@@ -20,7 +18,7 @@ public class UnitMovement : MonoBehaviour
 		if (Input.GetMouseButtonDown(1))
 		{
 			RaycastHit hit;
-			Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
 			{

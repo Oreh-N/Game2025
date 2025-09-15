@@ -146,7 +146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3070491931193912123, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3070491931193912123, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fae0ba3923babbf4aad6de66f4a891ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boxVisual: {fileID: 0}
+  _boxVisual: {fileID: 1742868739}
 --- !u!114 &287755329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -488,7 +488,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 304564710}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1814694244}
+        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
+        m_MethodName: InitializeWithObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2738068332312878633, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
+          m_ObjectArgumentAssemblyTypeName: Building, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &304564712
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -650,7 +662,7 @@ GameObject:
   - component: {fileID: 356419857}
   - component: {fileID: 356419856}
   m_Layer: 0
-  m_Name: Tilemap
+  m_Name: BuildingTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -665,7 +677,7 @@ Transform:
   m_GameObject: {fileID: 356419854}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -730,17 +742,41 @@ Tilemap:
   m_Enabled: 1
   m_Tiles: {}
   m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
+  m_TileAssetArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileSpriteArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileMatrixArray:
+  - m_RefCount: 0
+    m_Data:
+      e00: 0
+      e01: 0
+      e02: -2.0328811e-19
+      e03: -2.0328811e-19
+      e10: 7.62e-43
+      e11: 0
+      e12: 7.6e-43
+      e13: 7.6e-43
+      e20: 1.7797465e+24
+      e21: -1.1195086e-16
+      e22: 5.784747e-29
+      e23: -1.6782369e+29
+      e30: 4.5905e-41
+      e31: 7.62e-43
+      e32: 7.61e-43
+      e33: 7.62e-43
+  m_TileColorArray:
+  - m_RefCount: 0
+    m_Data: {r: NaN, g: NaN, b: NaN, a: NaN}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
+  m_Size: {x: 53, y: 60, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
-  m_TileOrientation: 0
+  m_TileOrientation: 1
   m_TileOrientationMatrix:
     e00: 1
     e01: 0
@@ -2011,7 +2047,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1053805693}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1814694244}
+        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
+        m_MethodName: InitializeWithObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2545129029803456778, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
+          m_ObjectArgumentAssemblyTypeName: Building, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1053805695
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2203,7 +2251,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -3145,7 +3193,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1723013997}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1814694244}
+        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
+        m_MethodName: InitializeWithObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4724967028094851703, guid: 178f2e7c2c3b8af409c0a5db1151af12, type: 3}
+          m_ObjectArgumentAssemblyTypeName: Building, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1723013999
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3401,6 +3461,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6516699423779067463, guid: bfaa54c5c06b68f429af1a88d0300217, type: 3}
   m_PrefabInstance: {fileID: 1798967737}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1814694242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1814694243}
+  - component: {fileID: 1814694244}
+  m_Layer: 0
+  m_Name: BuildingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1814694243
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814694242}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2125821464}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1814694244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814694242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdcdabf064b702a44b0b00fccb8eb52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _obstacles:
+    serializedVersion: 2
+    m_Bits: 384
+  _grid: {fileID: 942796656}
+  _tilemap: {fileID: 356419857}
+  _tile: {fileID: 11400000, guid: e7f38e4850f23284cbfcb6290a4c8292, type: 2}
 --- !u!1 &1833088055
 GameObject:
   m_ObjectHideFlags: 0
@@ -3848,7 +3958,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2090926027}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1814694244}
+        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
+        m_MethodName: InitializeWithObject
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3152630111642169208, guid: f4a71cd542716014380d646fab191d33, type: 3}
+          m_ObjectArgumentAssemblyTypeName: Building, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &2090926029
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3887,6 +4009,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1013475458}
+  - {fileID: 1814694243}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &324775679544627479
@@ -4074,7 +4197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5841523321424064765, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5841523321424064765, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4110,7 +4233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6510676938692258375, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_Name
-      value: BuildModel
+      value: MainBuild
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -11,8 +11,6 @@ public class UnitSelectionManager : MonoBehaviour
 	public List<Unit> UnitsSelected { get; private set; } = new List<Unit>();
 	public List<Unit> AllUnits { get; private set; } = new List<Unit>();
 
-	private Camera _cam;
-
 	[SerializeField] LayerMask _clickable;
 	[SerializeField] LayerMask _ground;
 	[SerializeField] GameObject _groundMarker;
@@ -25,16 +23,13 @@ public class UnitSelectionManager : MonoBehaviour
 		{ Instance = this; }
 	}
 
-	private void Start()
-	{ _cam = Camera.main; }
-
 
 	private void Update()
 	{
 		RaycastHit hit;
 		if (Input.GetMouseButtonDown(0))
 		{
-			Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a clickble object
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
@@ -52,7 +47,7 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 		else if (Input.GetMouseButtonDown(1) && UnitsSelected.Count > 0)
 		{
-			Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a ground with right button
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))

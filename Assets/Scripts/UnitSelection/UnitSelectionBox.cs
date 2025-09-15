@@ -11,12 +11,9 @@ public class UnitSelectionBox : MonoBehaviour
 
 	Rect _selectionBox;
 
-	Camera _myCam;
-
 
 	private void Start()
 	{
-		_myCam = Camera.main;
 		_startPosition = Vector2.zero;
 		_endPosition = Vector2.zero;
 		DrawVisual();
@@ -107,7 +104,7 @@ public class UnitSelectionBox : MonoBehaviour
 	{
 		foreach (var unit in UnitSelectionManager.Instance.AllUnits)
 		{
-			if (_selectionBox.Contains(_myCam.WorldToScreenPoint(unit.transform.position)))
+			if (_selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
 			{
 				UnitSelectionManager.Instance.DragSelect(unit);
 			}
