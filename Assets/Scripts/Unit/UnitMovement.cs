@@ -5,14 +5,14 @@ using UnityEngine.AI;
 
 public class UnitMovement : MonoBehaviour
 {
-	Camera cam;
-	NavMeshAgent agent;
-	public LayerMask ground;
+	[SerializeField] LayerMask _ground;
+	NavMeshAgent _agent;
+	Camera _cam;
 
 	private void Start()
 	{
-		cam = Camera.main;
-		agent = GetComponent<NavMeshAgent>();
+		_cam = Camera.main;
+		_agent = GetComponent<NavMeshAgent>();
 	}
 
 	private void Update()
@@ -20,11 +20,11 @@ public class UnitMovement : MonoBehaviour
 		if (Input.GetMouseButtonDown(1))
 		{
 			RaycastHit hit;
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
 			{
-				agent.SetDestination(hit.point);
+				_agent.SetDestination(hit.point);
 			}
 		}
 	}

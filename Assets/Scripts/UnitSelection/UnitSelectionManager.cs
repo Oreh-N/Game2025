@@ -8,14 +8,14 @@ public class UnitSelectionManager : MonoBehaviour
 {
 	public static UnitSelectionManager Instance { get; set; }
 
-	public List<GameObject> unitsSelected = new List<GameObject>();
-	public List<GameObject> allUnits = new List<GameObject>();
+	public List<Unit> UnitsSelected { get; private set; } = new List<Unit>();
+	public List<Unit> AllUnits { get; private set; } = new List<Unit>();
 
-	private Camera cam;
+	private Camera _cam;
 
-	public LayerMask clickable;
-	public LayerMask ground;
-	public GameObject groundMarker;
+	[SerializeField] LayerMask _clickable;
+	[SerializeField] LayerMask _ground;
+	[SerializeField] GameObject _groundMarker;
 
 	private void Awake()
 	{
@@ -26,7 +26,7 @@ public class UnitSelectionManager : MonoBehaviour
 	}
 
 	private void Start()
-	{ cam = Camera.main; }
+	{ _cam = Camera.main; }
 
 
 	private void Update()
@@ -34,15 +34,15 @@ public class UnitSelectionManager : MonoBehaviour
 		RaycastHit hit;
 		if (Input.GetMouseButtonDown(0))
 		{
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a clickble object
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
 			{
 				if (Input.GetKey(KeyCode.LeftShift))
-				{ MultiSelect(hit.collider.gameObject); }
+				{ MultiSelect(hit.collider.gameObject.GetComponent<Unit>()); }
 				else
-				{ SelectByClicking(hit.collider.gameObject); }
+				{ SelectByClicking(hit.collider.gameObject.GetComponent<Unit>()); }
 			}
 			else  // Deselect all the units
 			{
@@ -50,66 +50,76 @@ public class UnitSelectionManager : MonoBehaviour
 				{ DeselectAll(); }
 			}
 		}
-		else if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
+		else if (Input.GetMouseButtonDown(1) && UnitsSelected.Count > 0)
 		{
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+			Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
 
 			// If we are hitting a ground with right button
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
 			{
-				groundMarker.transform.position = new Vector3(hit.point.x, .001f, hit.point.z);
-				groundMarker.SetActive(false);
-				groundMarker.SetActive(true);
+				_groundMarker.transform.position = new Vector3(hit.point.x, .001f, hit.point.z);
+				_groundMarker.SetActive(false);
+				_groundMarker.SetActive(true);
 			}
 		}
 	}
 
-	private void MultiSelect(GameObject unit)
+	public void RemoveUnit(Unit unit)
 	{
-		if (!unitsSelected.Contains(unit))
+		AllUnits.Remove(unit);
+	}
+
+	public void AddUnit(Unit unit)
+	{
+		AllUnits.Add(unit);
+	}
+
+	private void MultiSelect(Unit unit)
+	{
+		if (!UnitsSelected.Contains(unit))
 		{
-			unitsSelected.Add(unit);
+			UnitsSelected.Add(unit);
 			SelectUnit(unit, true);
 		}
 		else
 		{
 			SelectUnit(unit, false);
-			unitsSelected.Remove(unit);
+			UnitsSelected.Remove(unit);
 		}
 	}
 
-	private void SelectByClicking(GameObject unit)
+	private void SelectByClicking(Unit unit)
 	{
 		DeselectAll();
 
-		unitsSelected.Add(unit);
+		UnitsSelected.Add(unit);
 		SelectUnit(unit, true);
 	}
 	public void DeselectAll()
 	{
-		foreach (var unit in unitsSelected)
+		foreach (var unit in UnitsSelected)
 		{ SelectUnit(unit, false); }
 
-		groundMarker.SetActive(false);
-		unitsSelected.Clear();
+		_groundMarker.SetActive(false);
+		UnitsSelected.Clear();
 	}
 
-	private void EnableUnitMovement(GameObject unit, bool canMove)
+	private void EnableUnitMovement(Unit unit, bool canMove)
 	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
 
-	private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
+	private void TriggerSelectionIndicator(Unit unit, bool isVisible)
 	{ unit.transform.GetChild(0).gameObject.SetActive(isVisible); }
 
-	internal void DragSelect(GameObject unit)
+	internal void DragSelect(Unit unit)
 	{
-		if (!unitsSelected.Contains(unit))
+		if (!UnitsSelected.Contains(unit))
 		{
-			unitsSelected.Add(unit);
+			UnitsSelected.Add(unit);
 			SelectUnit(unit, true);
 		}
 	}
 
-	private void SelectUnit(GameObject unit, bool isSelected)
+	private void SelectUnit(Unit unit, bool isSelected)
 	{
 		TriggerSelectionIndicator(unit, isSelected);
 		EnableUnitMovement(unit, isSelected);
