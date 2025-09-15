@@ -119,6 +119,11 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Selects the unit
+	/// </summary>
+	/// <param name="unit"></param>
+	/// <param name="isSelected"></param>
 	private void SelectUnit(Unit unit, bool isSelected)
 	{
 		TriggerSelectionIndicator(unit, isSelected);
