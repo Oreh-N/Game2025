@@ -13,7 +13,6 @@ public class BuildingManager : MonoBehaviour
     
     bool _allowBuilding = false;
     Building _currBuilding;
-    public Vector3 _currBuildHeight {  get; private set; }
 
 
 	private void Awake()
@@ -23,7 +22,6 @@ public class BuildingManager : MonoBehaviour
 		else
 		{ Instance = this; }
 
-        
 	}
 
 
@@ -31,17 +29,26 @@ public class BuildingManager : MonoBehaviour
     {
         if (!_allowBuilding || _currBuilding == null) return;
 
-        _grid.GetComponentInChildren<Tilemap>();
     }
 
+    /// <summary>
+    /// Get position of the mouse cursor on the world landscape
+    /// </summary>
+    /// <returns></returns>
     public static Vector3 GetMouseWorldPos()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit)) 
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
             return hit.point;
         return Vector3.zero;
     }
 
+    /// <summary>
+    /// Maps coordinates to the grid
+    /// </summary>
+    /// <param name="position">Real coordinates (will be transformed to the grid coordinates)</param>
+    /// <returns></returns>
     public Vector3 MapCoordToGrid(Vector3 position)
     {
         Vector3Int cellPos = _grid.WorldToCell(position);
@@ -49,15 +56,13 @@ public class BuildingManager : MonoBehaviour
         return position;
     }
 
-    public void InitializeWithObject(Building building)
+    public void SpawnBuilding(Building building)
     {
         _allowBuilding = true;
-        Vector3 position = MapCoordToGrid(Vector3.zero);
-        GameObject obj = Instantiate(building.gameObject, position, Quaternion.identity);
+        Vector3 spawnPos = MapCoordToGrid(Vector3.zero) + new Vector3(0, building.transform.position.y, 0);
+        GameObject obj = Instantiate(building.gameObject, spawnPos, Quaternion.identity);
         _currBuilding = obj.GetComponent<Building>();
         obj.AddComponent<Movable>();
-       _currBuildHeight = new Vector3(0, building.transform.position.y, 0);
-        obj.transform.position += _currBuildHeight;
     }
 
 }

@@ -145,10 +145,6 @@ PrefabInstance:
       value: 46.4
       objectReference: {fileID: 0}
     - target: {fileID: 3070491931193912123, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3070491931193912123, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
       propertyPath: m_LocalPosition.z
       value: 81.4
       objectReference: {fileID: 0}
@@ -491,7 +487,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1814694244}
         m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: InitializeWithObject
+        m_MethodName: SpawnBuilding
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 2738068332312878633, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
@@ -2050,7 +2046,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1814694244}
         m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: InitializeWithObject
+        m_MethodName: SpawnBuilding
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 2545129029803456778, guid: 4d300d73d4f4f0e4dbeebd42086fe4f8, type: 3}
@@ -3196,7 +3192,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1814694244}
         m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: InitializeWithObject
+        m_MethodName: SpawnBuilding
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 4724967028094851703, guid: 178f2e7c2c3b8af409c0a5db1151af12, type: 3}
@@ -3508,7 +3504,7 @@ MonoBehaviour:
   _obstacles:
     serializedVersion: 2
     m_Bits: 384
-  _grid: {fileID: 0}
+  _grid: {fileID: 942796656}
   _tilemap: {fileID: 356419857}
   _tile: {fileID: 11400000, guid: e7f38e4850f23284cbfcb6290a4c8292, type: 2}
 --- !u!1 &1833088055
@@ -3961,7 +3957,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1814694244}
         m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: InitializeWithObject
+        m_MethodName: SpawnBuilding
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 3152630111642169208, guid: f4a71cd542716014380d646fab191d33, type: 3}
@@ -4025,10 +4021,6 @@ PrefabInstance:
       value: 61.08
       objectReference: {fileID: 0}
     - target: {fileID: 7131274944853075077, guid: f4a71cd542716014380d646fab191d33, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.91
-      objectReference: {fileID: 0}
-    - target: {fileID: 7131274944853075077, guid: f4a71cd542716014380d646fab191d33, type: 3}
       propertyPath: m_LocalPosition.z
       value: 82.22
       objectReference: {fileID: 0}
@@ -4084,10 +4076,6 @@ PrefabInstance:
     - target: {fileID: 8951653727690591608, guid: 197d99a65b864264e916e0c0d2e45387, type: 3}
       propertyPath: m_LocalPosition.x
       value: 34.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8951653727690591608, guid: 197d99a65b864264e916e0c0d2e45387, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.428
       objectReference: {fileID: 0}
     - target: {fileID: 8951653727690591608, guid: 197d99a65b864264e916e0c0d2e45387, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4193,15 +4181,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5841523321424064765, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 77
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5841523321424064765, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5841523321424064765, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 78
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5841523321424064765, guid: e72c3a486fc0d4d4db8a5fc01e5bc5a3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4255,10 +4243,6 @@ PrefabInstance:
     - target: {fileID: 4464648086915324925, guid: 178f2e7c2c3b8af409c0a5db1151af12, type: 3}
       propertyPath: m_LocalPosition.x
       value: 91.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4464648086915324925, guid: 178f2e7c2c3b8af409c0a5db1151af12, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.01
       objectReference: {fileID: 0}
     - target: {fileID: 4464648086915324925, guid: 178f2e7c2c3b8af409c0a5db1151af12, type: 3}
       propertyPath: m_LocalPosition.z

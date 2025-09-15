@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class Movable : MonoBehaviour
 {
-	Vector3 offset;
+	Vector3 shift;
 
 	private void OnMouseDown()
 	{
-		offset = transform.position - BuildingManager.GetMouseWorldPos() + BuildingManager.Instance._currBuildHeight;
+		shift = transform.position - BuildingManager.GetMouseWorldPos();
+		Debug.Log("OnMouseDown");
+		Debug.Log(shift);
+		Debug.Log(BuildingManager.GetMouseWorldPos());
 	}
 
 	private void OnMouseDrag()
 	{
-		Vector3 pos = BuildingManager.GetMouseWorldPos() + offset;
-		transform.position = BuildingManager.Instance.MapCoordToGrid(pos) + BuildingManager.Instance._currBuildHeight;
+		Vector3 newPos = BuildingManager.GetMouseWorldPos() + shift;
+		transform.position = BuildingManager.Instance.MapCoordToGrid(newPos);
 
+		Debug.Log("OnMouseDrag");
+		Debug.Log(newPos);
+		Debug.Log(BuildingManager.Instance.MapCoordToGrid(newPos));
 	}
 }
