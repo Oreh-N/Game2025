@@ -13,6 +13,7 @@ public class BuildingManager : MonoBehaviour
     
     bool _allowBuilding = false;
     Building _currBuilding;
+    public Vector3 _currBuildHeight {  get; private set; }
 
 
 	private void Awake()
@@ -21,6 +22,8 @@ public class BuildingManager : MonoBehaviour
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
+
+        
 	}
 
 
@@ -48,17 +51,13 @@ public class BuildingManager : MonoBehaviour
 
     public void InitializeWithObject(Building building)
     {
+        _allowBuilding = true;
         Vector3 position = MapCoordToGrid(Vector3.zero);
         GameObject obj = Instantiate(building.gameObject, position, Quaternion.identity);
         _currBuilding = obj.GetComponent<Building>();
-        obj.AddComponent<MoveBuilding>();
-        Debug.Log("Init building");
-        Debug.Log(obj);
+        obj.AddComponent<Movable>();
+       _currBuildHeight = new Vector3(0, building.transform.position.y, 0);
+        obj.transform.position += _currBuildHeight;
     }
 
-    public void AllowBuilding(Building building)
-    {
-        _allowBuilding = true;
-        _currBuilding = building;
-    }
 }
