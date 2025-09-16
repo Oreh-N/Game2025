@@ -7,9 +7,9 @@ public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance;
     [SerializeField] LayerMask _obstacles;
-    [SerializeField] Grid _grid;
-    [SerializeField] Tilemap _tilemap;
-    [SerializeField] TileBase _tile;
+    [SerializeField] public Grid Grid_ { get; private set; }
+    [SerializeField] static Tilemap _tilemap;
+    [SerializeField] TileBase _busyTile;
     
     bool _allowBuilding = false;
     Building _currBuilding;
@@ -29,7 +29,19 @@ public class BuildingManager : MonoBehaviour
     {
         if (!_allowBuilding || _currBuilding == null) return;
 
-    }
+		if (Input.GetMouseButton(1))
+		{
+            if (CanBePlaced(_currBuilding))
+            {
+                _currBuilding.Construct();
+                Vector3Int start = Grid_.WorldToCell(_currBuilding.GetStartPosition());
+                TakeArea(start, _currBuilding.Size);
+            }
+            else Destroy(_currBuilding.gameObject);
+
+		}
+        else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(_currBuilding.gameObject);
+	}
 
     /// <summary>
     /// Get position of the mouse cursor on the world landscape
@@ -44,6 +56,40 @@ public class BuildingManager : MonoBehaviour
         return Vector3.zero;
     }
 
+    private bool CanBePlaced(Building building)
+    {
+        BoundsInt area = new BoundsInt();
+        area.position = Grid_.WorldToCell(building.GetStartPosition());
+        area.size = new Vector3Int(area.size.x + 1, area.size.y + 1, area.size.z);
+        TileBase[] baseArr = GetTilesBlock(area, _tilemap);
+
+		foreach (var b in baseArr)
+		{
+			if (b == _busyTile) return false;
+		}
+        return true;
+
+	}
+
+    public void TakeArea(Vector3Int start, Vector3Int size)
+    {
+        _tilemap.BoxFill(start, _busyTile, startX:start.x, startY: start.y, endX: start.x + size.x, endY: start.y + size.y);
+    }
+
+    private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
+    {
+        TileBase[] arr = new TileBase[area.size.x * area.size.y * area.size.z];
+        int counter = 0;
+
+		foreach (var vector in area.allPositionsWithin)
+		{
+            Vector3Int pos = new Vector3Int(vector.x, vector.y, z: 0);
+            arr[counter] = _tilemap.GetTile(pos);
+            counter++;
+        }
+        return arr;
+	}
+
     /// <summary>
     /// Maps coordinates to the grid
     /// </summary>
@@ -51,8 +97,8 @@ public class BuildingManager : MonoBehaviour
     /// <returns></returns>
     public Vector3 MapCoordToGrid(Vector3 position)
     {
-        Vector3Int cellPos = _grid.WorldToCell(position);
-        position = _grid.GetCellCenterWorld(cellPos);
+        Vector3Int cellPos = Grid_.WorldToCell(position);
+        position = Grid_.GetCellCenterWorld(cellPos);
         return position;
     }
 
