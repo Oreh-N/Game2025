@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using UnityEngine;
+using Unity.VisualScripting;
+
 
 public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance;
     [SerializeField] LayerMask _obstacles;
     [SerializeField] TileBase _busyTile;
+	[SerializeField] TileBase _freeTile;
 	public Grid Grid_ { get; private set; }
     static Tilemap _tilemap;
     bool _allowBuilding = false;
@@ -31,20 +34,23 @@ public class BuildingManager : MonoBehaviour
     {
         if (!_allowBuilding || _currBuilding == null) return;
 
-		if (Input.GetMouseButton(1))
-		{
+        if (CanBePlaced(_currBuilding))
+        {
+            Debug.Log("Building's size");
+            Debug.Log(_currBuilding.Size);
+            TakeArea(Grid_.WorldToCell(_currBuilding.transform.position), _currBuilding.Size, _freeTile); }
+        else 
+        { TakeArea(Grid_.WorldToCell(_currBuilding.transform.position), _currBuilding.Size, _busyTile); }
+
+        if (Input.GetMouseButtonDown(1))
+        {
             if (CanBePlaced(_currBuilding))
             {
                 _currBuilding.Construct();
-                Vector3Int start = Grid_.WorldToCell(_currBuilding.GetStartPosition());
-                TakeArea(start, _currBuilding.Size);
+                Vector3Int start = Grid_.WorldToCell(_currBuilding.transform.position);
             }
-            else Destroy(_currBuilding.gameObject);
-
-		}
+        }
         else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(_currBuilding.gameObject);
-
-        if (Input.GetKeyDown(KeyCode.KeypadEnter)) SpawnBuilding(_currBuilding);
     }
 
     /// <summary>
@@ -63,10 +69,9 @@ public class BuildingManager : MonoBehaviour
     private bool CanBePlaced(Building building)
     {
         BoundsInt area = new BoundsInt();
-        area.position = Grid_.WorldToCell(building.GetStartPosition());
-        area.size = new Vector3Int(area.size.x + 1, area.size.y + 1, area.size.z);
+        area.position = Grid_.WorldToCell(building.transform.position);
+        area.size = building.Size;
         TileBase[] baseArr = GetTilesBlock(area, _tilemap);
-
 		foreach (var b in baseArr)
 		{
 			if (b == _busyTile) return false;
@@ -75,9 +80,9 @@ public class BuildingManager : MonoBehaviour
 
 	}
 
-    public void TakeArea(Vector3Int start, Vector3Int size)
+    public void TakeArea(Vector3Int start, Vector3Int size, TileBase tile)
     {
-        _tilemap.BoxFill(start, _busyTile, startX:start.x, startY: start.y, endX: start.x + size.x, endY: start.y + size.y);
+        _tilemap.BoxFill(start, tile, startX:start.x, startY: start.y, endX: start.x + size.x + 1, endY: start.y + size.y + 1);
     }
 
     private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
@@ -108,6 +113,8 @@ public class BuildingManager : MonoBehaviour
 
     public void SpawnBuilding(Building building)
     {
+        if (_currBuilding != null && !_currBuilding.Placed) 
+        { Debug.Log("Place or delete current building"); return; }
         _allowBuilding = true;
         Vector3 spawnPos = MapCoordToGrid(Vector3.zero);
         GameObject obj = Instantiate(building.gameObject, spawnPos, Quaternion.identity);

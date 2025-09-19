@@ -3180,6 +3180,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 384
   _busyTile: {fileID: 11400000, guid: e7f38e4850f23284cbfcb6290a4c8292, type: 2}
+  _freeTile: {fileID: 11400000, guid: d9710bbd34e8d4345882f08b72523933, type: 2}
 --- !u!1 &1833088055
 GameObject:
   m_ObjectHideFlags: 0
