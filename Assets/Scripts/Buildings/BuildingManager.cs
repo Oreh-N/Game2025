@@ -7,10 +7,9 @@ public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance;
     [SerializeField] LayerMask _obstacles;
-    [SerializeField] public Grid Grid_ { get; private set; }
-    [SerializeField] static Tilemap _tilemap;
     [SerializeField] TileBase _busyTile;
-    
+	public Grid Grid_ { get; private set; }
+    static Tilemap _tilemap;
     bool _allowBuilding = false;
     Building _currBuilding;
 
@@ -21,6 +20,9 @@ public class BuildingManager : MonoBehaviour
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
+
+        Grid_ = FindObjectOfType<Grid>();
+        _tilemap = FindObjectOfType<Tilemap>();
 
 	}
 
@@ -41,7 +43,9 @@ public class BuildingManager : MonoBehaviour
 
 		}
         else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(_currBuilding.gameObject);
-	}
+
+        if (Input.GetKeyDown(KeyCode.KeypadEnter)) SpawnBuilding(_currBuilding);
+    }
 
     /// <summary>
     /// Get position of the mouse cursor on the world landscape
@@ -105,7 +109,7 @@ public class BuildingManager : MonoBehaviour
     public void SpawnBuilding(Building building)
     {
         _allowBuilding = true;
-        Vector3 spawnPos = MapCoordToGrid(Vector3.zero) + new Vector3(0, building.transform.position.y, 0);
+        Vector3 spawnPos = MapCoordToGrid(Vector3.zero);
         GameObject obj = Instantiate(building.gameObject, spawnPos, Quaternion.identity);
         _currBuilding = obj.GetComponent<Building>();
         obj.AddComponent<Movable>();

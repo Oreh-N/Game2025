@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UnitSelectionBox : MonoBehaviour
 {
 	[SerializeField] RectTransform _boxVisual;
+	LayerMask _building;
 
 	Vector2 _startPosition;
 	Vector2 _endPosition;
@@ -14,45 +17,55 @@ public class UnitSelectionBox : MonoBehaviour
 
 	private void Start()
 	{
+		_building = LayerMask.GetMask("Buildings");
 		_startPosition = Vector2.zero;
 		_endPosition = Vector2.zero;
-		DrawVisual();
 	}
 
 	private void Update()
 	{
-		// When Clicked
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		// If we are hitting a building don't draw select box
+		if (Physics.Raycast(ray, Mathf.Infinity, _building))
+		{
+			return; 
+		}
+
 		if (Input.GetMouseButtonDown(0))
 		{
 			_startPosition = Input.mousePosition;
-
-			// For selection the Units
 			_selectionBox = new Rect();
 		}
 
 		// When Dragging
 		if (Input.GetMouseButton(0))
-		{
-			if (_boxVisual.rect.width > 0 || _boxVisual.rect.height > 0)
-			{
-				UnitSelectionManager.Instance.DeselectAll();
-				SelectUnits();
-			}
+		{ BoxSelection(); }
 
-			_endPosition = Input.mousePosition;
-			DrawVisual();
-			DrawSelection();
-		}
-
-		// When Releasing
 		if (Input.GetMouseButtonUp(0))
-		{
-			SelectUnits();
+		{ EndSelecting(); }
+	}
 
-			_startPosition = Vector2.zero;
-			_endPosition = Vector2.zero;
-			DrawVisual();
+	private void BoxSelection()
+	{
+		if (_boxVisual.rect.width > 0 || _boxVisual.rect.height > 0)
+		{
+			UnitSelectionManager.Instance.DeselectAll();
+			SelectUnits();
 		}
+
+		_endPosition = Input.mousePosition;
+		DrawVisual();
+		DrawSelection();
+	}
+
+	private void EndSelecting()
+	{
+		SelectUnits();
+
+		_startPosition = Vector2.zero;
+		_endPosition = Vector2.zero;
+		DrawVisual();
 	}
 
 	void DrawVisual()
