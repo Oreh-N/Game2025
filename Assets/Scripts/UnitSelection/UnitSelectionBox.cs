@@ -13,6 +13,7 @@ public class UnitSelectionBox : MonoBehaviour
 	Vector2 _endPosition;
 
 	Rect _selectionBox;
+	bool _buildingSelected = false;
 
 
 	private void Start()
@@ -29,21 +30,26 @@ public class UnitSelectionBox : MonoBehaviour
 		// If we are hitting a building don't draw select box
 		if (Physics.Raycast(ray, Mathf.Infinity, _building))
 		{
-			return; 
+			_buildingSelected = true;
+			return;
 		}
-
-		if (Input.GetMouseButtonDown(0))
+		if (!_buildingSelected)
 		{
-			_startPosition = Input.mousePosition;
-			_selectionBox = new Rect();
+			if (Input.GetMouseButtonDown(0))
+			{
+				_startPosition = Input.mousePosition;
+				_selectionBox = new Rect();
+			}
+
+			// When Dragging
+			if (Input.GetMouseButton(0))
+			{ BoxSelection(); }
+
+			if (Input.GetMouseButtonUp(0))
+			{ EndSelecting(); }
 		}
-
-		// When Dragging
-		if (Input.GetMouseButton(0))
-		{ BoxSelection(); }
-
 		if (Input.GetMouseButtonUp(0))
-		{ EndSelecting(); }
+		{ _buildingSelected = false; }
 	}
 
 	private void BoxSelection()
