@@ -117,7 +117,7 @@ public class BuildingManager : MonoBehaviour
         if (_currBuilding != null && !_currBuilding.Placed) 
         { Debug.Log("Place or delete current building first"); return; }
 		Vector3 spawnPos = MapCoordToGrid(Vector3.zero);
-        GameObject obj = Instantiate(building.gameObject, spawnPos, Quaternion.identity);
+        GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
         _currBuilding = obj.GetComponent<Building>();
         obj.AddComponent<Movable>();
         _allowBuilding = true;
