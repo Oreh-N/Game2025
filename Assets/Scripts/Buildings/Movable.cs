@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Movable : MonoBehaviour
 {
-	private void OnMouseDrag()
+	private void Update()
 	{
 		Vector3 new_pos = BuildingManager.GetMouseWorldPos();
 		transform.position = BuildingManager.Instance.MapCoordToGrid(new_pos);

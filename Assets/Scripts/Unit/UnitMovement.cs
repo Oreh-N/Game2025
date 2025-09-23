@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
+
 	[SerializeField] LayerMask _ground;
 	NavMeshAgent _agent;
 
@@ -20,7 +22,8 @@ public class UnitMovement : MonoBehaviour
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground)
+				&& UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject.GetComponent<Unit>()))
 			{
 				_agent.SetDestination(hit.point);
 			}

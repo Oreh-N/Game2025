@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance;
-    [SerializeField] LayerMask _obstacles;
+    LayerMask _obstacles;
     [SerializeField] TileBase _busyTile;
 	[SerializeField] TileBase _freeTile;
 	public Grid Grid_ { get; private set; }
@@ -26,7 +26,7 @@ public class BuildingManager : MonoBehaviour
 
         Grid_ = FindObjectOfType<Grid>();
         _tilemap = FindObjectOfType<Tilemap>();
-
+		_obstacles = LayerMask.GetMask(PubNames.BuildingLayer);
 	}
 
 
@@ -82,7 +82,7 @@ public class BuildingManager : MonoBehaviour
 
     public void TakeArea(Vector3Int start, Vector3Int size, TileBase tile)
     {
-        _tilemap.BoxFill(start, tile, startX:start.x, startY: start.y, endX: start.x + size.x + 1, endY: start.y + size.y + 1);
+        _tilemap.BoxFill(start, tile, start.x, start.y, start.x + size.x + 1, start.y + size.y + 1);
     }
 
     private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
@@ -114,9 +114,8 @@ public class BuildingManager : MonoBehaviour
     public void SpawnBuilding(Building building)
     {
         if (_currBuilding != null && !_currBuilding.Placed) 
-        { Debug.Log("Place or delete current building"); return; }
-        _allowBuilding = true;
-        Vector3 spawnPos = MapCoordToGrid(Vector3.zero);
+        { Debug.Log("Place or delete current building first"); return; }
+		Vector3 spawnPos = MapCoordToGrid(Vector3.zero);
         GameObject obj = Instantiate(building.gameObject, spawnPos, Quaternion.identity);
         _currBuilding = obj.GetComponent<Building>();
         obj.AddComponent<Movable>();

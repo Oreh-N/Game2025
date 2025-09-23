@@ -15,10 +15,15 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	Vector3 IAlive.Position { get => _pos; set => _pos = value; }
 	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
 
-
+	private void Awake()
+	{
+		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
+		gameObject.tag = PubNames.UnitTag;
+	}
 	private void Start()
 	{
 		UnitSelectionManager.Instance.AddUnit(gameObject.GetComponent<Unit>());
+		
 	}
 
 	private void Update()
@@ -45,7 +50,7 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 
 	public void Destroy()
 	{
-		UnityEngine.Object.Destroy(this);
+		Destroy(this);
 	}
 
 	public void Interact()

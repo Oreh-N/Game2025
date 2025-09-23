@@ -7,14 +7,13 @@ using UnityEngine.UIElements;
 public class UnitSelectionManager : MonoBehaviour
 {
 	public static UnitSelectionManager Instance { get; set; }
-
 	public List<Unit> UnitsSelected { get; private set; } = new List<Unit>();
 	public List<Unit> AllUnits { get; private set; } = new List<Unit>();
 
-	LayerMask _buildings;
-	LayerMask _clickable;
+	LayerMask _units;
 	LayerMask _ground;
 	[SerializeField] GameObject _groundMarker;
+
 
 	private void Awake()
 	{
@@ -23,9 +22,8 @@ public class UnitSelectionManager : MonoBehaviour
 		else
 		{ Instance = this; }
 
-		_buildings = LayerMask.GetMask("Buildings");
-		_clickable = LayerMask.GetMask("Clickable");
-		_ground = LayerMask.GetMask("Ground");
+		_ground = LayerMask.GetMask(PubNames.GroundLayer);
+		_units = LayerMask.GetMask(PubNames.UnitsLayer);
 	}
 
 
@@ -46,8 +44,8 @@ public class UnitSelectionManager : MonoBehaviour
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 		RaycastHit hit;
-		// If we are hitting a clickble object
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _clickable))
+		// If we are hitting a unit
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _units))
 		{
 			if (Input.GetKey(KeyCode.LeftShift))
 			{ MultiSelect(hit.collider.gameObject.GetComponent<Unit>()); }

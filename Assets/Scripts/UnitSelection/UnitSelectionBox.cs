@@ -7,18 +7,15 @@ using UnityEngine.UIElements;
 public class UnitSelectionBox : MonoBehaviour
 {
 	[SerializeField] RectTransform _boxVisual;
-	LayerMask _building;
 
 	Vector2 _startPosition;
 	Vector2 _endPosition;
 
 	Rect _selectionBox;
-	bool _buildingSelected = false;
 
 
 	private void Start()
 	{
-		_building = LayerMask.GetMask("Buildings");
 		_startPosition = Vector2.zero;
 		_endPosition = Vector2.zero;
 	}
@@ -27,29 +24,18 @@ public class UnitSelectionBox : MonoBehaviour
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-		// If we are hitting a building don't draw select box
-		if (Physics.Raycast(ray, Mathf.Infinity, _building))
+		if (Input.GetMouseButtonDown(0))
 		{
-			_buildingSelected = true;
-			return;
+			_startPosition = Input.mousePosition;
+			_selectionBox = new Rect();
 		}
-		if (!_buildingSelected)
-		{
-			if (Input.GetMouseButtonDown(0))
-			{
-				_startPosition = Input.mousePosition;
-				_selectionBox = new Rect();
-			}
 
-			// When Dragging
-			if (Input.GetMouseButton(0))
-			{ BoxSelection(); }
+		// When Dragging
+		if (Input.GetMouseButton(0))
+		{ BoxSelection(); }
 
-			if (Input.GetMouseButtonUp(0))
-			{ EndSelecting(); }
-		}
 		if (Input.GetMouseButtonUp(0))
-		{ _buildingSelected = false; }
+		{ EndSelecting(); }
 	}
 
 	private void BoxSelection()
