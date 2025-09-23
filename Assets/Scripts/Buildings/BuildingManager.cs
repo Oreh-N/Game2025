@@ -42,12 +42,13 @@ public class BuildingManager : MonoBehaviour
         else 
         { TakeArea(Grid_.WorldToCell(_currBuilding.transform.position), _currBuilding.Size, _busyTile); }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
         {
             if (CanBePlaced(_currBuilding))
             {
                 _currBuilding.Construct();
                 Vector3Int start = Grid_.WorldToCell(_currBuilding.transform.position);
+                _allowBuilding = false;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(_currBuilding.gameObject);
@@ -119,6 +120,7 @@ public class BuildingManager : MonoBehaviour
         GameObject obj = Instantiate(building.gameObject, spawnPos, Quaternion.identity);
         _currBuilding = obj.GetComponent<Building>();
         obj.AddComponent<Movable>();
+        _allowBuilding = true;
     }
 
 }

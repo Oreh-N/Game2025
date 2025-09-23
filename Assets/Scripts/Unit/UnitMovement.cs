@@ -13,6 +13,7 @@ public class UnitMovement : MonoBehaviour
 	private void Start()
 	{
 		_agent = GetComponent<NavMeshAgent>();
+		
 	}
 
 	private void Update()
@@ -22,8 +23,8 @@ public class UnitMovement : MonoBehaviour
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground)
-				&& UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject.GetComponent<Unit>()))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground) && 
+				UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject.GetComponent<Unit>()))
 			{
 				_agent.SetDestination(hit.point);
 			}
