@@ -5,17 +5,17 @@ using System;
 
 public class Minimap : MonoBehaviour
 {
-    private float width;
-    private float height;
-    GameObject minimap;
+    GameObject _minimap;
+    float _height;
+    float _width;
 
     void Start()
     {
-        minimap = GameObject.FindWithTag("Minimap");
+        _minimap = GameObject.FindWithTag("Minimap");
 		Resolution res = Screen.currentResolution;
-        width = Screen.width/5000;
-        height = Screen.height/10000;
-        Camera camera = minimap.GetComponent<Camera>();
+        _width = Screen.width/5000;
+        _height = Screen.height/10000;
+        Camera camera = _minimap.GetComponent<Camera>();
 	}
 
     void Update()

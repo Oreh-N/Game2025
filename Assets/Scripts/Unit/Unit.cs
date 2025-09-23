@@ -6,22 +6,29 @@ using UnityEngine.UIElements;
 
 public class Unit : MonoBehaviour, IAlive, IInteractable
 {
-	float health;
-	Vector3 pos;
-	string u_name = "Default";	//unit name
-	float IDestructible.Health { get => health; set => health = value; }
-	Vector3 IAlive.Position { get => pos; set => pos = value; }
-	string IAlive.Name { get => u_name; set => u_name = value; }
+	string _unit_name = "Default";	//unit name
+	float _health;
+	Vector3 _pos;
 
 
+	float IDestructible.Health { get => _health; set => _health = value; }
+	Vector3 IAlive.Position { get => _pos; set => _pos = value; }
+	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
+
+	private void Awake()
+	{
+		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
+		gameObject.tag = PubNames.UnitTag;
+	}
 	private void Start()
 	{
-		UnitSelectionManager.Instance.allUnits.Add(gameObject);
+		UnitSelectionManager.Instance.AddUnit(gameObject.GetComponent<Unit>());
+		
 	}
 
 	private void Update()
 	{
-		if (IsOutOfMap(pos)) Destroy();
+		if (IsOutOfMap(_pos)) Destroy();
 		
 	}
 
@@ -33,7 +40,7 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 
 	private void OnDestroy()
 	{
-		UnitSelectionManager.Instance.allUnits.Remove(gameObject);
+		UnitSelectionManager.Instance.RemoveUnit(gameObject.GetComponent<Unit>());
 	}
 
 	public void Damage(float damage)
@@ -43,7 +50,7 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 
 	public void Destroy()
 	{
-		UnityEngine.Object.Destroy(this);
+		Destroy(this);
 	}
 
 	public void Interact()

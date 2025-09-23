@@ -1,24 +1,41 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class Building : IBuilding
+
+
+[RequireComponent(typeof(BoxCollider))]
+public abstract class Building : MonoBehaviour, IBuilding
 {
 	Vector3 IBuilding.Position { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 	float IDestructible.Health { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+	public bool Placed { get; private set; }
+	public Vector3Int Size { get; private set; }
 
-	public void Construct()
+
+	private void Start()
 	{
-		throw new System.NotImplementedException();
+		BoxCollider box = GetComponent<BoxCollider>();
+		Size = new Vector3Int(Mathf.CeilToInt(box.size.x),
+							  Mathf.CeilToInt(box.size.y),
+							  Mathf.CeilToInt(box.size.z));
+		Debug.Log(box.size);
+		Debug.Log("Box");
+		Debug.Log(Size);
 	}
 
-	public void Damage(float damage)
+	public virtual void Construct()
 	{
-		throw new System.NotImplementedException();
+		var movable = gameObject.GetComponent<Movable>();
+		Destroy(movable);
+		Placed = true;
 	}
 
-	public void Destroy()
-	{
-		throw new System.NotImplementedException();
-	}
+	public virtual void Damage(float damage)
+	{ }
+
+	public virtual void Destroy()
+	{ }
 }

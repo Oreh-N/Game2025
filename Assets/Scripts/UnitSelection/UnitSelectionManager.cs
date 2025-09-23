@@ -7,15 +7,13 @@ using UnityEngine.UIElements;
 public class UnitSelectionManager : MonoBehaviour
 {
 	public static UnitSelectionManager Instance { get; set; }
+	public List<Unit> UnitsSelected { get; private set; } = new List<Unit>();
+	public List<Unit> AllUnits { get; private set; } = new List<Unit>();
 
-	public List<GameObject> unitsSelected = new List<GameObject>();
-	public List<GameObject> allUnits = new List<GameObject>();
+	LayerMask _units;
+	LayerMask _ground;
+	[SerializeField] GameObject _groundMarker;
 
-	private Camera cam;
-
-	public LayerMask clickable;
-	public LayerMask ground;
-	public GameObject groundMarker;
 
 	private void Awake()
 	{
@@ -23,93 +21,125 @@ public class UnitSelectionManager : MonoBehaviour
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
-	}
 
-	private void Start()
-	{ cam = Camera.main; }
+		_ground = LayerMask.GetMask(PubNames.GroundLayer);
+		_units = LayerMask.GetMask(PubNames.UnitsLayer);
+	}
 
 
 	private void Update()
 	{
-		RaycastHit hit;
 		if (Input.GetMouseButtonDown(0))
-		{
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		{ TrySelectUnits(); }
+		else if (Input.GetMouseButtonDown(1) && UnitsSelected.Count > 0)
+		{ TrySetNextPos(); }
+	}
 
-			// If we are hitting a clickble object
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
-			{
-				if (Input.GetKey(KeyCode.LeftShift))
-				{ MultiSelect(hit.collider.gameObject); }
-				else
-				{ SelectByClicking(hit.collider.gameObject); }
-			}
-			else  // Deselect all the units
-			{
-				if (!Input.GetKey(KeyCode.LeftShift))
-				{ DeselectAll(); }
-			}
+	/// <summary>
+	/// If we are clicking at a unit then we select it (or deselect if alreadt selected). 
+	/// Allows To select more units with LeftShift.
+	/// </summary>
+	private void TrySelectUnits()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		RaycastHit hit;
+		// If we are hitting a unit
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _units))
+		{
+			if (Input.GetKey(KeyCode.LeftShift))
+			{ MultiSelect(hit.collider.gameObject.GetComponent<Unit>()); }
+			else
+			{ SelectByClicking(hit.collider.gameObject.GetComponent<Unit>()); }
 		}
-		else if (Input.GetMouseButtonDown(1) && unitsSelected.Count > 0)
+		else  // Deselect all units
 		{
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
-			// If we are hitting a ground with right button
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
-			{
-				groundMarker.transform.position = new Vector3(hit.point.x, .001f, hit.point.z);
-				groundMarker.SetActive(false);
-				groundMarker.SetActive(true);
-			}
+			if (!Input.GetKey(KeyCode.LeftShift))
+			{ DeselectAll(); }
 		}
 	}
 
-	private void MultiSelect(GameObject unit)
+	/// <summary>
+	/// If units are selected then they will get a new position to which they must move.
+	/// </summary>
+	private void TrySetNextPos()
 	{
-		if (!unitsSelected.Contains(unit))
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		RaycastHit hit;
+		// If we are hitting a ground with right button
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
 		{
-			unitsSelected.Add(unit);
+			_groundMarker.transform.position = new Vector3(hit.point.x, .001f, hit.point.z);
+			_groundMarker.SetActive(false);
+			_groundMarker.SetActive(true);
+		}
+	}
+
+	public void RemoveUnit(Unit unit)
+	{
+		if (AllUnits.Contains(unit))
+		{ AllUnits.Remove(unit); }
+	}
+
+	public void AddUnit(Unit unit)
+	{ 
+		if (!AllUnits.Contains(unit))
+		AllUnits.Add(unit); 
+	}
+
+	private void MultiSelect(Unit unit)
+	{
+		if (!UnitsSelected.Contains(unit))
+		{
+			UnitsSelected.Add(unit);
 			SelectUnit(unit, true);
 		}
 		else
 		{
 			SelectUnit(unit, false);
-			unitsSelected.Remove(unit);
+			UnitsSelected.Remove(unit);
 		}
 	}
 
-	private void SelectByClicking(GameObject unit)
+	private void SelectByClicking(Unit unit)
 	{
 		DeselectAll();
 
-		unitsSelected.Add(unit);
+		UnitsSelected.Add(unit);
 		SelectUnit(unit, true);
 	}
+
 	public void DeselectAll()
 	{
-		foreach (var unit in unitsSelected)
+		foreach (var unit in UnitsSelected)
 		{ SelectUnit(unit, false); }
 
-		groundMarker.SetActive(false);
-		unitsSelected.Clear();
+		_groundMarker.SetActive(false);
+		UnitsSelected.Clear();
 	}
 
-	private void EnableUnitMovement(GameObject unit, bool canMove)
+	private void EnableUnitMovement(Unit unit, bool canMove)
 	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
 
-	private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
+	private void TriggerSelectionIndicator(Unit unit, bool isVisible)
 	{ unit.transform.GetChild(0).gameObject.SetActive(isVisible); }
 
-	internal void DragSelect(GameObject unit)
+	internal void DragSelect(Unit unit)
 	{
-		if (!unitsSelected.Contains(unit))
+		if (!UnitsSelected.Contains(unit))
 		{
-			unitsSelected.Add(unit);
+			UnitsSelected.Add(unit);
 			SelectUnit(unit, true);
 		}
 	}
 
-	private void SelectUnit(GameObject unit, bool isSelected)
+	/// <summary>
+	/// Selects the unit
+	/// </summary>
+	/// <param name="unit"></param>
+	/// <param name="isSelected"></param>
+	private void SelectUnit(Unit unit, bool isSelected)
 	{
 		TriggerSelectionIndicator(unit, isSelected);
 		EnableUnitMovement(unit, isSelected);

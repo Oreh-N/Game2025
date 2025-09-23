@@ -6,26 +6,21 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class MainCameraMovement : MonoBehaviour
 {
-	float speed = 0.5f; // 1 = 100 % (full speed)
-	Vector3 initPos;
+	float _speed = 0.5f; // 1 = 100 % (full speed)
+	Vector3 _initPos;
     
     void Start()
     {
-		initPos = transform.position;
+		_initPos = transform.position;
 	}
 
 
 	void Update()
     {
-		TryMove();
-    }
-
-	private void TryMove()
-	{
-		float act_speed = Mathf.Sqrt(speed);	// actual speed on each axis
+		float act_speed = Mathf.Sqrt(_speed);    // actual speed on each axis
 
 		if (Input.GetKey(KeyCode.A))
-        {
+		{
 			if (IsOutOfMap(transform.position + Vector3.left * act_speed) && IsOutOfMap(transform.position + Vector3.forward * act_speed)) return;
 			transform.position += Vector3.left * act_speed;
 			transform.position += Vector3.forward * act_speed;
@@ -45,7 +40,7 @@ public class MainCameraMovement : MonoBehaviour
 		else if (Input.GetKey(KeyCode.W))
 		{
 			if (IsOutOfMap(transform.position + Vector3.forward * act_speed) && IsOutOfMap(transform.position + Vector3.right * act_speed)) return;
-			transform.position += Vector3.forward * act_speed; 
+			transform.position += Vector3.forward * act_speed;
 			transform.position += Vector3.right * act_speed;
 		}
 	}
@@ -54,7 +49,7 @@ public class MainCameraMovement : MonoBehaviour
 	{
 		var cam = GetComponent<Camera>();
 		float camSideLength = Mathf.Cos(transform.rotation.x) * cam.farClipPlane /4;
-		if (pos.x < initPos.x - 50		 || pos.z < initPos.z - 50		|| 
+		if (pos.x < _initPos.x - 50		 || pos.z < _initPos.z - 50		|| 
 			pos.x > 1000 - camSideLength || pos.z > 1000 - camSideLength)
 			return true;
 		return false;
