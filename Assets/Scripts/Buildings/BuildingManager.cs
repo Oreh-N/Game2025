@@ -48,7 +48,7 @@ public class BuildingManager : MonoBehaviour
 			_is_default_cursor = true;
 		}
 
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(1))
 		{
 			if (CanBePlaced(CurrBuilding))
 			{
