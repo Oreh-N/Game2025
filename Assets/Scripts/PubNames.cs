@@ -4,9 +4,14 @@ using UnityEngine;
 
 public static class PubNames
 {
-	public const string BuildingLayer = "Buildings";
+	// Layers
+	public const string ObstaclesLayer = "Obstacles";
 	public const string ClickableLayer = "Clickable";
+	public const string BuildingLayer = "Buildings";
 	public const string GroundLayer = "Ground";
 	public const string UnitsLayer = "Units";
+
+
+	// Tags
 	public const string UnitTag = "Unit";
 }

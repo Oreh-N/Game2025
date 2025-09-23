@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
 
@@ -16,17 +20,16 @@ public abstract class Building : MonoBehaviour, IBuilding
 	public Vector3Int Size { get; private set; }
 
 
-	private void Start()
+	private void Awake()
 	{
 		BoxCollider box = GetComponent<BoxCollider>();
 		box.enabled = false;
-		Size = new Vector3Int(Mathf.CeilToInt(box.size.x),
-							  Mathf.CeilToInt(box.size.y),
-							  Mathf.CeilToInt(box.size.z));
-		Debug.Log(box.size);
-		Debug.Log("Box");
-		Debug.Log(Size);
+		Size = new Vector3Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
+							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
+							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
+		
 	}
+
 
 	public virtual void Construct()
 	{

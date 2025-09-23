@@ -7,14 +7,18 @@ using Unity.VisualScripting;
 
 public class BuildingManager : MonoBehaviour
 {
-    public static BuildingManager Instance;
-    LayerMask _obstacles;
-    [SerializeField] TileBase _busyTile;
+	public static BuildingManager Instance;
+	[SerializeField] LayerMask _obstacles;
+	[SerializeField] TileBase _busyTile;
 	[SerializeField] TileBase _freeTile;
-	public Grid Grid_ { get; private set; }
-    static Tilemap _tilemap;
-    bool _allowBuilding = false;
-    Building _currBuilding;
+	[SerializeField] Texture2D _declineCursor;
+	[SerializeField] Texture2D _defaultCursor;
+	bool _is_default_cursor = true;
+	public static Tilemap Tilemap { get; private set; }
+	public static Grid Grid_ { get; private set; }
+
+	bool _allowBuilding = false;
+	public Building CurrBuilding { get; private set; }
 
 
 	private void Awake()
@@ -24,103 +28,131 @@ public class BuildingManager : MonoBehaviour
 		else
 		{ Instance = this; }
 
-        Grid_ = FindObjectOfType<Grid>();
-        _tilemap = FindObjectOfType<Tilemap>();
-		_obstacles = LayerMask.GetMask(PubNames.BuildingLayer);
+		Grid_ = FindObjectOfType<Grid>();
+		Tilemap = FindObjectOfType<Tilemap>();
 	}
 
 
-    void Update()
-    {
-        if (!_allowBuilding || _currBuilding == null) return;
+	void Update()
+	{
+		if (!_allowBuilding || CurrBuilding == null) return;
 
-        if (CanBePlaced(_currBuilding))
-        {
-            Debug.Log("Building's size");
-            Debug.Log(_currBuilding.Size);
-            TakeArea(Grid_.WorldToCell(_currBuilding.transform.position), _currBuilding.Size, _freeTile); }
-        else 
-        { TakeArea(Grid_.WorldToCell(_currBuilding.transform.position), _currBuilding.Size, _busyTile); }
+		if (!CanBePlaced(CurrBuilding) && _is_default_cursor)
+		{
+			Cursor.SetCursor(_declineCursor, new Vector2(0, 0), CursorMode.Auto);
+			_is_default_cursor = false;
+		}
+		else if (CanBePlaced(CurrBuilding) && !_is_default_cursor)
+		{
+			Cursor.SetCursor(_defaultCursor, new Vector2(0, 0), CursorMode.Auto);
+			_is_default_cursor = true;
+		}
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (CanBePlaced(_currBuilding))
-            {
-                _currBuilding.Construct();
-                Vector3Int start = Grid_.WorldToCell(_currBuilding.transform.position);
-                _allowBuilding = false;
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(_currBuilding.gameObject);
-    }
+		if (Input.GetMouseButtonDown(0))
+		{
+			if (CanBePlaced(CurrBuilding))
+			{
+				CurrBuilding.Construct();
+				Vector3Int start = Grid_.WorldToCell(CurrBuilding.transform.position);
+				TakeArea(start, CurrBuilding.Size, _busyTile);
+				_allowBuilding = false;
+			}
+		}
+		else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(CurrBuilding.gameObject);
+	}
 
-    /// <summary>
-    /// Get position of the mouse cursor on the world landscape
-    /// </summary>
-    /// <returns></returns>
-    public static Vector3 GetMouseWorldPos()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+	/// <summary>
+	/// Get position of the mouse cursor on the world landscape
+	/// </summary>
+	/// <returns></returns>
+	public static Vector3 GetMouseWorldPos()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
-            return hit.point;
-        return Vector3.zero;
-    }
+		if (Physics.Raycast(ray, out RaycastHit hit))
+			return hit.point;
+		return Vector3.zero;
+	}
 
-    private bool CanBePlaced(Building building)
-    {
-        BoundsInt area = new BoundsInt();
-        area.position = Grid_.WorldToCell(building.transform.position);
-        area.size = building.Size;
-        TileBase[] baseArr = GetTilesBlock(area, _tilemap);
+	/// <summary>
+	/// Computes bottom left and top right coordinates (to fill the whole area under the object correctly) 
+	/// </summary>
+	/// <param name="start">The object start position</param>
+	/// <param name="size">Object's size</param>
+	/// <returns>(BottomLeftCoordinates, TopRightCoordinates)</returns>
+	private static (Vector3Int, Vector3Int) CompAreaBordersCoords(Vector3Int start, Vector3Int size)
+	{
+		Vector3Int bottomLeft = new Vector3Int(
+		start.x - size.x / 2,
+		start.y - size.y / 2,
+		start.z
+	);
+
+		Vector3Int topRight = new Vector3Int(
+			bottomLeft.x + size.x,
+			bottomLeft.y + size.y,
+			start.z
+		);
+		return (bottomLeft, topRight);
+	}
+
+	public static void TakeArea(Vector3Int start, Vector3Int size, TileBase tile)
+	{
+		var bottomLeft = new Vector3Int();
+		var topRight = new Vector3Int();
+		(bottomLeft, topRight) = CompAreaBordersCoords(start, size);
+		Tilemap.BoxFill(start, tile, bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
+	}
+
+	public bool CanBePlaced(Building building)
+	{
+		BoundsInt area = new BoundsInt();
+		area.position = Grid_.WorldToCell(building.transform.position);
+		area.size = building.Size;
+		TileBase[] baseArr = GetTilesBlock(area, Tilemap);
 		foreach (var b in baseArr)
 		{
 			if (b == _busyTile) return false;
 		}
-        return true;
+		return true;
 
 	}
 
-    public void TakeArea(Vector3Int start, Vector3Int size, TileBase tile)
-    {
-        _tilemap.BoxFill(start, tile, start.x, start.y, start.x + size.x + 1, start.y + size.y + 1);
-    }
-
-    private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
-    {
-        TileBase[] arr = new TileBase[area.size.x * area.size.y * area.size.z];
-        int counter = 0;
+	private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
+	{
+		TileBase[] arr = new TileBase[area.size.x * area.size.y * area.size.z];
+		int counter = 0;
 
 		foreach (var vector in area.allPositionsWithin)
 		{
-            Vector3Int pos = new Vector3Int(vector.x, vector.y, z: 0);
-            arr[counter] = _tilemap.GetTile(pos);
-            counter++;
-        }
-        return arr;
+			Vector3Int pos = new Vector3Int(vector.x, vector.y, z: 0);
+			arr[counter] = Tilemap.GetTile(pos);
+			counter++;
+		}
+		return arr;
 	}
 
-    /// <summary>
-    /// Maps coordinates to the grid
-    /// </summary>
-    /// <param name="position">Real coordinates (will be transformed to the grid coordinates)</param>
-    /// <returns></returns>
-    public Vector3 MapCoordToGrid(Vector3 position)
-    {
-        Vector3Int cellPos = Grid_.WorldToCell(position);
-        position = Grid_.GetCellCenterWorld(cellPos);
-        return position;
-    }
+	/// <summary>
+	/// Maps coordinates to the grid
+	/// </summary>
+	/// <param name="position">Real coordinates (will be transformed to the grid coordinates)</param>
+	/// <returns></returns>
+	public Vector3 MapCoordToGrid(Vector3 position)
+	{
+		Vector3Int cellPos = Grid_.WorldToCell(position);
+		position = Grid_.GetCellCenterWorld(cellPos);
+		return position;
+	}
 
-    public void SpawnBuilding(Building building)
-    {
-        if (_currBuilding != null && !_currBuilding.Placed) 
-        { Debug.Log("Place or delete current building first"); return; }
-		Vector3 spawnPos = MapCoordToGrid(Vector3.zero);
-        GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
-        _currBuilding = obj.GetComponent<Building>();
-        obj.AddComponent<Movable>();
-        _allowBuilding = true;
-    }
+	public void SpawnBuilding(Building building)
+	{
+		if (CurrBuilding != null && !CurrBuilding.Placed)
+		{ Debug.Log("Place or delete current building first"); return; }
+		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());
+		GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
+		CurrBuilding = obj.GetComponent<Building>();
+		obj.AddComponent<Movable>();
+		_allowBuilding = true;
+	}
 
 }
