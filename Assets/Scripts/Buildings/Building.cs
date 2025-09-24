@@ -14,10 +14,12 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(BoxCollider))]
 public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible
 {
+	float IDestructible.Health { get => _health; set => _health = value; }
 	public GameObject Panel { get; protected set; }
-	float IDestructible.Health { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-	public bool Placed { get; private set; }
 	public Vector3Int Size { get; private set; }
+	public bool Placed { get; private set; }
+	float _health;
+
 
 	private void Awake()
 	{
@@ -26,31 +28,43 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		Size = new Vector3Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
 							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
+	}
 
-		Player.Instance.Buildings.Add(this);
+	private void Start()
+	{
+		BuildingManager.Instance.RegisterBuilding(this, Player.Instance);
+		UIManager.Instance.UpdateWarningPanel("The building has been added to your team");
 		Debug.Log($"Add building. Count ({this}): {Player.Instance.Buildings.Count}");
 	}
 
 
+	// Build/Destruct_________________________________________________
 	public virtual void Construct()
 	{
 		gameObject.AddComponent<NavMeshObstacle>();
-		var meshObstacle = gameObject.GetComponent<NavMeshObstacle>();
-		meshObstacle.center = gameObject.GetComponent<BoxCollider>().center;
-		meshObstacle.size = gameObject.GetComponent<BoxCollider>().size;
-		meshObstacle.carveOnlyStationary = false;
-		meshObstacle.carving = true;
+		var mesh = gameObject.GetComponent<NavMeshObstacle>();
+		mesh.center = gameObject.GetComponent<BoxCollider>().center;
+		mesh.size = gameObject.GetComponent<BoxCollider>().size;
+		mesh.carveOnlyStationary = false;
+		mesh.carving = true;
+
 		gameObject.GetComponent<BoxCollider>().enabled = true;
-		var movable = gameObject.GetComponent<Movable>();
-		Destroy(movable);
+		Destroy(gameObject.GetComponent<Movable>());
 		Placed = true;
 	}
 
 	public virtual void Damage(float damage)
 	{ }
 
-	public virtual void Destroy()
-	{ }
+	private void OnDestroy()
+	{ 
+		BuildingManager.Instance.RemoveBuilding(this, Player.Instance);
+		UIManager.Instance.UpdateWarningPanel("The building has been removed from your team");
+	}
+	// _______________________________________________________________
+
+
+	// Building actions_______________________________________________
 	public void OnMouseDown()
 	{
 		if (Placed)
@@ -61,13 +75,12 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	}
 
 	public virtual void ShowPanel()
-	{
-		UIManager.Instance.EnableDisablePanel(Panel);
-	}
+	{ UIManager.Instance.EnableDisablePanel(Panel); }
 
 	public virtual void Interact()
-	{ Debug.Log("Not implemented"); }
+	{ UIManager.Instance.UpdateWarningPanel("Building class Interact shouldn't be called"); }
 
 	public virtual void Spawn(GameObject obj)
-	{ Debug.Log("Not implemented"); }
+	{ UIManager.Instance.UpdateWarningPanel("Building class Spawn shouldn't be called"); }
+	// _______________________________________________________________
 }

@@ -6,9 +6,10 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
 	public static UIManager Instance;
+
+	[SerializeField] List<GameObject> _collapsiblePanels;
 	GameObject _moneyPanel;
 	GameObject _warningBar;
-	[SerializeField] List<GameObject> Panels;
 
 
 	private void Awake()
@@ -23,10 +24,7 @@ public class UIManager : MonoBehaviour
 		_warningBar.SetActive(false);
 	}
 
-	private void Update()
-	{
-	}
-
+	// Actions_________________________________________
 	public void UpdateWarningPanel(string warning)
 	{
 		if (_warningBar == null) Debug.Log("Warning bar is null");
@@ -43,20 +41,25 @@ public class UIManager : MonoBehaviour
 
 	public void EnableDisablePanel(GameObject panel)
 	{
-		foreach (var p in Panels)
+		foreach (var p in _collapsiblePanels)
 		{ p.SetActive(false); }
 
 		if (panel.activeSelf)
 			panel.SetActive(false);
 		else panel.SetActive(true);
 	}
+	// ________________________________________________
 
+
+	// Database________________________________________
 	public GameObject GetPanelWithTag(string tag)
 	{
-		foreach (var panel in Panels)
+		foreach (var panel in _collapsiblePanels)
 		{
-			if (panel.tag == tag) return panel;	
+			if (panel.tag == tag)
+			{ return panel; }
 		}
 		return null;
 	}
+	// ________________________________________________
 }

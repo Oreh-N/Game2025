@@ -6,32 +6,29 @@ using UnityEngine.UIElements;
 
 public class Unit : MonoBehaviour, IAlive, IInteractable
 {
-	List<Loot> LootBag = new List<Loot>();
-	string _unit_name = "Default";	//unit name
-	float _health;
-	Vector3 _pos;
-
-
 	float IDestructible.Health { get => _health; set => _health = value; }
 	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
+
+	List<Loot> _lootBag = new List<Loot>();
+	string _unit_name = "Default";	//unit name
+	float _health;
+
 
 	private void Awake()
 	{
 		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
 		gameObject.tag = PubNames.UnitTag;
-		Player.Instance.Members.Add(this);
-		LootBag.Add(new Loot(LootType.Tree));
+		_lootBag.Add(new Loot(LootType.Tree));
 	}
 	private void Start()
 	{
 		UnitSelectionManager.Instance.AddUnit(gameObject.GetComponent<Unit>());
-		
 	}
 
 	private void Update()
 	{
-		if (IsOutOfMap(_pos)) Destroy();
-		
+		if (IsOutOfMap(transform.position))
+		{ Destroy(this); }
 	}
 
 	private bool IsOutOfMap(Vector3 pos)
@@ -40,22 +37,11 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 		return false;
 	}
 
-	public List<Loot> GiveAllLoot()
-	{
-		List<Loot> loot = new List<Loot>();
-		for (int i = LootBag.Count -1; i >= 0; i--)
-		{
-			loot.Add(new Loot(LootBag[i].Type));
-			LootBag.RemoveAt(i);
-		}
 
-		return loot;
-	}
 
+	// Fight____________________________________________________________
 	private void OnDestroy()
-	{
-		UnitSelectionManager.Instance.RemoveUnit(gameObject.GetComponent<Unit>());
-	}
+	{ UnitSelectionManager.Instance.RemoveUnit(gameObject.GetComponent<Unit>()); }
 
 	public void Damage(float damage)
 	{
@@ -66,13 +52,24 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	{
 		Destroy(this);
 	}
+	// _________________________________________________________________
 
-	public void Interact()
+
+	// Actions__________________________________________________________
+	public List<Loot> GiveAllLoot()
 	{
-		throw new System.NotImplementedException();
+		List<Loot> loot = new List<Loot>();
+
+		for (int i = _lootBag.Count -1; i >= 0; i--)
+		{
+			loot.Add(new Loot(_lootBag[i].Type));
+			_lootBag.RemoveAt(i);
+		}
+
+		return loot;
 	}
 
-	public void Select()
+	public void Interact()
 	{
 		throw new System.NotImplementedException();
 	}
@@ -81,4 +78,5 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	{
 		throw new NotImplementedException();
 	}
+	// _________________________________________________________________
 }

@@ -6,15 +6,17 @@ using UnityEngine.UI;
 
 public class Warehouse : Building
 {
-	List<string> _containment = new List<string>() { "Tree" };
 	public Dictionary<LootType, int> LootCount { get; protected set; } = new Dictionary<LootType, int>() { { LootType.Tree, 0 } };
+	public List<string> _containment { get; protected set; } = new List<string>() { "Tree", "Money" };
 
 
-	private void Awake()
+	private void Start()
 	{
 		Panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
 	}
 
+
+	// Interaction____________________________________________
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == PubNames.UnitTag)
@@ -35,7 +37,10 @@ public class Warehouse : Building
 		}
 		UpdatePanelInfo();
 	}
+	// _______________________________________________________
 
+
+	// Visual_________________________________________________
 	private void UpdatePanelInfo()
 	{
 		string text = "Containment:\n";
@@ -45,4 +50,5 @@ public class Warehouse : Building
 		}
 		Panel.GetComponent<Text>().text = text;
 	}
+	// _______________________________________________________
 }

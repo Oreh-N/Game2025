@@ -6,6 +6,7 @@ public class Wallet
 {
     public int Money {  get; private set; }
 
+
     public Wallet(int start_money)
     { Money = start_money; }
 

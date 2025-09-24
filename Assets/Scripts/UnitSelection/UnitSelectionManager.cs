@@ -7,12 +7,14 @@ using UnityEngine.UIElements;
 public class UnitSelectionManager : MonoBehaviour
 {
 	public static UnitSelectionManager Instance { get; set; }
+
 	public List<Unit> UnitsSelected { get; private set; } = new List<Unit>();
 	public List<Unit> AllUnits { get; private set; } = new List<Unit>();
 
+	[SerializeField] GameObject _groundMarker;
+
 	LayerMask _units;
 	LayerMask _ground;
-	[SerializeField] GameObject _groundMarker;
 
 
 	private void Awake()
@@ -26,7 +28,6 @@ public class UnitSelectionManager : MonoBehaviour
 		_units = LayerMask.GetMask(PubNames.UnitsLayer);
 	}
 
-
 	private void Update()
 	{
 		if (Input.GetMouseButtonDown(0))
@@ -35,6 +36,8 @@ public class UnitSelectionManager : MonoBehaviour
 		{ TrySetNextPos(); }
 	}
 
+
+	// Selection__________________________________________________
 	/// <summary>
 	/// If we are clicking at a unit then we select it (or deselect if alreadt selected). 
 	/// Allows To select more units with LeftShift.
@@ -56,23 +59,6 @@ public class UnitSelectionManager : MonoBehaviour
 		{
 			if (!Input.GetKey(KeyCode.LeftShift))
 			{ DeselectAll(); }
-		}
-	}
-
-	/// <summary>
-	/// If units are selected then they will get a new position to which they must move.
-	/// </summary>
-	private void TrySetNextPos()
-	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-		RaycastHit hit;
-		// If we are hitting a ground with right button
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
-		{
-			_groundMarker.transform.position = new Vector3(hit.point.x, .01f, hit.point.z);
-			_groundMarker.SetActive(false);
-			_groundMarker.SetActive(true);
 		}
 	}
 
@@ -119,9 +105,6 @@ public class UnitSelectionManager : MonoBehaviour
 		UnitsSelected.Clear();
 	}
 
-	private void EnableUnitMovement(Unit unit, bool canMove)
-	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
-
 	private void TriggerSelectionIndicator(Unit unit, bool isVisible)
 	{ unit.transform.GetChild(0).gameObject.SetActive(isVisible); }
 
@@ -144,4 +127,28 @@ public class UnitSelectionManager : MonoBehaviour
 		TriggerSelectionIndicator(unit, isSelected);
 		EnableUnitMovement(unit, isSelected);
 	}
+	// ___________________________________________________________
+
+
+	// Movement___________________________________________________
+	/// <summary>
+	/// If units are selected then they will get a new position to which they must move.
+	/// </summary>
+	private void TrySetNextPos()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		RaycastHit hit;
+		// If we are hitting a ground with right button
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
+		{
+			_groundMarker.transform.position = new Vector3(hit.point.x, .01f, hit.point.z);
+			_groundMarker.SetActive(false);
+			_groundMarker.SetActive(true);
+		}
+	}
+
+	private void EnableUnitMovement(Unit unit, bool canMove)
+	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
+	// ___________________________________________________________
 }

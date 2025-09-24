@@ -4,8 +4,8 @@ using System.Linq;
 using UnityEngine;
 
 public class Shop
-{	// Prefabs names
-	List<string> _shop_items = new List<string>() { "Spawner1", "Warehouse0", "DefBuild1" };     // Their prices can be found on the same index in _shop_item_prices 
+{   // Prefabs names. Their prices can be found on the same index in _shop_item_prices 
+	List<string> _shop_items = new List<string>() { "Spawner1", "Warehouse0", "DefBuild1" };
 	List<int> _shop_item_prices = new List<int>() { 100, 50, 200 };
 
 

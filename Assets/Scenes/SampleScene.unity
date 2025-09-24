@@ -1875,6 +1875,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914254553}
   m_CullTransparentMesh: 1
+--- !u!1 &924953136
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 924953137}
+  - component: {fileID: 924953138}
+  m_Layer: 0
+  m_Name: LootManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &924953137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924953136}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2125821464}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &924953138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924953136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f15adcc1fe23a74cb8d842956dd92fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &928828194
 GameObject:
   m_ObjectHideFlags: 0
@@ -2037,50 +2081,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944667812}
   m_CullTransparentMesh: 1
---- !u!1 &957452755
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 957452756}
-  - component: {fileID: 957452757}
-  m_Layer: 0
-  m_Name: ShopManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &957452756
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957452755}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2125821464}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &957452757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957452755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 996f76203bcf4384dba295002258b570, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -4850,12 +4850,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdcdabf064b702a44b0b00fccb8eb52a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _declineCursor: {fileID: 2800000, guid: df5aa252083994f4cb98cbe0a4ad7f2a, type: 3}
+  _defaultCursor: {fileID: 2800000, guid: 414e7aa25cce18e4a8cc79c08b623e0c, type: 3}
   _obstacles:
     serializedVersion: 2
     m_Bits: 1408
   _busyTile: {fileID: 11400000, guid: e7f38e4850f23284cbfcb6290a4c8292, type: 2}
-  _declineCursor: {fileID: 2800000, guid: df5aa252083994f4cb98cbe0a4ad7f2a, type: 3}
-  _defaultCursor: {fileID: 2800000, guid: 414e7aa25cce18e4a8cc79c08b623e0c, type: 3}
 --- !u!1 &1833088055
 GameObject:
   m_ObjectHideFlags: 0
@@ -5704,7 +5704,7 @@ Transform:
   - {fileID: 1013475458}
   - {fileID: 1814694243}
   - {fileID: 2026860392}
-  - {fileID: 957452756}
+  - {fileID: 924953137}
   - {fileID: 1163674161}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5845,11 +5845,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6303754880897975710, guid: de91fff4fb95ce34b816cfc7e3f9bf36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 37.5
+      value: 34.5
       objectReference: {fileID: 0}
     - target: {fileID: 6303754880897975710, guid: de91fff4fb95ce34b816cfc7e3f9bf36, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 37.7
+      value: 34.9
       objectReference: {fileID: 0}
     - target: {fileID: 6303754880897975710, guid: de91fff4fb95ce34b816cfc7e3f9bf36, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

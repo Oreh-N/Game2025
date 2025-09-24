@@ -8,16 +8,18 @@ using Unity.VisualScripting;
 public class BuildingManager : MonoBehaviour
 {
 	public static BuildingManager Instance;
-	[SerializeField] LayerMask _obstacles;
-	[SerializeField] TileBase _busyTile;
-	[SerializeField] Texture2D _declineCursor;
-	[SerializeField] Texture2D _defaultCursor;
-	bool _is_default_cursor = true;
-	public static Tilemap Tilemap { get; private set; }
+
+	public static Tilemap Tilemap_ { get; private set; }
+	public Building CurrBuilding { get; private set; }
 	public static Grid Grid_ { get; private set; }
 
+	[SerializeField] Texture2D _declineCursor;
+	[SerializeField] Texture2D _defaultCursor;
+	[SerializeField] LayerMask _obstacles;
+	[SerializeField] TileBase _busyTile;
+
+	bool _is_default_cursor = true;
 	bool _allowBuilding = false;
-	public Building CurrBuilding { get; private set; }
 
 
 	private void Awake()
@@ -28,7 +30,7 @@ public class BuildingManager : MonoBehaviour
 		{ Instance = this; }
 
 		Grid_ = FindObjectOfType<Grid>();
-		Tilemap = FindObjectOfType<Tilemap>();
+		Tilemap_ = FindObjectOfType<Tilemap>();
 	}
 
 
@@ -50,26 +52,46 @@ public class BuildingManager : MonoBehaviour
 				_allowBuilding = false;
 			}
 		}
-		else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(CurrBuilding.gameObject);
+		else if (Input.GetKeyDown(KeyCode.Escape))
+		{ Destroy(CurrBuilding.gameObject); }
 	}
 
-	private void ChangeCursor(Texture2D cursor, bool is_default)
+	// Database________________________________________________________
+	public void RegisterBuilding(Building building, Team team)
+	{ team.Buildings.Add(building); }
+
+	public void RemoveBuilding(Building building, Team team)
+	{ team.Buildings.Remove(building); }
+	// ________________________________________________________________
+
+
+
+	// Grid____________________________________________________________
+	public bool CanBePlaced(Building building)
 	{
-		Cursor.SetCursor(cursor, new Vector2(0, 0), CursorMode.Auto);
-		_is_default_cursor = is_default;
+		BoundsInt area = new BoundsInt();
+		area.position = Grid_.WorldToCell(building.transform.position);
+		area.size = building.Size;
+		TileBase[] baseArr = GetTilesBlock(area, Tilemap_);
+		foreach (var b in baseArr)
+		{
+			if (b == _busyTile) return false;
+		}
+		return true;
 	}
 
-	/// <summary>
-	/// Get position of the mouse cursor on the world landscape
-	/// </summary>
-	/// <returns></returns>
-	public static Vector3 GetMouseWorldPos()
+	private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		TileBase[] arr = new TileBase[area.size.x * area.size.y * area.size.z];
+		int counter = 0;
 
-		if (Physics.Raycast(ray, out RaycastHit hit))
-			return hit.point;
-		return Vector3.zero;
+		foreach (var vector in area.allPositionsWithin)
+		{
+			Vector3Int pos = new Vector3Int(vector.x, vector.y, z: 0);
+			arr[counter] = Tilemap_.GetTile(pos);
+			counter++;
+		}
+		return arr;
 	}
 
 	/// <summary>
@@ -104,35 +126,7 @@ public class BuildingManager : MonoBehaviour
 		//Debug.Log(start);
 		//Debug.Log(bottomLeft);
 		//Debug.Log(topRight);
-		Tilemap.BoxFill(start, tile, bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
-	}
-
-	public bool CanBePlaced(Building building)
-	{
-		BoundsInt area = new BoundsInt();
-		area.position = Grid_.WorldToCell(building.transform.position);
-		area.size = building.Size;
-		TileBase[] baseArr = GetTilesBlock(area, Tilemap);
-		foreach (var b in baseArr)
-		{
-			if (b == _busyTile) return false;
-		}
-		return true;
-
-	}
-
-	private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
-	{
-		TileBase[] arr = new TileBase[area.size.x * area.size.y * area.size.z];
-		int counter = 0;
-
-		foreach (var vector in area.allPositionsWithin)
-		{
-			Vector3Int pos = new Vector3Int(vector.x, vector.y, z: 0);
-			arr[counter] = Tilemap.GetTile(pos);
-			counter++;
-		}
-		return arr;
+		Tilemap_.BoxFill(start, tile, bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
 	}
 
 	/// <summary>
@@ -146,14 +140,17 @@ public class BuildingManager : MonoBehaviour
 		position = Grid_.GetCellCenterWorld(cellPos);
 		return position;
 	}
+	// ________________________________________________________________
 
+
+	// Actions_________________________________________________________
 	public void SpawnBuilding(Building building)
 	{
 		bool was_bought = false;
 		if (CurrBuilding != null && !CurrBuilding.Placed)
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
 
-		was_bought = Player.Instance.Shop.TryBuyItem(building.name, Player.Instance._wallet);
+		was_bought = Player.Instance.Shop.TryBuyItem(building.name, Player.Instance.Wallet_);
 
 		if (!was_bought) { return; }
 		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());
@@ -162,5 +159,23 @@ public class BuildingManager : MonoBehaviour
 		obj.AddComponent<Movable>();
 		_allowBuilding = true;
 	}
+	private void ChangeCursor(Texture2D cursor, bool is_default)
+	{
+		Cursor.SetCursor(cursor, new Vector2(0, 0), CursorMode.Auto);
+		_is_default_cursor = is_default;
+	}
 
+	/// <summary>
+	/// Get position of the mouse cursor on the world landscape
+	/// </summary>
+	/// <returns></returns>
+	public static Vector3 GetMouseWorldPos()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		if (Physics.Raycast(ray, out RaycastHit hit))
+			return hit.point;
+		return Vector3.zero;
+	}
+	// ________________________________________________________________
 }

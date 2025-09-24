@@ -8,9 +8,7 @@ public class Loot
 {
 	public LootType Type { get; protected set; } = LootType.Tree;
 
-	public Loot(LootType type)
-	{
-		Type = type;
-	}
 
+	public Loot(LootType type)
+	{ Type = type; }
 }

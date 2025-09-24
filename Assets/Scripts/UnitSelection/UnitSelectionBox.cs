@@ -38,6 +38,27 @@ public class UnitSelectionBox : MonoBehaviour
 		{ EndSelecting(); }
 	}
 
+	// Selection_________________________________________________
+	void SelectUnits()
+	{
+		foreach (var unit in UnitSelectionManager.Instance.AllUnits)
+		{
+			if (_selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
+			{
+				UnitSelectionManager.Instance.DragSelect(unit);
+			}
+		}
+	}
+
+	private void EndSelecting()
+	{
+		SelectUnits();
+
+		_startPosition = Vector2.zero;
+		_endPosition = Vector2.zero;
+		DrawVisual();
+	}
+
 	private void BoxSelection()
 	{
 		if (_boxVisual.rect.width > 0 || _boxVisual.rect.height > 0)
@@ -50,19 +71,12 @@ public class UnitSelectionBox : MonoBehaviour
 		DrawVisual();
 		DrawSelection();
 	}
+	// __________________________________________________________
 
-	private void EndSelecting()
-	{
-		SelectUnits();
 
-		_startPosition = Vector2.zero;
-		_endPosition = Vector2.zero;
-		DrawVisual();
-	}
-
+	// Visual____________________________________________________
 	void DrawVisual()
 	{
-		// Calculate the starting and ending positions of the selection box.
 		Vector2 boxStart = _startPosition;
 		Vector2 boxEnd = _endPosition;
 
@@ -71,11 +85,7 @@ public class UnitSelectionBox : MonoBehaviour
 
 		// Set the position of the visual selection box based on its center.
 		_boxVisual.position = boxCenter;
-
-		// Calculate the size of the selection box in both width and height.
 		Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
-
-		// Set the size of the visual selection box based on its calculated size.
 		_boxVisual.sizeDelta = boxSize;
 	}
 
@@ -104,15 +114,5 @@ public class UnitSelectionBox : MonoBehaviour
 			_selectionBox.yMax = Input.mousePosition.y;
 		}
 	}
-
-	void SelectUnits()
-	{
-		foreach (var unit in UnitSelectionManager.Instance.AllUnits)
-		{
-			if (_selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
-			{
-				UnitSelectionManager.Instance.DragSelect(unit);
-			}
-		}
-	}
+	// __________________________________________________________
 }

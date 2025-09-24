@@ -4,23 +4,13 @@ using UnityEngine;
 
 public class Spawner : Building
 {
-
-	private void Awake()
+	private void Start()
 	{
         Panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-	}
-
+	// Actions________________________________________________
 	public override void Spawn(GameObject unit)
     {
         var spawn_pos = new Vector3(transform.localPosition.x, transform.position.y,
@@ -30,7 +20,6 @@ public class Spawner : Building
     }
 
 	public override void Interact()
-	{
-		
-	}
+	{ }
+	// _______________________________________________________
 }

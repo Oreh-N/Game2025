@@ -9,11 +9,11 @@ public class MainCameraMovement : MonoBehaviour
 	float _speed = 0.5f; // 1 = 100 % (full speed)
 	Vector3 _initPos;
     
+
     void Start()
     {
 		_initPos = transform.position;
 	}
-
 
 	void Update()
     {
