@@ -46,8 +46,7 @@ public class BuildingManager : MonoBehaviour
 			if (CanBePlaced(CurrBuilding))
 			{
 				CurrBuilding.Construct();
-				Vector3Int start = Grid_.WorldToCell(CurrBuilding.transform.position);
-				TakeArea(start, CurrBuilding.Size, _busyTile);
+				TakeArea(CurrBuilding.transform.position, CurrBuilding.Size, _busyTile);
 				_allowBuilding = false;
 			}
 		}
@@ -95,11 +94,16 @@ public class BuildingManager : MonoBehaviour
 		return (bottomLeft, topRight);
 	}
 
-	public static void TakeArea(Vector3Int start, Vector3Int size, TileBase tile)
+	public static void TakeArea(Vector3 pos, Vector3Int size, TileBase tile)
 	{
+		size = Grid_.LocalToCell(size);
 		var bottomLeft = new Vector3Int();
 		var topRight = new Vector3Int();
+		Vector3Int start = Grid_.WorldToCell(pos);
 		(bottomLeft, topRight) = CompAreaBordersCoords(start, size);
+		//Debug.Log(start);
+		//Debug.Log(bottomLeft);
+		//Debug.Log(topRight);
 		Tilemap.BoxFill(start, tile, bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
 	}
 

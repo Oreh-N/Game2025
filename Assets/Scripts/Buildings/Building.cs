@@ -34,6 +34,8 @@ public abstract class Building : MonoBehaviour, IBuilding
 	{
 		gameObject.AddComponent<NavMeshObstacle>();
 		var meshObstacle = gameObject.GetComponent<NavMeshObstacle>();
+		meshObstacle.center = gameObject.GetComponent<BoxCollider>().center;
+		meshObstacle.size = gameObject.GetComponent<BoxCollider>().size;
 		meshObstacle.carveOnlyStationary = false;
 		meshObstacle.carving = true;
 		gameObject.GetComponent<BoxCollider>().enabled = true;

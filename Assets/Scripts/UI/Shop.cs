@@ -20,7 +20,7 @@ public class Shop
 		if (_shop_items.Contains(itemName))
 		{
 			int price = _shop_item_prices[_shop_items.IndexOf(itemName)];
-			if (wallet.Money > price)
+			if (wallet.Money >= price)
 			{
 				wallet.Pay(price);
 				return true;
