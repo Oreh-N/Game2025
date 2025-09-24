@@ -17,4 +17,5 @@ public static class PubNames
 	public const string MoneyPanelTag = "MoneyBar";
 	public const string WarningPanelTag = "WarningBar";
 	public const string SpawnerPanelTag = "SpawnerBar";
+	public const string WarehousePanelTag = "WarehouseBar";
 }

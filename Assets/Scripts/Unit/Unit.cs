@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class Unit : MonoBehaviour, IAlive, IInteractable
 {
+	List<Loot> LootBag = new List<Loot>();
 	string _unit_name = "Default";	//unit name
 	float _health;
 	Vector3 _pos;
@@ -35,6 +36,18 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	{
 		if (pos.y < 0) return true;
 		return false;
+	}
+
+	public List<Loot> GiveAllLoot()
+	{
+		List<Loot> loot = new List<Loot>();
+		for (int i = LootBag.Count -1; i >= 0; i--)
+		{
+			loot.Add(new Loot(LootBag[i].Type));
+			LootBag.RemoveAt(i);
+		}
+
+		return loot;
 	}
 
 	private void OnDestroy()

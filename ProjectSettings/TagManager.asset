@@ -11,6 +11,7 @@ TagManager:
   - MoneyBar
   - WarningBar
   - SpawnerBar
+  - WarehouseBar
   layers:
   - Default
   - TransparentFX

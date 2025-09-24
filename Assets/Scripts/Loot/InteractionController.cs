@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InteractionController : MonoBehaviour
 {
-    UnitSelectionManager instance;
+    public static InteractionController Instance;
 
 
     // Start is called before the first frame update
