@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class Warehouse : Building
 {
 	List<string> _containment = new List<string>() { "Tree" };
-    public List<Loot> Loot { get; protected set; } = new List<Loot>();
-	Dictionary<LootType, int> _lootCount = new Dictionary<LootType, int>() { { LootType.Tree, 0 } };
+	public Dictionary<LootType, int> LootCount { get; protected set; } = new Dictionary<LootType, int>() { { LootType.Tree, 0 } };
 
 
 	private void Awake()
@@ -29,8 +28,10 @@ public class Warehouse : Building
 	{
 		for (int i = 0; i < loot.Count; i++)
 		{
-			Loot.Add(new Loot(loot[i].Type));
-			_lootCount[loot[i].Type]++;
+			if (LootCount.ContainsKey(loot[i].Type))
+			{ LootCount[loot[i].Type]++; }
+			else
+			{ LootCount.Add(loot[i].Type, 1); }
 		}
 		UpdatePanelInfo();
 	}
@@ -38,7 +39,7 @@ public class Warehouse : Building
 	private void UpdatePanelInfo()
 	{
 		string text = "Containment:\n";
-		foreach (var item in _lootCount)
+		foreach (var item in LootCount)
 		{
 			text += _containment[(int)item.Key] + " : " + item.Value.ToString() + "\n";
 		}

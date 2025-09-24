@@ -12,6 +12,7 @@ TagManager:
   - WarningBar
   - SpawnerBar
   - WarehouseBar
+  - TopBar
   layers:
   - Default
   - TransparentFX

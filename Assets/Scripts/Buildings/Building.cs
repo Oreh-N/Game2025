@@ -26,7 +26,9 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		Size = new Vector3Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
 							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
-		
+
+		Player.Instance.Buildings.Add(this);
+		Debug.Log($"Add building. Count ({this}): {Player.Instance.Buildings.Count}");
 	}
 
 

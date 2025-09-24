@@ -19,6 +19,8 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	{
 		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
 		gameObject.tag = PubNames.UnitTag;
+		Player.Instance.Members.Add(this);
+		LootBag.Add(new Loot(LootType.Tree));
 	}
 	private void Start()
 	{
