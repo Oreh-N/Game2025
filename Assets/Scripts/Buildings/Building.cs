@@ -12,9 +12,9 @@ using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Building : MonoBehaviour, IBuilding
+public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible
 {
-	Vector3 IBuilding.Position { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+	public GameObject Panel { get; protected set; }
 	float IDestructible.Health { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 	public bool Placed { get; private set; }
 	public Vector3Int Size { get; private set; }
@@ -49,19 +49,23 @@ public abstract class Building : MonoBehaviour, IBuilding
 
 	public virtual void Destroy()
 	{ }
-
-	void IConstructable.Construct()
+	public void OnMouseDown()
 	{
-		throw new NotImplementedException();
+		if (Placed)
+		{ 
+			Player.Instance.ChangeInteractableObject(this);
+			ShowPanel();
+		}
 	}
 
-	void IDestructible.Damage(float damage)
+	public virtual void ShowPanel()
 	{
-		throw new NotImplementedException();
+		UIManager.Instance.EnableDisablePanel(Panel);
 	}
 
-	void IDestructible.Destroy()
-	{
-		throw new NotImplementedException();
-	}
+	public virtual void Interact()
+	{ Debug.Log("Not implemented"); }
+
+	public virtual void Spawn(GameObject obj)
+	{ Debug.Log("Not implemented"); }
 }

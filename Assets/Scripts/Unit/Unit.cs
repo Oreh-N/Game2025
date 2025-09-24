@@ -12,7 +12,6 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 
 
 	float IDestructible.Health { get => _health; set => _health = value; }
-	Vector3 IAlive.Position { get => _pos; set => _pos = value; }
 	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
 
 	private void Awake()
@@ -61,5 +60,10 @@ public class Unit : MonoBehaviour, IAlive, IInteractable
 	public void Select()
 	{
 		throw new System.NotImplementedException();
+	}
+
+	public void Spawn(GameObject obj)
+	{
+		throw new NotImplementedException();
 	}
 }

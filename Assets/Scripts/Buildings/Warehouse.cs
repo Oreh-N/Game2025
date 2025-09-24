@@ -6,4 +6,9 @@ public class Warehouse : Building
 {
     public List<Loot> Loot { get; protected set; } = new List<Loot>();
 
+
+	private void OnTriggerEnter(Collider other)
+	{
+		Interact();
+	}
 }

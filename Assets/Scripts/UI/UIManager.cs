@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 	public static UIManager Instance;
 	GameObject _moneyPanel;
 	GameObject _warningBar;
-	[SerializeField] List<GameObject> panels;
+	[SerializeField] List<GameObject> Panels;
 
 
 	private void Awake()
@@ -43,11 +43,20 @@ public class UIManager : MonoBehaviour
 
 	public void EnableDisablePanel(GameObject panel)
 	{
-		foreach (var p in panels)
+		foreach (var p in Panels)
 		{ p.SetActive(false); }
 
 		if (panel.activeSelf)
 			panel.SetActive(false);
 		else panel.SetActive(true);
+	}
+
+	public GameObject GetPanelWithTag(string tag)
+	{
+		foreach (var panel in Panels)
+		{
+			if (panel.tag == tag) return panel;	
+		}
+		return null;
 	}
 }

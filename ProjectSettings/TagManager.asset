@@ -10,6 +10,7 @@ TagManager:
   - TaskBars
   - MoneyBar
   - WarningBar
+  - SpawnerBar
   layers:
   - Default
   - TransparentFX

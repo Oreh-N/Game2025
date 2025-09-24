@@ -8,6 +8,8 @@ public class Player : Team
     public Wallet _wallet { get; private set; } = new Wallet(500);
 	public Shop Shop { get; private set; } = new Shop();
 
+	public IInteractable CurrInteractObject { get; protected set; }
+
 
 	private void Awake()
 	{
@@ -16,6 +18,21 @@ public class Player : Team
 		else
 		{ Instance = this; }
 
+	}
+
+	public void SpawnObject(GameObject obj)
+	{
+		CurrInteractObject.Spawn(obj);
+	}
+
+	public void InteractWithObject()
+	{
+		CurrInteractObject.Interact();
+	}
+
+	public void ChangeInteractableObject(IInteractable obj)
+	{
+		CurrInteractObject = obj;
 	}
 
 	void Start()
