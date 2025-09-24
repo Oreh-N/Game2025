@@ -10,7 +10,6 @@ public class BuildingManager : MonoBehaviour
 	public static BuildingManager Instance;
 	[SerializeField] LayerMask _obstacles;
 	[SerializeField] TileBase _busyTile;
-	[SerializeField] TileBase _freeTile;
 	[SerializeField] Texture2D _declineCursor;
 	[SerializeField] Texture2D _defaultCursor;
 	bool _is_default_cursor = true;
@@ -38,15 +37,9 @@ public class BuildingManager : MonoBehaviour
 		if (!_allowBuilding || CurrBuilding == null) return;
 
 		if (!CanBePlaced(CurrBuilding) && _is_default_cursor)
-		{
-			Cursor.SetCursor(_declineCursor, new Vector2(0, 0), CursorMode.Auto);
-			_is_default_cursor = false;
-		}
+		{ ChangeCursor(_declineCursor, false); }
 		else if (CanBePlaced(CurrBuilding) && !_is_default_cursor)
-		{
-			Cursor.SetCursor(_defaultCursor, new Vector2(0, 0), CursorMode.Auto);
-			_is_default_cursor = true;
-		}
+		{ ChangeCursor(_defaultCursor, true); }
 
 		if (Input.GetMouseButtonDown(1))
 		{
@@ -59,6 +52,12 @@ public class BuildingManager : MonoBehaviour
 			}
 		}
 		else if (Input.GetKeyDown(KeyCode.Escape)) Destroy(CurrBuilding.gameObject);
+	}
+
+	private void ChangeCursor(Texture2D cursor, bool is_default)
+	{
+		Cursor.SetCursor(cursor, new Vector2(0, 0), CursorMode.Auto);
+		_is_default_cursor = is_default;
 	}
 
 	/// <summary>
@@ -146,8 +145,13 @@ public class BuildingManager : MonoBehaviour
 
 	public void SpawnBuilding(Building building)
 	{
+		bool was_bought = false;
 		if (CurrBuilding != null && !CurrBuilding.Placed)
-		{ Debug.Log("Place or delete current building first"); return; }
+		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
+
+		was_bought = Player.Instance.Shop.TryBuyItem(building.name, Player.Instance._wallet);
+
+		if (!was_bought) { return; }
 		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());
 		GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
 		CurrBuilding = obj.GetComponent<Building>();

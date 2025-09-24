@@ -14,4 +14,6 @@ public static class PubNames
 
 	// Tags
 	public const string UnitTag = "Unit";
+	public const string MoneyPanelTag = "MoneyBar";
+	public const string WarningPanelTag = "WarningBar";
 }

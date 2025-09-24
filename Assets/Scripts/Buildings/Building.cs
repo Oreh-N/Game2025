@@ -19,7 +19,6 @@ public abstract class Building : MonoBehaviour, IBuilding
 	public bool Placed { get; private set; }
 	public Vector3Int Size { get; private set; }
 
-
 	private void Awake()
 	{
 		BoxCollider box = GetComponent<BoxCollider>();
@@ -48,4 +47,19 @@ public abstract class Building : MonoBehaviour, IBuilding
 
 	public virtual void Destroy()
 	{ }
+
+	void IConstructable.Construct()
+	{
+		throw new NotImplementedException();
+	}
+
+	void IDestructible.Damage(float damage)
+	{
+		throw new NotImplementedException();
+	}
+
+	void IDestructible.Destroy()
+	{
+		throw new NotImplementedException();
+	}
 }

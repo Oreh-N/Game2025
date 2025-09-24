@@ -2,8 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainBuilding : Building
+public class ShopManager : MonoBehaviour
 {
+	public static ShopManager Instance;
+
+
+
+	private void Awake()
+	{
+		if (Instance != null && Instance != this)
+		{ Destroy(gameObject); }
+		else
+		{ Instance = this; }
+	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -16,4 +27,6 @@ public class MainBuilding : Building
     {
         
     }
+
+
 }
