@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
+// Z tutorialu
+
 public class UnitSelectionBox : MonoBehaviour
 {
 	[SerializeField] RectTransform _boxVisual;

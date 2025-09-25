@@ -10,16 +10,23 @@ public class MiningUnit : Unit
 	Dictionary<LootType, int> _bag_containment = new Dictionary<LootType, int>();
 	string[] _abilities = new string[1] ;
 
-	private void Awake()
+	private new void Awake()
 	{
+		base.Awake();
 		_bag_capacity = 100;
 		_unit_name = "Miner";
 		_abilities[0] = "Mine wood";
 	}
 
-	private void Start()
+	private new void Start()
 	{
+		base.Start();
 		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
+	}
+
+	private new void Update()
+	{
+		base.Update();
 	}
 
 

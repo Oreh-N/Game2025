@@ -4,17 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
+// Z tutorialu
 public class UnitSelectionManager : MonoBehaviour
 {
 	public static UnitSelectionManager Instance { get; set; }
 
-	public List<Unit> UnitsSelected { get; private set; } = new List<Unit>();
-	public List<Unit> AllUnits { get; private set; } = new List<Unit>();
+	public List<GameObject> UnitsSelected { get; private set; } = new List<GameObject>();
+	public List<GameObject> AllUnits { get; private set; } = new List<GameObject>();
 
 	[SerializeField] GameObject _groundMarker;
 
-	LayerMask _units;
 	LayerMask _ground;
+	LayerMask _units;
 
 
 	private void Awake()
@@ -51,9 +53,9 @@ public class UnitSelectionManager : MonoBehaviour
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _units))
 		{
 			if (Input.GetKey(KeyCode.LeftShift))
-			{ MultiSelect(hit.collider.gameObject.GetComponent<Unit>()); }
+			{ MultiSelect(hit.collider.gameObject); }
 			else
-			{ SelectByClicking(hit.collider.gameObject.GetComponent<Unit>()); }
+			{ SelectByClicking(hit.collider.gameObject); }
 		}
 		else  // Deselect all units
 		{
@@ -62,19 +64,19 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 	}
 
-	public void RemoveUnit(Unit unit)
+	public void RemoveUnit(GameObject unit)
 	{
 		if (AllUnits.Contains(unit))
 		{ AllUnits.Remove(unit); }
 	}
 
-	public void AddUnit(Unit unit)
+	public void AddUnit(GameObject unit)
 	{ 
 		if (!AllUnits.Contains(unit))
 		AllUnits.Add(unit); 
 	}
 
-	private void MultiSelect(Unit unit)
+	private void MultiSelect(GameObject unit)
 	{
 		if (!UnitsSelected.Contains(unit))
 		{
@@ -88,7 +90,7 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 	}
 
-	private void SelectByClicking(Unit unit)
+	private void SelectByClicking(GameObject unit)
 	{
 		DeselectAll();
 
@@ -105,10 +107,10 @@ public class UnitSelectionManager : MonoBehaviour
 		UnitsSelected.Clear();
 	}
 
-	private void TriggerSelectionIndicator(Unit unit, bool isVisible)
+	private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
 	{ unit.transform.GetChild(0).gameObject.SetActive(isVisible); }
 
-	internal void DragSelect(Unit unit)
+	internal void DragSelect(GameObject unit)
 	{
 		if (!UnitsSelected.Contains(unit))
 		{
@@ -122,7 +124,7 @@ public class UnitSelectionManager : MonoBehaviour
 	/// </summary>
 	/// <param name="unit"></param>
 	/// <param name="isSelected"></param>
-	private void SelectUnit(Unit unit, bool isSelected)
+	private void SelectUnit(GameObject unit, bool isSelected)
 	{
 		TriggerSelectionIndicator(unit, isSelected);
 		EnableUnitMovement(unit, isSelected);
@@ -148,7 +150,7 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 	}
 
-	private void EnableUnitMovement(Unit unit, bool canMove)
+	private void EnableUnitMovement(GameObject unit, bool canMove)
 	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
 	// ___________________________________________________________
 }

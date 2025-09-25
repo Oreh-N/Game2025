@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
 public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel
 {
 	float IDestructible.Health { get => _health; set => _health = value; }
@@ -19,16 +20,17 @@ public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker
 	protected int _money;
 
 
-	private void Awake()
+	public void Awake()
 	{
 		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
 		gameObject.tag = PubNames.UnitTag;
 		LootBag.Add(new Loot(LootType.Wood));
 	}
-	private void Start()
-	{ UnitSelectionManager.Instance.AddUnit(gameObject.GetComponent<Unit>()); }
 
-	private void Update()
+	public void Start()
+	{ UnitSelectionManager.Instance.AddUnit(gameObject); }
+
+	public void Update()
 	{
 		if (IsOutOfMap(transform.position))
 		{ Destroy(this); }
@@ -36,7 +38,7 @@ public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker
 
 	private bool IsOutOfMap(Vector3 pos)
 	{
-		if (pos.y < 0) return true;
+		if (pos.y < -5) return true;
 		return false;
 	}
 
@@ -65,7 +67,7 @@ public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker
 
 	// Fight____________________________________________________________
 	private void OnDestroy()
-	{ UnitSelectionManager.Instance.RemoveUnit(gameObject.GetComponent<Unit>()); }
+	{ UnitSelectionManager.Instance.RemoveUnit(gameObject); }
 
 	public void TakeDamage(float damage)
 	{
