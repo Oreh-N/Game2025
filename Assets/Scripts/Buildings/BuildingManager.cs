@@ -56,15 +56,6 @@ public class BuildingManager : MonoBehaviour
 		{ Destroy(CurrBuilding.gameObject); }
 	}
 
-	// Database________________________________________________________
-	public void RegisterBuilding(Building building, Team team)
-	{ team.Buildings.Add(building); }
-
-	public void RemoveBuilding(Building building, Team team)
-	{ team.Buildings.Remove(building); }
-	// ________________________________________________________________
-
-
 
 	// Grid____________________________________________________________
 	public bool CanBePlaced(Building building)

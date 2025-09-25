@@ -645,8 +645,8 @@ GameObject:
   - component: {fileID: 317036910}
   - component: {fileID: 317036909}
   m_Layer: 5
-  m_Name: Money
-  m_TagString: MoneyBar
+  m_Name: MoneyPanel
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1272,8 +1272,8 @@ GameObject:
   - component: {fileID: 660312848}
   - component: {fileID: 660312847}
   m_Layer: 5
-  m_Name: TopBar
-  m_TagString: Untagged
+  m_Name: TopPanel
+  m_TagString: TopPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1292,8 +1292,8 @@ RectTransform:
   m_Children:
   - {fileID: 317036908}
   - {fileID: 1187311938}
-  - {fileID: 534300470}
   - {fileID: 1716341124}
+  - {fileID: 534300470}
   m_Father: {fileID: 1140872892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -1676,7 +1676,7 @@ GameObject:
   - component: {fileID: 892738830}
   - component: {fileID: 892738829}
   m_Layer: 5
-  m_Name: Button
+  m_Name: CloseButt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1930,7 +1930,7 @@ GameObject:
   - component: {fileID: 928828195}
   m_Layer: 5
   m_Name: SpawnerBar
-  m_TagString: SpawnerBar
+  m_TagString: Spawner0Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1947,9 +1947,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1889617086}
   - {fileID: 1954847385}
   - {fileID: 1251017662}
-  - {fileID: 1889617086}
   m_Father: {fileID: 1299643211}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -2742,8 +2742,8 @@ GameObject:
   - component: {fileID: 1187311940}
   - component: {fileID: 1187311939}
   m_Layer: 5
-  m_Name: Tree
-  m_TagString: MoneyBar
+  m_Name: TreePanel
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2822,7 +2822,7 @@ GameObject:
   - component: {fileID: 1251017664}
   - component: {fileID: 1251017663}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Unit1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3070,7 +3070,7 @@ GameObject:
   - component: {fileID: 1299643213}
   - component: {fileID: 1299643212}
   m_Layer: 5
-  m_Name: UserController
+  m_Name: UserControllerPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3271,8 +3271,8 @@ GameObject:
   - component: {fileID: 1456794605}
   - component: {fileID: 1456794604}
   m_Layer: 5
-  m_Name: WarehouseBar
-  m_TagString: WarehouseBar
+  m_Name: WarehousePanel
+  m_TagString: Warehouse0Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4428,8 +4428,8 @@ GameObject:
   - component: {fileID: 1716341126}
   - component: {fileID: 1716341127}
   m_Layer: 5
-  m_Name: WarningBar
-  m_TagString: WarningBar
+  m_Name: WarningPanel
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4712,7 +4712,6 @@ GameObject:
   - component: {fileID: 1752845429}
   - component: {fileID: 1752845428}
   - component: {fileID: 1752845427}
-  - component: {fileID: 1752845430}
   m_Layer: 0
   m_Name: MiniMapCamera
   m_TagString: Minimap
@@ -4794,18 +4793,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1679341072}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &1752845430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1752845426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a2abb427b4669b4e8fabd97ba30b863, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1814694242
 GameObject:
   m_ObjectHideFlags: 0
@@ -5032,7 +5019,7 @@ GameObject:
   - component: {fileID: 1954847387}
   - component: {fileID: 1954847386}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Unit0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5522,11 +5509,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f21d0c83485f77469a502e1f0078ea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Panels:
+  _collapsiblePanels:
   - {fileID: 1281880668}
   - {fileID: 1640472795}
   - {fileID: 928828194}
   - {fileID: 1456794602}
+  _moneyPanel: {fileID: 317036907}
+  _warningBar: {fileID: 1716341123}
 --- !u!4 &2026860392
 Transform:
   m_ObjectHideFlags: 0

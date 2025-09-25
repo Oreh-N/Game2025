@@ -28,13 +28,13 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		Size = new Vector3Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
 							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
+		Player.Instance.RegisterBuilding(this);
+		Debug.Log($"Add building. Count ({this}): {Player.Instance.Buildings.Count}");
 	}
 
 	private void Start()
 	{
-		BuildingManager.Instance.RegisterBuilding(this, Player.Instance);
-		UIManager.Instance.UpdateWarningPanel("The building has been added to your team");
-		Debug.Log($"Add building. Count ({this}): {Player.Instance.Buildings.Count}");
+		Debug.Log("Start called Building");
 	}
 
 
@@ -58,8 +58,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	private void OnDestroy()
 	{ 
-		BuildingManager.Instance.RemoveBuilding(this, Player.Instance);
-		UIManager.Instance.UpdateWarningPanel("The building has been removed from your team");
+		Player.Instance.RemoveBuilding(this);
 	}
 	// _______________________________________________________________
 

@@ -7,12 +7,9 @@ TagManager:
   - Ground
   - Unit
   - Minimap
-  - TaskBars
-  - MoneyBar
-  - WarningBar
-  - SpawnerBar
-  - WarehouseBar
-  - TopBar
+  - Spawner0Panel
+  - Warehouse0Panel
+  - TopPanel
   layers:
   - Default
   - TransparentFX

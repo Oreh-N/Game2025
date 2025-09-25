@@ -13,10 +13,8 @@ public static class PubNames
 
 
 	// Tags
-	public const string WarehousePanelTag = "WarehouseBar";
-	public const string WarningPanelTag = "WarningBar";
-	public const string SpawnerPanelTag = "SpawnerBar";
-	public const string MoneyPanelTag = "MoneyBar";
+	public const string WarehousePanelTag = "Warehouse0Panel";
+	public const string SpawnerPanelTag = "Spawner0Panel";
 	public const string TopPanelTag = "TopBar";
 	public const string UnitTag = "Unit";
 }

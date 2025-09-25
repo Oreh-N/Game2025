@@ -8,8 +8,8 @@ public class UIManager : MonoBehaviour
 	public static UIManager Instance;
 
 	[SerializeField] List<GameObject> _collapsiblePanels;
-	GameObject _moneyPanel;
-	GameObject _warningBar;
+	[SerializeField] GameObject _moneyPanel;
+	[SerializeField] GameObject _warningPanel;
 
 
 	private void Awake()
@@ -18,29 +18,37 @@ public class UIManager : MonoBehaviour
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
-
-		_moneyPanel = GameObject.FindWithTag(PubNames.MoneyPanelTag);
-		_warningBar = GameObject.FindWithTag(PubNames.WarningPanelTag);
-		_warningBar.SetActive(false);
 	}
+
+	private void Start()
+	{
+		Debug.Log("Start called UI");
+		_warningPanel.SetActive(false);
+	}
+
 
 	// Actions_________________________________________
 	public void UpdateWarningPanel(string warning)
 	{
-		if (_warningBar == null) Debug.Log("Warning bar is null");
-		_warningBar.SetActive(true);
-		_warningBar.GetComponent<Text>().text = warning;
+		if (_warningPanel == null) 
+		{ Debug.Log("Warning panel is null"); return; }
+		_warningPanel.SetActive(true);
+		_warningPanel.GetComponent<Text>().text = warning;
 	} 
 
 	public void UpdateMoneyPanel(int new_num)
 	{
-		if (_moneyPanel == null) Debug.Log("Money bar is null");
+		if (_moneyPanel == null) 
+		{ Debug.Log("Money panel is null"); return; }
 		var text = _moneyPanel.GetComponent<Text>();
 		text.text = new_num.ToString();
 	}
 
 	public void EnableDisablePanel(GameObject panel)
 	{
+		if (panel == null) 
+		{ Debug.Log($"{panel.tag} panel is null!"); return; }
+
 		foreach (var p in _collapsiblePanels)
 		{ p.SetActive(false); }
 

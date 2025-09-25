@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Player : Team
 {
 	public static Player Instance;
+
 	public Dictionary<LootType, int> LootCount = new Dictionary<LootType, int>() { { LootType.Tree, 0} };
 	public IInteractable CurrInteractObject { get; protected set; }
 	public Wallet Wallet_ { get; private set; } = new Wallet(500);
@@ -62,10 +63,15 @@ public class Player : Team
 
 
 	// Database_______________________________________________________
+	public void RegisterBuilding(Building building)
+	{ Buildings.Add(building); Debug.Log($"Building count+: {Buildings.Count}"); }
+
+	public void RemoveBuilding(Building building)
+	{ Buildings.Remove(building); Debug.Log($"Building count-: {Buildings.Count}"); }
+
 	private void RecalculateLoot()
 	{
-		//foreach (var item in LootCount)
-		//{ LootCount[item.Key] = 0; }
+		LootCount.Clear();
 
 		foreach (var build in Buildings)
 		{
@@ -77,7 +83,7 @@ public class Player : Team
 				if (LootCount.ContainsKey(loot.Key))
 				{ LootCount[loot.Key] += loot.Value; }
 				else
-				{ LootCount.Add(loot.Key, loot.Value); Debug.Log(loot.Value); }
+				{ LootCount.Add(loot.Key, loot.Value); }
 				
 			}
 
