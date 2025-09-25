@@ -142,7 +142,7 @@ public class UnitSelectionManager : MonoBehaviour
 		// If we are hitting a ground with right button
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
 		{
-			_groundMarker.transform.position = new Vector3(hit.point.x, .01f, hit.point.z);
+			_groundMarker.transform.position = new Vector3(hit.point.x, .1f, hit.point.z);
 			_groundMarker.SetActive(false);
 			_groundMarker.SetActive(true);
 		}

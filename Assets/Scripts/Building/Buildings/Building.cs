@@ -12,13 +12,14 @@ using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible
+public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible, IHavePanel
 {
+	GameObject IHavePanel.Panel { get => _panel; set => _panel = value; }
 	float IDestructible.Health { get => _health; set => _health = value; }
-	public GameObject Panel { get; protected set; }
 	public Vector3Int Size { get; private set; }
 	public bool Placed { get; private set; }
 	public abstract string Name { get; }
+	protected GameObject _panel;
 	float _health;
 
 
@@ -48,7 +49,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		Placed = true;
 	}
 
-	public virtual void Damage(float damage)
+	public virtual void TakeDamage(float damage)
 	{ }
 
 	private void OnDestroy()
@@ -69,12 +70,15 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	}
 
 	public virtual void ShowPanel()
-	{ UIManager.Instance.EnableDisablePanel(Panel); }
+	{ UIManager.Instance.EnableDisablePanel(_panel); }
 
 	public virtual void Interact()
 	{ UIManager.Instance.UpdateWarningPanel("Building class Interact shouldn't be called"); }
 
 	public virtual void Spawn(GameObject obj)
 	{ UIManager.Instance.UpdateWarningPanel("Building class Spawn shouldn't be called"); }
+
+	public virtual void UpdatePanelInfo()
+	{ UIManager.Instance.UpdateWarningPanel("Building class UpdatePanelInfo shouldn't be called"); }
 	// _______________________________________________________________
 }

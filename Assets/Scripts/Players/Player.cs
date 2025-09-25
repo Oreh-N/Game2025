@@ -8,7 +8,7 @@ public class Player : Team
 {
 	public static Player Instance;
 
-	public Dictionary<LootType, int> LootCount = new Dictionary<LootType, int>() { { LootType.Tree, 0} };
+	public Dictionary<LootType, int> LootCount = new Dictionary<LootType, int>() { { LootType.Wood, 0} };
 	public IInteractable CurrInteractObject { get; protected set; }
 	public Wallet Wallet_ { get; private set; } = new Wallet(500);
 	public Shop Shop { get; private set; } = new Shop();
@@ -54,9 +54,9 @@ public class Player : Team
 	private void UpdatePanels()
 	{
 		MoneyPanel.GetComponent<Text>().text = $"Money: {Wallet_.Money}";
-		if (LootCount.ContainsKey(LootType.Tree))
+		if (LootCount.ContainsKey(LootType.Wood))
 		{
-			TreePanel.GetComponent<Text>().text = $"Tree: {LootCount[LootType.Tree]}"; 
+			TreePanel.GetComponent<Text>().text = $"Tree: {LootCount[LootType.Wood]}"; 
 		}
 	}
 	// _______________________________________________________________

@@ -9,7 +9,7 @@ public class Spawner : Building
 
 	private void Start()
 	{
-        Panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
+        _panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 	}
 
 

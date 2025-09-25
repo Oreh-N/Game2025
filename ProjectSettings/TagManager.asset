@@ -10,6 +10,8 @@ TagManager:
   - Spawner0Panel
   - Warehouse0Panel
   - TopPanel
+  - Tree
+  - UnitPanel
   layers:
   - Default
   - TransparentFX
