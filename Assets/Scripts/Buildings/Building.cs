@@ -18,6 +18,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public GameObject Panel { get; protected set; }
 	public Vector3Int Size { get; private set; }
 	public bool Placed { get; private set; }
+	public abstract string Name { get; }
 	float _health;
 
 
@@ -29,12 +30,6 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
 		Player.Instance.RegisterBuilding(this);
-		Debug.Log($"Add building. Count ({this}): {Player.Instance.Buildings.Count}");
-	}
-
-	private void Start()
-	{
-		Debug.Log("Start called Building");
 	}
 
 

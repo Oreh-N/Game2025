@@ -64,10 +64,10 @@ public class Player : Team
 
 	// Database_______________________________________________________
 	public void RegisterBuilding(Building building)
-	{ Buildings.Add(building); Debug.Log($"Building count+: {Buildings.Count}"); }
+	{ Buildings.Add(building); }
 
 	public void RemoveBuilding(Building building)
-	{ Buildings.Remove(building); Debug.Log($"Building count-: {Buildings.Count}"); }
+	{ Buildings.Remove(building); }
 
 	private void RecalculateLoot()
 	{

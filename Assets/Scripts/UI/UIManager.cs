@@ -22,7 +22,6 @@ public class UIManager : MonoBehaviour
 
 	private void Start()
 	{
-		Debug.Log("Start called UI");
 		_warningPanel.SetActive(false);
 	}
 

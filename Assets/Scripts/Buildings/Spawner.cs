@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Spawner : Building
 {
+	public override string Name => "Spawner0";
+
+
 	private void Start()
 	{
         Panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);

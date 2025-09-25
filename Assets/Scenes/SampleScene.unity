@@ -5515,7 +5515,7 @@ MonoBehaviour:
   - {fileID: 928828194}
   - {fileID: 1456794602}
   _moneyPanel: {fileID: 317036907}
-  _warningBar: {fileID: 1716341123}
+  _warningPanel: {fileID: 1716341123}
 --- !u!4 &2026860392
 Transform:
   m_ObjectHideFlags: 0

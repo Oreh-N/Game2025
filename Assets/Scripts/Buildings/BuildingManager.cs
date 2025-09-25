@@ -53,7 +53,12 @@ public class BuildingManager : MonoBehaviour
 			}
 		}
 		else if (Input.GetKeyDown(KeyCode.Escape))
-		{ Destroy(CurrBuilding.gameObject); }
+		{
+			int returnPrice = Player.Instance.Shop.GetItemPrice(CurrBuilding.Name);
+			if (returnPrice > 0)
+			{ Player.Instance.Wallet_.Earn(returnPrice); }
+			Destroy(CurrBuilding.gameObject);
+		}
 	}
 
 
@@ -141,7 +146,7 @@ public class BuildingManager : MonoBehaviour
 		if (CurrBuilding != null && !CurrBuilding.Placed)
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
 
-		was_bought = Player.Instance.Shop.TryBuyItem(building.name, Player.Instance.Wallet_);
+		was_bought = Player.Instance.Shop.TryBuyItem(building.Name, Player.Instance.Wallet_);
 
 		if (!was_bought) { return; }
 		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());

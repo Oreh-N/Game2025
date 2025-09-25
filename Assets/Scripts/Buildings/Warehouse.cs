@@ -8,6 +8,7 @@ public class Warehouse : Building
 {
 	public Dictionary<LootType, int> LootCount { get; protected set; } = new Dictionary<LootType, int>() { { LootType.Tree, 0 } };
 	public List<string> _containment { get; protected set; } = new List<string>() { "Tree", "Money" };
+	public override string Name => "Warehouse0";
 
 
 	private void Start()
