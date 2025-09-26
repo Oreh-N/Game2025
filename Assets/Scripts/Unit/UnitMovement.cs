@@ -29,6 +29,7 @@ public class UnitMovement : MonoBehaviour
 	private void Move()
 	{
 		transform.LookAt(_nxtPos);
+		_nxtPos.y = transform.position.y;
 		transform.position = Vector3.MoveTowards(transform.position, _nxtPos, _speed * Time.deltaTime);
 
 		if ((int)transform.position.x == (int)_nxtPos.x && (int)transform.position.z == (int)_nxtPos.z)

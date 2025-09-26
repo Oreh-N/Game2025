@@ -33,6 +33,7 @@ public class TreeScript : MonoBehaviour, ILootGiver
 
 	private void OnTriggerEnter(Collider other)
 	{
+		Debug.Log(other.gameObject.tag);
 		if (other.tag == PubNames.UnitTag)
 		{
 			var unit = other.gameObject.GetComponent<Unit>();
