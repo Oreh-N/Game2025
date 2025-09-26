@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ForestManager : MonoBehaviour
 {
+	public static ForestManager Instance;
+
 	Dictionary<Chunk, List<GameObject>> _treePrefabsInChunk = new Dictionary<Chunk, List<GameObject>>();
 	Dictionary<Chunk, List<GameObject>> _unitsInChunk = new Dictionary<Chunk, List<GameObject>>();
 	Dictionary<Vector2, Chunk> _chunks = new Dictionary<Vector2, Chunk>();
@@ -14,6 +16,11 @@ public class ForestManager : MonoBehaviour
 
 	private void Awake()
 	{
+		if (Instance != null && Instance != this)
+		{ Destroy(gameObject); }
+		else
+		{ Instance = this; }
+
 		_terrain = Terrain.activeTerrain;
 		InitChunks();
 		DistributeTrees();
@@ -22,6 +29,21 @@ public class ForestManager : MonoBehaviour
 	void Update()
 	{
 		TryActivateBusyChunk();
+		EraseCutOffTrees();
+	}
+
+	private void EraseCutOffTrees()
+	{
+		foreach (var pair in _treePrefabsInChunk) 
+		{
+			if (_unitsInChunk[pair.Key].Count == 0) continue;
+
+			for (int i = 0; i < pair.Value.Count; i++)
+			{
+				if (pair.Value[i] == null)
+				{ _terrain.terrainData.treeInstances[i].color.a = 0; }
+			}
+		}
 	}
 
 	private void TryActivateBusyChunk()
@@ -82,11 +104,16 @@ public class ForestManager : MonoBehaviour
 
 			if (worldPos.x < _terrain.terrainData.size.x &&
 				worldPos.z < _terrain.terrainData.size.z)
-			{ _chunks[GetChunkPosition(worldPos)]._treeIndices.Add(i); }
+			{ GetChunkOnPosition(worldPos)._treeIndices.Add(i); }
 		}
 	}
 
-	private Vector2 GetChunkPosition(Vector3 objWorldPos)
+	public Chunk GetChunkOnPosition(Vector3 worldPos)
+	{
+		return _chunks[GetChunkPosition(worldPos)];
+	}
+
+	public Vector2 GetChunkPosition(Vector3 objWorldPos)
 	{
 		int x = (int)objWorldPos.x / Chunk._size.x;
 		int z = (int)objWorldPos.z / Chunk._size.y;
