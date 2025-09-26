@@ -12,13 +12,18 @@ using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible, IHavePanel
+public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible, IHavePanel, ITeamMember
 {
+	Color ITeamMember.TeamColor { get => TeamColor; set => TeamColor = value; }
+	string ITeamMember.TeamName { get => TeamName; set => TeamName = value; }
 	GameObject IHavePanel.Panel { get => _panel; set => _panel = value; }
 	float IDestructible.Health { get => _health; set => _health = value; }
+	public Color TeamColor { get; protected set; }
+	public string TeamName { get; protected set; }
 	public Vector3Int Size { get; private set; }
 	public bool Placed { get; private set; }
 	public abstract string Name { get; }
+	
 	protected GameObject _panel;
 	float _health;
 
@@ -47,6 +52,12 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		gameObject.GetComponent<BoxCollider>().enabled = true;
 		Destroy(gameObject.GetComponent<Movable>());
 		Placed = true;
+	}
+
+	public void SetTeam(Color teamColor, string teamName)
+	{
+		TeamColor = teamColor;
+		TeamName = teamName;
 	}
 
 	public virtual void TakeDamage(float damage)

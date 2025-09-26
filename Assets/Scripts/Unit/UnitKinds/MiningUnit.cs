@@ -40,7 +40,7 @@ public class MiningUnit : Unit
 	private new void UpdatePanelInfo()
 	{
 		Text[] panels = Panel.GetComponentsInChildren<Text>(true);
-		panels[0].text = $"Unit name: {_unit_name}";
+		panels[0].text = $"Unit name: {_unit_name}\nTeam: {TeamName}";
 		panels[1].text = BagContainmentToString();
 		Button[] buttons = panels[2].gameObject.GetComponentsInChildren<Button>();
 		for (int i = 0; i < buttons.Length; i++)
@@ -54,6 +54,8 @@ public class MiningUnit : Unit
 
 	private void RecalculateBagContainment()
 	{
+		_bag_containment.Clear();
+
 		foreach (var loot in LootBag)
 		{
 			if (_bag_containment.ContainsKey(loot.Type))

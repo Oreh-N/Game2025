@@ -5,17 +5,15 @@ using UnityEngine;
 public class MainBuilding : Building
 {
 	public override string Name => "MainBuilding";
+    public int BuildingRadius { get; protected set; } = 50;
 
+	private void Awake()
+	{
+		TeamName = "Nuts";
+	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	public void UpgradeBuildingArea()
+	{
+		BuildingRadius += (int)(BuildingRadius * 0.3f);
+	}
 }

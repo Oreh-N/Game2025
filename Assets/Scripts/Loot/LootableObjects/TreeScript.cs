@@ -26,6 +26,11 @@ public class TreeScript : MonoBehaviour, ILootGiver
 		return ((ILootGiver)this).GiveAllLoot(allLoot);
 	}
 
+	private void OnCollisionEnter(Collision collision)
+	{
+		Debug.Log(collision.gameObject.tag);
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == PubNames.UnitTag)

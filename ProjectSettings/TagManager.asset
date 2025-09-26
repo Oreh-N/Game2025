@@ -12,6 +12,7 @@ TagManager:
   - TopPanel
   - Tree
   - UnitPanel
+  - MainBuilding
   layers:
   - Default
   - TransparentFX

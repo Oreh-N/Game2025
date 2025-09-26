@@ -5,13 +5,18 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel
+public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel, ITeamMember
 {
+
+	Color ITeamMember.TeamColor { get => TeamColor; set => TeamColor = value; }
+	string ITeamMember.TeamName { get => TeamName; set => TeamName = value; }
 	float IDestructible.Health { get => _health; set => _health = value; }
 	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
 	GameObject IHavePanel.Panel { get => Panel; set => Panel = value; }
 
 	public List<Loot> LootBag { get; private set; } = new List<Loot>();
+	public Color TeamColor { get; protected set; }
+	public string TeamName { get; protected set; }
 	public GameObject Panel { get; protected set; }
 
 	protected string _unit_name = "Default";
@@ -95,6 +100,12 @@ public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker
 			LootBag.Add(new Loot(loot[i].Type));
 			loot.RemoveAt(i);
 		}
+	}
+
+	public void SetTeam(Color teamColor, string teamName)
+	{
+		TeamColor = teamColor;
+		TeamName = teamName;
 	}
 	// _________________________________________________________________
 }

@@ -18,8 +18,8 @@ public class Spawner : Building
     {
         var spawn_pos = new Vector3(transform.localPosition.x, transform.position.y,
 									transform.localPosition.z - 4);
-        Instantiate(unit, spawn_pos, Quaternion.identity);
-
+        var unit_obj = Instantiate(unit, spawn_pos, Quaternion.identity);
+		unit_obj.GetComponent<Unit>().SetTeam(TeamColor, TeamName);
     }
 
 	public override void Interact()

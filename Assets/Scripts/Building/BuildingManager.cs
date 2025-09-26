@@ -18,8 +18,10 @@ public class BuildingManager : MonoBehaviour
 	[SerializeField] LayerMask _obstacles;
 	[SerializeField] TileBase _busyTile;
 
+	Vector3 _buildingAreaCenter = new Vector3();
 	bool _is_default_cursor = true;
 	bool _allowBuilding = false;
+	int _buildingRadius;
 
 
 	private void Awake()
@@ -65,6 +67,8 @@ public class BuildingManager : MonoBehaviour
 	// Grid____________________________________________________________
 	public bool CanBePlaced(Building building)
 	{
+		if (Vector3.Distance(building.transform.position, _buildingAreaCenter) > _buildingRadius)
+		{ return false; }
 		BoundsInt area = new BoundsInt();
 		area.position = Grid_.WorldToCell(building.transform.position);
 		area.size = building.Size;
@@ -140,8 +144,10 @@ public class BuildingManager : MonoBehaviour
 
 
 	// Actions_________________________________________________________
-	public void SpawnBuilding(Building building)
+	public void SpawnBuilding(Building building, Team team)
 	{
+		_buildingAreaCenter = team.MainBuilding.transform.position;
+		_buildingRadius = team.MainBuilding.BuildingRadius;
 		bool was_bought = false;
 		if (CurrBuilding != null && !CurrBuilding.Placed)
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
@@ -152,6 +158,7 @@ public class BuildingManager : MonoBehaviour
 		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());
 		GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
 		CurrBuilding = obj.GetComponent<Building>();
+		CurrBuilding.GetComponent<Building>().SetTeam(team.TeamColor, team.TeamName);
 		obj.AddComponent<Movable>();
 		_allowBuilding = true;
 	}

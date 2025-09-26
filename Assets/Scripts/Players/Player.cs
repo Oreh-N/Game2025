@@ -23,12 +23,31 @@ public class Player : Team
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
+
+		TeamColor = Color.white;
+		TeamName = "Nuts";
+
+	}
+
+	private void Start()
+	{
+		GameObject[] mainBuildings =  GameObject.FindGameObjectsWithTag(PubNames.MainBuildingTag);
+
+		foreach (var build in mainBuildings) 
+		{
+			var building = build.GetComponent<MainBuilding>();
+
+			if (building.TeamName == TeamName)
+			{ MainBuilding = building; break; }
+		}
 	}
 
 	void Update()
 	{
 		RecalculateLoot();
 		UpdatePanels();
+		if (MainBuilding == null)
+		{ Debug.Log("WASTED"); }
 	}
 
 
@@ -36,6 +55,11 @@ public class Player : Team
 	public void SpawnObject(GameObject obj)
 	{
 		CurrInteractObject.Spawn(obj);
+	}
+
+	public void SpawnBuilding(Building building)
+	{
+		BuildingManager.Instance.SpawnBuilding(building, this);
 	}
 
 	public void InteractWithObject()
