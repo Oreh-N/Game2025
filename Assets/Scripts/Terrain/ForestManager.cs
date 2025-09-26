@@ -7,12 +7,10 @@ public class ForestManager : MonoBehaviour
 {
 	public static ForestManager Instance;
 
-	Dictionary<Chunk, List<GameObject>> _treePrefabsInChunk = new Dictionary<Chunk, List<GameObject>>();
-	Dictionary<Chunk, List<GameObject>> _unitsInChunk = new Dictionary<Chunk, List<GameObject>>();
-	Dictionary<Vector2, Chunk> _chunks = new Dictionary<Vector2, Chunk>();
+	Dictionary<Vector2Int, Chunk> _chunks = new Dictionary<Vector2Int, Chunk>();
+	[SerializeField] GameObject _treePrefab;
 	Terrain _terrain;
 
-	[SerializeField] GameObject _treePrefab;
 
 	private void Awake()
 	{
@@ -28,84 +26,90 @@ public class ForestManager : MonoBehaviour
 
 	void Update()
 	{
-		TryActivateBusyChunk();
-		EraseCutOffTrees();
-	}
-
-	private void EraseCutOffTrees()
-	{
-		foreach (var pair in _treePrefabsInChunk) 
-		{
-			if (_unitsInChunk[pair.Key].Count == 0) continue;
-
-			for (int i = 0; i < pair.Value.Count; i++)
-			{
-				if (pair.Value[i] == null)
-				{ _terrain.terrainData.treeInstances[i].color.a = 0; }
-			}
+		foreach (var chunk in _chunks.Values)
+		{ 
+			chunk.ActivateIfHaveUnits();
+			chunk.EraseCutOffTrees();
 		}
 	}
 
-	private void TryActivateBusyChunk()
-	{
-		foreach (var pair in _unitsInChunk)
-		{
-			if (pair.Value.Count == 0)
-			{
-				foreach (var prefab in _treePrefabsInChunk[pair.Key])
-				{ Destroy(prefab); }
+	public void DestroyPrefab(GameObject prefab)
+	{ Destroy(prefab); }
 
-				_treePrefabsInChunk[pair.Key].Clear();
-			}
-			else
-			foreach (var treeIndex in pair.Key._treeIndices)
-			{
-				TreeInstance tree = _terrain.terrainData.treeInstances[treeIndex];
-				_treePrefabsInChunk[pair.Key].Add(Instantiate(_treePrefab, tree.position, Quaternion.identity));
-			}
-		}
+	public void SpawnTreePrefabInChunk(Chunk chunk, int treeIndex)
+	{
+		TreeInstance tree = _terrain.terrainData.treeInstances[treeIndex];
+		Vector3 treeWorldPos = Vector3.Scale(tree.position, _terrain.terrainData.size) + _terrain.transform.position;
+		chunk.TreePrefabs.Add(Instantiate(_treePrefab, treeWorldPos, Quaternion.identity));
+	}
+
+	public void ChangeTreeColor(int treeIndex)
+	{
+		var trees = _terrain.terrainData.treeInstances;
+		var t = trees[treeIndex];
+		t.color = new Color32(255, 255, 255, 0);
+		trees[treeIndex] = t;
+		_terrain.terrainData.treeInstances = trees;
 	}
 
 	private void InitChunks()
 	{
-		Vector3 terrainSize = _terrain.terrainData.size;
+		Vector3 terrSize = _terrain.terrainData.size;
 
-		for (int i = 0; i < terrainSize.x; i += Chunk._size.x)
+		for (int i = 0; i < terrSize.x; i += Chunk._size.x)
 		{
-			for (int j = 0; j < terrainSize.z; j += Chunk._size.y)
-			{           // Chunk's start position
-				Vector2 chunkStartPos = new Vector2(i, j);
+			for (int j = 0; j < terrSize.z; j += Chunk._size.y)
+			{
+				Vector2Int chunkStartPos = new Vector2Int(i, j);
 				_chunks.Add(chunkStartPos, new Chunk());
-				_treePrefabsInChunk.Add(_chunks[chunkStartPos], new List<GameObject>());
-				_unitsInChunk.Add(_chunks[chunkStartPos], new List<GameObject>());
 			}
-		}
-	}
-
-	public void UpdateUnitCountInChunks(GameObject unit, Chunk prevChunk)
-	{
-		if (unit.transform.position.x >= _terrain.terrainData.size.x ||
-			unit.transform.position.z >= _terrain.terrainData.size.z)
-		{ return; }
-
-		Vector2 chunkPos = GetChunkPosition(unit.transform.position);
-		if (prevChunk != _chunks[chunkPos])
-		{
-			_unitsInChunk[prevChunk].Remove(unit);
-			_unitsInChunk[_chunks[chunkPos]].Add(unit);
 		}
 	}
 
 	private void DistributeTrees()
 	{
-		for (int i = 0; i < _terrain.terrainData.treeInstances.Length; i++)
-		{
-			Vector3 worldPos = Vector3.Scale(_terrain.terrainData.treeInstances[i].position, _terrain.terrainData.size) + _terrain.transform.position;
+		var tData = _terrain.terrainData;
 
-			if (worldPos.x < _terrain.terrainData.size.x &&
-				worldPos.z < _terrain.terrainData.size.z)
-			{ GetChunkOnPosition(worldPos)._treeIndices.Add(i); }
+		for (int i = 0; i < tData.treeInstances.Length; i++)
+		{
+			Vector3 worldPos = Vector3.Scale(tData.treeInstances[i].position, tData.size) + _terrain.transform.position;
+
+			if (worldPos.x < tData.size.x &&
+				worldPos.z < tData.size.z)
+			{ GetChunkOnPosition(worldPos).TreeIndices.Add(i); }
 		}
+	}
+
+	public void InitializeUnitInChunk(GameObject unit)
+	{
+		if (!ObjIsOnTerrain(unit))
+		{ return; }
+
+		Vector2Int chunkPos = GetChunkPosition(unit.transform.position);
+		_chunks[chunkPos].UnitsOnChunk.Add(unit);
+	}
+
+	public void UpdateUnitCountInChunks(GameObject unit, Chunk prevChunk)
+	{
+		if (!ObjIsOnTerrain(unit))
+		{ return; }
+
+		Vector2Int chunkPos = GetChunkPosition(unit.transform.position);
+
+		if (prevChunk != _chunks[chunkPos])
+		{
+			prevChunk.UnitsOnChunk.Remove(unit);
+			_chunks[chunkPos].UnitsOnChunk.Add(unit);
+		}
+	}
+
+	private bool ObjIsOnTerrain(GameObject unit)
+	{
+		if (unit.transform.position.x >= _terrain.terrainData.size.x ||
+			unit.transform.position.z >= _terrain.terrainData.size.z ||
+			unit.transform.position.x < 0 || unit.transform.position.z < 0)
+			return false;
+		return true;
 	}
 
 	public Chunk GetChunkOnPosition(Vector3 worldPos)
@@ -113,18 +117,18 @@ public class ForestManager : MonoBehaviour
 		return _chunks[GetChunkPosition(worldPos)];
 	}
 
-	public Vector2 GetChunkPosition(Vector3 objWorldPos)
+	public Vector2Int GetChunkPosition(Vector3 objWorldPos)
 	{
 		int x = (int)objWorldPos.x / Chunk._size.x;
 		int z = (int)objWorldPos.z / Chunk._size.y;
-		return new Vector2(x * Chunk._size.x, z * Chunk._size.y);
+		return new Vector2Int(x * Chunk._size.x, z * Chunk._size.y);
 	}
 
 	private void PrintChunks()
 	{
 		foreach (var chunk in _chunks)
 		{
-			Debug.Log($"{chunk.Key} : contains {chunk.Value._treeIndices.Count} trees");
+			Debug.Log($"{chunk.Key} : contains {chunk.Value.TreeIndices.Count} trees");
 		}
 	}
 }

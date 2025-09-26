@@ -5,8 +5,8 @@ using UnityEngine;
 public class TreeScript : MonoBehaviour, ILootGiver
 {
 	public List<Loot> Wood { get; private set; } = new List<Loot>();
+	public bool IsEmpty { get; private set; } = false;
 	int _maxLootCount = 20;
-	bool _is_empty = false;
 
 
 	private void Awake()
@@ -17,29 +17,25 @@ public class TreeScript : MonoBehaviour, ILootGiver
 
 	private void Update()
 	{
-		if (_is_empty) Destroy(this);
+		if (IsEmpty) Destroy(this);
 	}
 
 	public List<Loot> GiveAllLoot(List<Loot> allLoot)
 	{
-		_is_empty = true;
+		IsEmpty = true;
 		return ((ILootGiver)this).GiveAllLoot(allLoot);
 	}
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		Debug.Log(collision.gameObject.tag);
-	}
+		if (IsEmpty) return; 
 
-	private void OnTriggerEnter(Collider other)
-	{
-		Debug.Log(other.gameObject.tag);
-		if (other.tag == PubNames.UnitTag)
+		if (collision.collider.tag == PubNames.UnitTag)
 		{
-			var unit = other.gameObject.GetComponent<Unit>();
+			var unit = collision.gameObject.GetComponent<Unit>();
 			((ILootTaker)unit).TakeLoot(Wood);
 
-			_is_empty = true;
+			IsEmpty = true;
 		}
 	}
 }

@@ -9,7 +9,7 @@ public class MiningUnit : Unit
 {
 	Dictionary<LootType, int> _bag_containment = new Dictionary<LootType, int>();
 	string[] _abilities = new string[1] ;
-	Chunk _chunk;
+	Chunk _chunk = new Chunk();
 
 	private new void Awake()
 	{
@@ -17,22 +17,32 @@ public class MiningUnit : Unit
 		_bag_capacity = 100;
 		_unit_name = "Miner";
 		_abilities[0] = "Mine wood";
-		_chunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
 	}
 
 	private new void Start()
 	{
 		base.Start();
+		_chunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
+		ForestManager.Instance.InitializeUnitInChunk(gameObject);
 		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
+
 	}
 
 	private new void Update()
 	{
 		base.Update();
-		if (_chunk != ForestManager.Instance.GetChunkOnPosition(transform.position))
-		{ 
-			ForestManager.Instance.UpdateUnitCountInChunks(this.gameObject, _chunk);
-			_chunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
+		UpdateChunk();
+		UpdatePanelInfo();
+	}
+
+	private void UpdateChunk()
+	{
+		Chunk currChunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
+
+		if (_chunk != currChunk)
+		{
+			ForestManager.Instance.UpdateUnitCountInChunks(gameObject, _chunk);
+			_chunk = currChunk;
 		}
 	}
 
