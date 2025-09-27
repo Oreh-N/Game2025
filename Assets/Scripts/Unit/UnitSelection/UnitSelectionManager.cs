@@ -127,7 +127,6 @@ public class UnitSelectionManager : MonoBehaviour
 	private void SelectUnit(GameObject unit, bool isSelected)
 	{
 		TriggerSelectionIndicator(unit, isSelected);
-		EnableUnitMovement(unit, isSelected);
 	}
 	// ___________________________________________________________
 
@@ -149,8 +148,5 @@ public class UnitSelectionManager : MonoBehaviour
 			_groundMarker.SetActive(true);
 		}
 	}
-
-	private void EnableUnitMovement(GameObject unit, bool canMove)
-	{ unit.GetComponent<UnitMovement>().enabled = canMove; }
 	// ___________________________________________________________
 }
