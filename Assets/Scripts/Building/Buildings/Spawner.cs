@@ -11,6 +11,10 @@ public class Spawner : Building
 	{
         _panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 	}
+	void Update()
+	{
+		
+	}
 
 
 	// Actions________________________________________________

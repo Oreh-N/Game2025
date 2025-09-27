@@ -8,7 +8,7 @@ public class UnitMovement : MonoBehaviour
 {
 	[SerializeField] LayerMask _ground;
 	bool _isMoving = false;
-	float _speed = 10f;
+	float _speed = 20f;
 	Vector3 _nxtPos;
 	List<Vector3> _milestones = new List<Vector3>();
 	//The idea is to split direct way to the next position into several

@@ -7,6 +7,7 @@ public class MainBuilding : Building
 {
     public int BuildingRadius { get; protected set; } = 50;
 	public override string Name => "MainBuilding";
+	public Wallet Wallet_ { get; protected set; } = new Wallet(500);
 
 
 	private void Awake()
@@ -45,6 +46,7 @@ public class MainBuilding : Building
 	{
 		Text text = _panel.GetComponentInChildren<Text>();
 		text.text = $"{Name}\nTeam: {TeamName}\nHealth: {_health}";
+		UIManager.Instance.UpdateMoneyPanel(Wallet_.Money);
 	}
 	// ________________________________________________________
 }

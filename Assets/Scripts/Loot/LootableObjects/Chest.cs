@@ -6,7 +6,7 @@ public class Chest : LootHolder
 {
 	void Start()
     {
-        FillHolderFully(LootType.Money);
+        FillHolderFully(LootType.Gold);
     }
 
     private new void Update()

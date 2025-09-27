@@ -9,13 +9,12 @@ public abstract class Team : MonoBehaviour, ITeamMember
 	// Sources
 	public Dictionary<LootType, int> LootCount { get; protected set; } 
 	 = new Dictionary<LootType, int>() { { LootType.Wood, 0 } };
-	public Wallet Wallet_ { get; protected set; } = new Wallet(500);
 	public Shop Shop { get; protected set; } = new Shop();
 	//__________________
 	// Members/Buildings
 	public List<Building> Buildings { get; protected set; } = new List<Building>();
 	public List<IAlive> Members { get; protected set; } = new List<IAlive>();
-	public MainBuilding MainBuilding { get; protected set; }
+	public MainBuilding MainBuilding_ { get; protected set; }
 	//___________________
 	// Team identifier
 	public Vector3 BaseLocation { get; protected set; }
@@ -27,13 +26,13 @@ public abstract class Team : MonoBehaviour, ITeamMember
 	public void Start()
 	{
 		var build = Instantiate(MainController.Instance.MainBuildingPrefab, BaseLocation, Quaternion.identity);
-		MainBuilding = build.GetComponent<MainBuilding>();
-		MainBuilding.SetTeam(TeamColor, TeamName);
+		MainBuilding_ = build.GetComponent<MainBuilding>();
+		MainBuilding_.SetTeam(TeamColor, TeamName);
 	}
 
 	public void Update()
 	{
-		if (MainBuilding == null)
+		if (MainBuilding_ == null)
 		{ Debug.Log($"Team {TeamName} was defeated"); }
 
 		RecalculateLoot();

@@ -10,9 +10,6 @@ public class Player : Team
 
 	public IInteractable CurrInteractObject { get; protected set; }
 
-	[SerializeField] GameObject MoneyPanel;
-	[SerializeField] GameObject TreePanel;
-
 
 	private void Awake()
 	{
@@ -33,11 +30,22 @@ public class Player : Team
 	new void Update()
 	{
 		base.Update();
-		UpdatePanels();
+		UpdateWoodCount();
 	}
 
 
 	// UI_Interaction_______________________________________________________
+	public void UpdateWoodCount()
+	{
+		int wood_count = 0;
+
+		if (LootCount.ContainsKey(LootType.Wood))
+		{ wood_count = LootCount[LootType.Wood]; }
+
+		UIManager.Instance.UpdateWoodPanel(wood_count);
+
+	}
+
 	public void SpawnObject(GameObject obj)
 	{
 		CurrInteractObject.Spawn(obj);
@@ -60,14 +68,4 @@ public class Player : Team
 	// _______________________________________________________________
 
 
-	// Visual_________________________________________________________
-	private void UpdatePanels()
-	{
-		MoneyPanel.GetComponent<Text>().text = $"Money: {Wallet_.Money}";
-		if (LootCount.ContainsKey(LootType.Wood))
-		{
-			TreePanel.GetComponent<Text>().text = $"Tree: {LootCount[LootType.Wood]}"; 
-		}
-	}
-	// _______________________________________________________________
 }

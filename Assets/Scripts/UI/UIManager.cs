@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] List<GameObject> _collapsiblePanels;
 	[SerializeField] GameObject _moneyPanel;
 	[SerializeField] GameObject _warningPanel;
+	[SerializeField] GameObject _woodPanel;
 
 
 	private void Awake()
@@ -40,7 +41,16 @@ public class UIManager : MonoBehaviour
 		if (_moneyPanel == null) 
 		{ Debug.Log("Money panel is null"); return; }
 		var text = _moneyPanel.GetComponent<Text>();
-		text.text = new_num.ToString();
+
+		text.text = $"Gold: {new_num.ToString()}";
+	}
+
+	public void UpdateWoodPanel(int wood_num)
+	{
+		if (_moneyPanel == null)
+		{ Debug.Log("Wood panel is null"); return; }
+		var text = _woodPanel.GetComponent<Text>();
+		text.text = $"Wood: {wood_num.ToString()}";
 	}
 
 	public void EnableDisablePanel(GameObject panel)

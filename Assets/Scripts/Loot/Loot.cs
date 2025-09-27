@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum LootType { Wood, Money }
+public enum LootType { Wood, Gold }
 public class Loot
 {											// The last loot item in enum 
-	public static string[] LootNames = new string[((int)LootType.Money) + 1] { "Wood", "Money" };
+	public static string[] LootNames = new string[((int)LootType.Gold) + 1] { "Wood", "Gold" };
 	public LootType Type { get; protected set; } = LootType.Wood;
 
 

@@ -16,6 +16,11 @@ public class Warehouse : Building, ILootTaker
 		_panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
 	}
 
+	void Update()
+	{
+		UpdatePanelInfo();
+	}
+
 
 	// Interaction____________________________________________
 	private void OnCollisionEnter(Collision collision)

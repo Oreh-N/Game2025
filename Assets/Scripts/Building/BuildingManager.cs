@@ -58,7 +58,7 @@ public class BuildingManager : MonoBehaviour
 		{
 			int returnPrice = Player.Instance.Shop.GetItemPrice(CurrBuilding.Name);
 			if (returnPrice > 0)
-			{ Player.Instance.Wallet_.Earn(returnPrice); }
+			{ Player.Instance.MainBuilding_.Wallet_.Earn(returnPrice); }
 			Destroy(CurrBuilding.gameObject);
 		}
 	}
@@ -146,13 +146,13 @@ public class BuildingManager : MonoBehaviour
 	// Actions_________________________________________________________
 	public void SpawnBuilding(Building building, Team team)
 	{
-		_buildingAreaCenter = team.MainBuilding.transform.position;
-		_buildingRadius = team.MainBuilding.BuildingRadius;
+		_buildingAreaCenter = team.MainBuilding_.transform.position;
+		_buildingRadius = team.MainBuilding_.BuildingRadius;
 		bool was_bought = false;
 		if (CurrBuilding != null && !CurrBuilding.Placed)
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
 
-		was_bought = Player.Instance.Shop.TryBuyItem(building.Name, Player.Instance.Wallet_);
+		was_bought = Player.Instance.Shop.TryBuyItem(building.Name, Player.Instance.MainBuilding_.Wallet_);
 
 		if (!was_bought) { return; }
 		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());

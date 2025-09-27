@@ -10,6 +10,8 @@ public class Wallet
     public Wallet(int start_money)
     { Money = start_money; }
 
+    public void SetMoney(int money) {  Money = money; }
+
     public void Pay(int price) { Money -= price; }
 
     public void Earn(int money) { Money += money; }

@@ -27,8 +27,8 @@ public class Chunk
 				TreeIndices.RemoveAt(i);	// removes index and list becomes shorter, maybe an issue
 				//ForestManager.Instance.ChangeTreeColor(i);
 
-				Debug.Log(TreePrefabs.Count);
-				Debug.Log(TreeIndices.Count);
+				//Debug.Log(TreePrefabs.Count);
+				//Debug.Log(TreeIndices.Count);
 			}
 		}
 	}
