@@ -8,10 +8,7 @@ public class Player : Team
 {
 	public static Player Instance;
 
-	public Dictionary<LootType, int> LootCount = new Dictionary<LootType, int>() { { LootType.Wood, 0} };
 	public IInteractable CurrInteractObject { get; protected set; }
-	public Wallet Wallet_ { get; private set; } = new Wallet(500);
-	public Shop Shop { get; private set; } = new Shop();
 
 	[SerializeField] GameObject MoneyPanel;
 	[SerializeField] GameObject TreePanel;
@@ -24,34 +21,23 @@ public class Player : Team
 		else
 		{ Instance = this; }
 
-		TeamColor = Color.blue;
-		TeamName = "Nuts";
-
+		BaseLocation = new Vector3(52, 0, 52);
+		SetTeam(new Color(0.7f, 0.4f, 0.9f), "Nuts");
 	}
 
-	private void Start()
+	private new void Start()
 	{
-		GameObject[] mainBuildings =  GameObject.FindGameObjectsWithTag(PubNames.MainBuildingTag);
-
-		foreach (var build in mainBuildings) 
-		{
-			var building = build.GetComponent<MainBuilding>();
-
-			if (building.TeamName == TeamName)
-			{ MainBuilding = building; break; }
-		}
+		base.Start();
 	}
 
-	void Update()
+	new void Update()
 	{
-		RecalculateLoot();
+		base.Update();
 		UpdatePanels();
-		if (MainBuilding == null)
-		{ Debug.Log("WASTED"); }
 	}
 
 
-	// Actions_______________________________________________________
+	// UI_Interaction_______________________________________________________
 	public void SpawnObject(GameObject obj)
 	{
 		CurrInteractObject.Spawn(obj);
@@ -81,36 +67,6 @@ public class Player : Team
 		if (LootCount.ContainsKey(LootType.Wood))
 		{
 			TreePanel.GetComponent<Text>().text = $"Tree: {LootCount[LootType.Wood]}"; 
-		}
-	}
-	// _______________________________________________________________
-
-
-	// Database_______________________________________________________
-	public void RegisterBuilding(Building building)
-	{ Buildings.Add(building); }
-
-	public void RemoveBuilding(Building building)
-	{ Buildings.Remove(building); }
-
-	private void RecalculateLoot()
-	{
-		LootCount.Clear();
-
-		foreach (var build in Buildings)
-		{
-			if (build is not Warehouse)
-			{ continue; }
-
-			foreach (var loot in ((Warehouse)build).LootCount)
-			{
-				if (LootCount.ContainsKey(loot.Key))
-				{ LootCount[loot.Key] += loot.Value; }
-				else
-				{ LootCount.Add(loot.Key, loot.Value); }
-				
-			}
-
 		}
 	}
 	// _______________________________________________________________

@@ -11,14 +11,15 @@ public class MainBuilding : Building
 
 	private void Awake()
 	{
-		TeamName = "Nuts";
 		Placed = true;
-		_health = 1000f;
 	}
 
 	private void Start()
 	{
 		_panel = UIManager.Instance.GetPanelWithTag(PubNames.MainBuildingPanelTag);
+		Color buildColor = TeamColor;
+		buildColor.a = 0.5f;
+		GetComponentInChildren<Renderer>().material.color = buildColor;
 	}
 
 	private void Update()
