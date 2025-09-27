@@ -24,7 +24,7 @@ public class Player : Team
 		else
 		{ Instance = this; }
 
-		TeamColor = Color.white;
+		TeamColor = Color.blue;
 		TeamName = "Nuts";
 
 	}

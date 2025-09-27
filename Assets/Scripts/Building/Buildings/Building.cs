@@ -21,11 +21,11 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public Color TeamColor { get; protected set; }
 	public string TeamName { get; protected set; }
 	public Vector3Int Size { get; private set; }
-	public bool Placed { get; private set; }
+	public bool Placed { get; protected set; }
 	public abstract string Name { get; }
 	
 	protected GameObject _panel;
-	float _health;
+	protected float _health;
 
 
 	private void Awake()

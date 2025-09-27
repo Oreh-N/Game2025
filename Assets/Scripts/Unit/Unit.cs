@@ -30,10 +30,14 @@ public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker
 		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
 		gameObject.tag = PubNames.UnitTag;
 		LootBag.Add(new Loot(LootType.Wood));
+		TeamColor = Player.Instance.TeamColor;
+		GetComponent<Renderer>().material.color = TeamColor;
 	}
 
 	public void Start()
-	{ UnitSelectionManager.Instance.AddUnit(gameObject); }
+	{
+		UnitSelectionManager.Instance.AddUnit(gameObject);
+	}
 
 	public void Update()
 	{

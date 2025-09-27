@@ -13,6 +13,7 @@ public static class PubNames
 
 
 	// Tags
+	public const string MainBuildingPanelTag = "MainBuildingPanel";
 	public const string WarehousePanelTag = "Warehouse0Panel";
 	public const string SpawnerPanelTag = "Spawner0Panel";
 	public const string MainBuildingTag = "MainBuilding";
