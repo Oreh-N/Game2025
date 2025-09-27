@@ -18,11 +18,11 @@ public class Warehouse : Building, ILootTaker
 
 
 	// Interaction____________________________________________
-	private void OnTriggerEnter(Collider other)
+	private void OnCollisionEnter(Collision collision)
 	{
-		if (other.tag == PubNames.UnitTag)
+		if (collision.collider.tag == PubNames.UnitTag)
 		{
-			var unit = other.gameObject.GetComponent<Unit>();
+			var unit = collision.gameObject.GetComponent<Unit>();
 			TakeLoot(((ILootGiver)unit).GiveAllLoot(unit.LootBag));
 		}
 	}

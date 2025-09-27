@@ -87,7 +87,7 @@ public class MiningUnit : Unit
 		RecalculateBagContainment();
 		string text = "Bag:\n";
 		foreach (var loot in _bag_containment)
-		{  text += $"{Loot.LootNames[(int)loot.Key]}: {loot.Value}"; }
+		{  text += $"{Loot.LootNames[(int)loot.Key]}: {loot.Value}\n"; }
 
 		return text;
 	}
