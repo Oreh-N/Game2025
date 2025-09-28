@@ -29,7 +29,6 @@ public class Warehouse : Building, ILootTaker
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
 			ILootContainer.MoveSpecificLoot(unit.LootCounter, LootCounter, _content);
-			// Also clicks on building through UI element
 		}
 	}
 	// _______________________________________________________

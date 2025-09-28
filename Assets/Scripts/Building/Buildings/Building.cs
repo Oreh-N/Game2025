@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -70,6 +71,9 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	// Building actions_______________________________________________
 	public void OnMouseDown()
 	{
+		if (EventSystem.current.IsPointerOverGameObject())
+			return;
+
 		if (Placed)
 		{ 
 			Player.Instance.ChangeInteractableObject(this);
