@@ -29,14 +29,7 @@ public interface ILootTaker : ILootContainer
 	/// <param name="loot">Loot will be taken from this object</param>
 	/// <param name="lootForTaking"></param>
 	public void TakeSpecificLoot(Inventory loot, List<LootType> lootForTaking)
-	{	// We can't iterate through loot itself if we want to modify it in the same time (not allowed)
-		foreach (var key in loot.Keys.ToList())
-		{
-			if (lootForTaking.Contains(key))
-			{
-				AddLootTo(LootCounter, key, loot[key]); 
-				loot[key] = 0;
-			}
-		}
+	{
+		MoveSpecificLoot(loot, LootCounter, lootForTaking);
 	}
 }

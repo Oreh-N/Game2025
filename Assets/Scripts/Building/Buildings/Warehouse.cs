@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Warehouse : Building, ILootTaker
 {
-	public List<LootType> _containment { get; protected set; } = new List<LootType>() { LootType.Wood };
+	public List<LootType> _content { get; protected set; } = new List<LootType>() { LootType.Wood };
 	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Wood, 0 } };
 	public override string Name => "Warehouse0";
 
@@ -28,8 +28,7 @@ public class Warehouse : Building, ILootTaker
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			Inventory givenLoot = ((ILootGiver)unit).GiveAllLoot();
-			((ILootTaker)this).TakeSpecificLoot(givenLoot, _containment);	//takes everything, shows only wood
+			ILootContainer.MoveSpecificLoot(unit.LootCounter, LootCounter, _content);
 			// Also clicks on building through UI element
 		}
 	}

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -25,6 +26,13 @@ public interface ILootGiver : ILootContainer
 	{
 		var returnLoot = new Inventory();
 		MoveLootPart(LootCounter, returnLoot, part);
+		return returnLoot;
+	}
+
+	public Inventory GiveSpecificLoot(List<LootType> lootForGiving)
+	{
+		var returnLoot = new Inventory();
+		MoveSpecificLoot(LootCounter, returnLoot, lootForGiving);
 		return returnLoot;
 	}
 }

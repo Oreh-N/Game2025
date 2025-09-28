@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class MainBuilding : Building, ILootTaker
 {
 	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Gold, 500 } };
-
+	List<LootType> _content = new List<LootType>() { LootType.Gold };
 	public int BuildingRadius { get; protected set; } = 50;
 	public override string Name => "MainBuilding";
 
@@ -40,8 +40,7 @@ public class MainBuilding : Building, ILootTaker
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			Inventory givenLoot = ((ILootGiver)unit).GiveAllLoot();
-			((ILootTaker)this).TakeSpecificLoot(givenLoot, new List<LootType>() { LootType.Gold });
+			ILootContainer.MoveSpecificLoot(unit.LootCounter, LootCounter, _content);
 		}
 	}
 

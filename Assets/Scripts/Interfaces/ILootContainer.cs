@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface ILootContainer
@@ -12,7 +13,7 @@ public interface ILootContainer
 	/// <param name="lootHolder">Where you want to put loot</param>
 	/// <param name="lootType"></param>
 	/// <param name="lootCount"></param>
-	public void AddLootTo(Inventory lootHolder, LootType lootType, int lootCount)
+	public static void AddLootTo(Inventory lootHolder, LootType lootType, int lootCount)
 	{
 		if (lootHolder.ContainsKey(lootType))
 		{ lootHolder[lootType] += lootCount; }
@@ -26,7 +27,7 @@ public interface ILootContainer
 	/// <param name="from">Where you take</param>
 	/// <param name="to">Where you put</param>
 	/// <param name="part">How much loot you move</param>
-	public void MoveLootPart(Inventory from, Inventory to, int part)
+	public static void MoveLootPart(Inventory from, Inventory to, int part)
 	{
 		foreach (var item in from)
 		{
@@ -41,6 +42,19 @@ public interface ILootContainer
 				AddLootTo(to, item.Key, item.Value);
 				from[item.Key] -= part;
 				break;
+			}
+		}
+	}
+
+	public static void MoveSpecificLoot(Inventory from, Inventory to, List<LootType> requiredLoot)
+	{
+		// We can't iterate through loot itself if we want to modify it in the same time (not allowed)
+		foreach (var key in from.Keys.ToList())
+		{
+			if (requiredLoot.Contains(key))
+			{
+				AddLootTo(to, key, from[key]);
+				from[key] = 0;
 			}
 		}
 	}
