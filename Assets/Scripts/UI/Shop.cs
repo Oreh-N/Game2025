@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// Different shops may have different prices or goods
+// ! Later connect shop prices to UI elements
 public class Shop
-{   // Prefabs names. Their prices can be found on the same index in _shop_item_prices 
-	List<string> _shop_items = new List<string>() { "Spawner0", "Warehouse0", "Tower0" };
-	List<int> _shop_item_prices = new List<int>() { 100, 50, 200 };
+{   
+	List<string> _shop_items = new List<string>() { "Spawner0", "Warehouse0", "Tower0", "Miner" };
+	List<int> _shop_item_prices = new List<int>() { 100, 50, 200, 20 };
 
 
 	/// <summary>
@@ -25,7 +27,7 @@ public class Shop
 			{ return true; }
 			else UIManager.Instance.UpdateWarningPanel("Not enought money");
 		}
-		else UIManager.Instance.UpdateWarningPanel("There is no such an item");
+		else UIManager.Instance.UpdateWarningPanel($"There is no {itemName} item");
 		return false;
 	}
 

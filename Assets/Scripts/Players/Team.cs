@@ -7,7 +7,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	// Sources
 	public Inventory LootCounter { get; set; } = new Inventory { { LootType.Wood, 0 } };
 	public IInteractable CurrInteractObject { get; protected set; }
-	public Shop Shop { get; protected set; } = new Shop();
+	public Shop Shop_ { get; protected set; } = new Shop();
 	//__________________
 	// Members/Buildings
 	public List<Building> Buildings { get; protected set; } = new List<Building>();

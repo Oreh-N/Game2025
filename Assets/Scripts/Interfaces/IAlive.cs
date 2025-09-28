@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IAlive : IDestructible
 {
-	public string Name { get; protected set; }
+	public string Name { get; }
 }

@@ -46,7 +46,8 @@ public class Player : Team
 
 	public void SpawnObject(GameObject obj)
 	{
-		if (CurrInteractObject is Spawner)
+		if (CurrInteractObject is Spawner && 
+			Shop_.TryBuyItem(obj.GetComponent<Unit>().UnitName, MainBuilding_))
 		((Spawner)CurrInteractObject).Spawn(obj);
 	}
 

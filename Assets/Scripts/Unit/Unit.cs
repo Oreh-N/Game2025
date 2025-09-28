@@ -8,15 +8,15 @@ using UnityEngine.UIElements;
 public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel, ITeamMember
 {
 	float IDestructible.Health { get => _health; set => _health = value; }
-	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
 	GameObject IHavePanel.Panel { get => Panel; set => Panel = value; }
+	string IAlive.Name { get => UnitName; }
 
 	public Inventory LootCounter { get; set; } = new Inventory();
 	public GameObject Panel { get; protected set; }
 	public Team Team_ { get; set; }
 
 	// Unit_info___________________
-	protected string _unit_name = "Default";
+	public abstract string UnitName { get; }
 	protected int _holder_capacity = 2;
 	protected float _health = 100;
 	// ____________________________
@@ -49,7 +49,7 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 	{
 		if (pos.y < -5)
 		{
-			UIManager.Instance.UpdateWarningPanel($"The {_unit_name} fell off a map");
+			UIManager.Instance.UpdateWarningPanel($"The {UnitName} fell off a map");
 			return true;
 		}
 		return false;

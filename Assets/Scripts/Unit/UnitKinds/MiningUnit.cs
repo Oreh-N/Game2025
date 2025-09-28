@@ -7,15 +7,17 @@ using UnityEngine.UI;
 
 public class MiningUnit : Unit
 {
-	string[] _abilities = new string[1] ;
+	public override string UnitName => "Miner";
+	string[] _abilities = new string[2] ;
 	Chunk _chunk = new Chunk();
+
 
 	private new void Awake()
 	{
 		base.Awake();
 		_holder_capacity = 100;
-		_unit_name = "Miner";
 		_abilities[0] = "Mine wood";
+		_abilities[1] = "Collect gold";
 	}
 
 	private new void Start()
@@ -50,7 +52,7 @@ public class MiningUnit : Unit
 	{
 		((IHavePanel)this).UpdatePanelInfo();
 		Text[] panels = Panel.GetComponentsInChildren<Text>(true);
-		panels[0].text = $"Unit name: {_unit_name}\nTeam: {Team_.TeamName}";
+		panels[0].text = $"Unit name: {UnitName}\nTeam: {Team_.TeamName}";
 		panels[1].text = InventoryContentToStr();
 		Button[] buttons = panels[2].gameObject.GetComponentsInChildren<Button>();
 		for (int i = 0; i < buttons.Length; i++)
