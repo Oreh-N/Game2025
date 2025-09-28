@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -28,14 +29,13 @@ public interface ILootTaker : ILootContainer
 	/// <param name="loot">Loot will be taken from this object</param>
 	/// <param name="lootForTaking"></param>
 	public void TakeSpecificLoot(Inventory loot, List<LootType> lootForTaking)
-	{
-		foreach (var item in loot)
+	{	// We can't iterate through loot itself if we want to modify it in the same time (not allowed)
+		foreach (var key in loot.Keys.ToList())
 		{
-			if (lootForTaking.Contains(item.Key))
+			if (lootForTaking.Contains(key))
 			{
-				AddLootTo(LootCounter, item.Key, item.Value);
-				if (loot.ContainsKey(item.Key))
-				{ loot[item.Key] = 0; }
+				AddLootTo(LootCounter, key, loot[key]); 
+				loot[key] = 0;
 			}
 		}
 	}

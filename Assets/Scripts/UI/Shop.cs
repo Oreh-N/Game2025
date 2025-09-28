@@ -13,16 +13,16 @@ public class Shop
 	/// Tries to buy an item
 	/// </summary>
 	/// <param name="itemName"> The Item you want to buy</param>
-	/// <param name="wallet"> Someone's wallet</param>
+	/// <param name="mBuild"> Someone's wallet</param>
 	/// <returns>True - if payment was successful, otherwise - false</returns>
-	public bool TryBuyItem(string itemName, Wallet wallet)
+	public bool TryBuyItem(string itemName, MainBuilding mBuild)
 	{
 		if (_shop_items.Contains(itemName))
 		{
 			int price = _shop_item_prices[_shop_items.IndexOf(itemName)];
-			if (wallet.Money >= price)
+			if (mBuild.LootCounter[LootType.Gold] >= price)
 			{
-				wallet.Pay(price);
+				mBuild.Pay(price);
 				return true;
 			}
 			else UIManager.Instance.UpdateWarningPanel("Not enought money");

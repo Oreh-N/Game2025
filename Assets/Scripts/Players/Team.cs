@@ -34,7 +34,6 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		{ Debug.Log($"Team {TeamName} was defeated"); }
 
 		RecalculateLoot();
-		UpdateMoneyInMainBuilding();
 	}
 
 	public void SetTeam(Color teamColor, string teamName)
@@ -54,12 +53,6 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 
 	// Database_______________________________________________________
-	public void UpdateMoneyInMainBuilding()
-	{
-		if (LootCounter.ContainsKey(LootType.Gold))
-		{ MainBuilding_.Wallet_.SetMoney(LootCounter[LootType.Gold]);}
-	}
-
 	public void RegisterBuilding(Building building)
 	{ Buildings.Add(building); }
 

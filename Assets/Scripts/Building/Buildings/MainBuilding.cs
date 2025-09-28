@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class MainBuilding : Building, ILootTaker
 {
-	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Gold, 0 } };
+	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Gold, 500 } };
 
 	public int BuildingRadius { get; protected set; } = 50;
 	public override string Name => "MainBuilding";
-	public Wallet Wallet_ { get; protected set; } = new Wallet(500);
 
 
 	private void Awake()
 	{
+		_health = 1000;
 		Placed = true;
 	}
 
@@ -42,10 +42,21 @@ public class MainBuilding : Building, ILootTaker
 			var unit = collision.gameObject.GetComponent<Unit>();
 			Inventory givenLoot = ((ILootGiver)unit).GiveAllLoot();
 			((ILootTaker)this).TakeSpecificLoot(givenLoot, new List<LootType>() { LootType.Gold });
-			Wallet_.Earn(LootCounter[LootType.Gold]);	//each time more money, even if already given
 		}
 	}
 
+	public void Pay(int price)
+	{
+		if (LootCounter.ContainsKey(LootType.Gold) && LootCounter[LootType.Gold] >= price)
+		{ LootCounter[LootType.Gold] -= price; }
+		else { UIManager.Instance.UpdateWarningPanel("Not enough gold"); }
+	}
+
+	public void Earn(int money) 
+	{
+		if (LootCounter.ContainsKey(LootType.Gold))
+		{ LootCounter[LootType.Gold] += money; }
+	}
 
 	// Visual_________________________________________________
 	public override void UpdatePanelInfo()
@@ -56,7 +67,7 @@ public class MainBuilding : Building, ILootTaker
 		{
 			text.text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
 		}
-		UIManager.Instance.UpdateMoneyPanel(Wallet_.Money);
+		UIManager.Instance.UpdateMoneyPanel(LootCounter[LootType.Gold]);
 	}
 	// ________________________________________________________
 }
