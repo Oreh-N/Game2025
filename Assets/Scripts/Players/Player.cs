@@ -50,6 +50,10 @@ public class Player : Team
 		((Spawner)CurrInteractObject).Spawn(obj);
 	}
 
+	public void UpdateMainBuilding()
+	{
+		MainBuilding_.UpgradeBuildingArea();
+	}
 	// _______________________________________________________________
 
 

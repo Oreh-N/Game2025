@@ -32,7 +32,18 @@ public class MainBuilding : Building, ILootTaker
 
 	public void UpgradeBuildingArea()
 	{
-		BuildingRadius += (int)(BuildingRadius * 0.3f);
+		GameObject panel = GameObject.FindGameObjectWithTag(PubNames.UpgradePanelTag);
+		var text = panel.GetComponent<Text>();
+
+		int upgradePrice;
+		if (int.TryParse(text.text, out upgradePrice) && Pay(upgradePrice))
+		{
+			text.text = ((int)(upgradePrice*1.5)).ToString();
+			BuildingRadius += (int)(BuildingRadius * 0.3f); 
+			UIManager.Instance.UpdateWarningPanel("Building area has increased by 30%");
+		}
+		else
+		{ UIManager.Instance.UpdateWarningPanel("Not enough gold"); }
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -43,15 +54,26 @@ public class MainBuilding : Building, ILootTaker
 			ILootContainer.MoveSpecificLoot(unit.LootCounter, LootCounter, _content);
 		}
 	}
-
-	public void Pay(int price)
+	/// <summary>
+	/// Pays from the team's gold reserves
+	/// </summary>
+	/// <param name="price"></param>
+	/// <returns>true if the payment was successful, otherwise returns false</returns>
+	public bool Pay(int price)
 	{
 		if (LootCounter.ContainsKey(LootType.Gold) && LootCounter[LootType.Gold] >= price)
-		{ LootCounter[LootType.Gold] -= price; }
-		else { UIManager.Instance.UpdateWarningPanel("Not enough gold"); }
+		{
+			LootCounter[LootType.Gold] -= price;
+			return true;
+		}
+		else
+		{
+			UIManager.Instance.UpdateWarningPanel("Not enough gold");
+			return false;
+		}
 	}
 
-	public void Earn(int money) 
+	public void Earn(int money)
 	{
 		if (LootCounter.ContainsKey(LootType.Gold))
 		{ LootCounter[LootType.Gold] += money; }

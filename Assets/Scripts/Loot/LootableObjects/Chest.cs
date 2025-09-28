@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Chest : LootHolder
 {
+	private void Awake()
+	{
+        _maxLootCount = 200;
+	}
 	void Start()
     {
         FillHolderFully(LootType.Gold);

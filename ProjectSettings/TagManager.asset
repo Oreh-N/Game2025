@@ -15,6 +15,7 @@ TagManager:
   - MainBuilding
   - MainBuildingPanel
   - Enemy
+  - UpgradePanel
   layers:
   - Default
   - TransparentFX

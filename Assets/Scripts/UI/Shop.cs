@@ -20,11 +20,9 @@ public class Shop
 		if (_shop_items.Contains(itemName))
 		{
 			int price = _shop_item_prices[_shop_items.IndexOf(itemName)];
-			if (mBuild.LootCounter[LootType.Gold] >= price)
-			{
-				mBuild.Pay(price);
-				return true;
-			}
+
+			if (mBuild.Pay(price))
+			{ return true; }
 			else UIManager.Instance.UpdateWarningPanel("Not enought money");
 		}
 		else UIManager.Instance.UpdateWarningPanel("There is no such an item");
