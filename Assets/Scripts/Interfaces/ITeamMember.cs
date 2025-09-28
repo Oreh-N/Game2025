@@ -4,8 +4,7 @@ using UnityEngine;
 
 public interface ITeamMember
 {
-	public Color TeamColor { get; protected set; }
-	public string TeamName { get; protected set; }
+	public Team Team_ {  get; set; }
 
-	public void SetTeam(Color teamColor, string teamName);
+	public void SetTeam(Team team) { Team_ = team;}
 }

@@ -7,14 +7,13 @@ using UnityEngine.UI;
 
 public class MiningUnit : Unit
 {
-	Dictionary<LootType, int> _bag_containment = new Dictionary<LootType, int>();
 	string[] _abilities = new string[1] ;
 	Chunk _chunk = new Chunk();
 
 	private new void Awake()
 	{
 		base.Awake();
-		_bag_capacity = 100;
+		_holder_capacity = 100;
 		_unit_name = "Miner";
 		_abilities[0] = "Mine wood";
 	}
@@ -25,7 +24,6 @@ public class MiningUnit : Unit
 		_chunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
 		ForestManager.Instance.InitializeUnitInChunk(gameObject);
 		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
-
 	}
 
 	private new void Update()
@@ -48,17 +46,12 @@ public class MiningUnit : Unit
 
 
 	// Visual_________________________________________________
-	public override void ShowPanel()
+	public void UpdatePanelInfo()
 	{
-		base.ShowPanel();
-		UpdatePanelInfo();
-	}
-
-	private new void UpdatePanelInfo()
-	{
+		((IHavePanel)this).UpdatePanelInfo();
 		Text[] panels = Panel.GetComponentsInChildren<Text>(true);
-		panels[0].text = $"Unit name: {_unit_name}\nTeam: {TeamName}";
-		panels[1].text = BagContainmentToString();
+		panels[0].text = $"Unit name: {_unit_name}\nTeam: {Team_.TeamName}";
+		panels[1].text = InventoryContentToStr();
 		Button[] buttons = panels[2].gameObject.GetComponentsInChildren<Button>();
 		for (int i = 0; i < buttons.Length; i++)
 		{
@@ -69,27 +62,16 @@ public class MiningUnit : Unit
 		}
 	}
 
-	private void RecalculateBagContainment()
+	private string InventoryContentToStr()
 	{
-		_bag_containment.Clear();
-
-		foreach (var loot in LootBag)
-		{
-			if (_bag_containment.ContainsKey(loot.Type))
-			{ _bag_containment[loot.Type]++; }
-			else
-			{ _bag_containment.Add(loot.Type, 1); }
-		}
-	}
-
-	private string BagContainmentToString()
-	{
-		RecalculateBagContainment();
 		string text = "Bag:\n";
-		foreach (var loot in _bag_containment)
+		foreach (var loot in LootCounter)
 		{  text += $"{Loot.LootNames[(int)loot.Key]}: {loot.Value}\n"; }
 
 		return text;
 	}
+
+	public override void Interact()
+	{ ((IHavePanel)this).ShowPanel(); }
 	// _______________________________________________________
 }

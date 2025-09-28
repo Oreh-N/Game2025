@@ -158,7 +158,7 @@ public class BuildingManager : MonoBehaviour
 		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());
 		GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
 		CurrBuilding = obj.GetComponent<Building>();
-		CurrBuilding.GetComponent<Building>().SetTeam(team.TeamColor, team.TeamName);
+		((ITeamMember)CurrBuilding.GetComponent<Building>()).SetTeam(team);
 		obj.AddComponent<Movable>();
 		_allowBuilding = true;
 	}

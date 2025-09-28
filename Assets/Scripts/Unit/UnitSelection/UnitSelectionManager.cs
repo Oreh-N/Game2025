@@ -64,18 +64,6 @@ public class UnitSelectionManager : MonoBehaviour
 		}
 	}
 
-	public void RemoveUnit(GameObject unit)
-	{
-		if (AllUnits.Contains(unit))
-		{ AllUnits.Remove(unit); }
-	}
-
-	public void AddUnit(GameObject unit)
-	{ 
-		if (!AllUnits.Contains(unit))
-		AllUnits.Add(unit); 
-	}
-
 	private void MultiSelect(GameObject unit)
 	{
 		if (!UnitsSelected.Contains(unit))

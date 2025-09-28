@@ -11,22 +11,23 @@ public class Spawner : Building
 	{
         _panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 	}
-	void Update()
-	{
-		
-	}
+	private new void Update()
+	{ }
 
 
 	// Actions________________________________________________
-	public override void Spawn(GameObject unit)
+	public void Spawn(GameObject unit)
     {
         var spawn_pos = new Vector3(transform.localPosition.x, transform.position.y,
 									transform.localPosition.z - 4);
         var unit_obj = Instantiate(unit, spawn_pos, Quaternion.identity);
-		unit_obj.GetComponent<Unit>().SetTeam(TeamColor, TeamName);
+		((ITeamMember)unit_obj.GetComponent<Unit>()).SetTeam(Team_);
     }
 
 	public override void Interact()
+	{ }
+
+	public override void UpdatePanelInfo()
 	{ }
 	// _______________________________________________________
 }

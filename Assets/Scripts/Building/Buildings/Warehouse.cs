@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class Warehouse : Building, ILootTaker
 {
-	public Dictionary<LootType, int> LootCount { get; protected set; } = new Dictionary<LootType, int>() { { LootType.Wood, 0 } };
-	public List<string> _containment { get; protected set; } = new List<string>() { "Tree", "Money" };
+	public List<LootType> _containment { get; protected set; } = new List<LootType>() { LootType.Wood };
+	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Wood, 0 } };
 	public override string Name => "Warehouse0";
 
 
@@ -16,9 +16,9 @@ public class Warehouse : Building, ILootTaker
 		_panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
 	}
 
-	void Update()
+	private new void Update()
 	{
-		UpdatePanelInfo();
+		base.Update();
 	}
 
 
@@ -28,36 +28,21 @@ public class Warehouse : Building, ILootTaker
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			TakeLoot(((ILootGiver)unit).GiveAllLoot(unit.LootBag));
-		}
-	}
-
-	public void TakeLoot(List<Loot> loot)
-	{
-		for (int i = 0; i < loot.Count; i++)
-		{
-			if (LootCount.ContainsKey(loot[i].Type))
-			{ LootCount[loot[i].Type]++; }
-			else
-			{ LootCount.Add(loot[i].Type, 1); }
+			Inventory givenLoot = ((ILootGiver)unit).GiveAllLoot();
+			((ILootTaker)this).TakeSpecificLoot(givenLoot, _containment);	//takes everything, shows only wood
+			// Also clicks on building through UI element
 		}
 	}
 	// _______________________________________________________
 
 
 	// Visual_________________________________________________
-	public override void ShowPanel()
-	{
-		base.ShowPanel();
-		UpdatePanelInfo();
-	}
-
 	public override void UpdatePanelInfo()
 	{
 		string text = "Containment:\n";
-		foreach (var item in LootCount)
+		foreach (var item in LootCounter)
 		{
-			text += _containment[(int)item.Key] + " : " + item.Value.ToString() + "\n";
+			text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
 		}
 		_panel.GetComponent<Text>().text = text;
 	}

@@ -8,8 +8,6 @@ public class Player : Team
 {
 	public static Player Instance;
 
-	public IInteractable CurrInteractObject { get; protected set; }
-
 
 	private void Awake()
 	{
@@ -39,8 +37,8 @@ public class Player : Team
 	{
 		int wood_count = 0;
 
-		if (LootCount.ContainsKey(LootType.Wood))
-		{ wood_count = LootCount[LootType.Wood]; }
+		if (LootCounter.ContainsKey(LootType.Wood))
+		{ wood_count = LootCounter[LootType.Wood]; }
 
 		UIManager.Instance.UpdateWoodPanel(wood_count);
 
@@ -48,23 +46,10 @@ public class Player : Team
 
 	public void SpawnObject(GameObject obj)
 	{
-		CurrInteractObject.Spawn(obj);
+		if (CurrInteractObject is Spawner)
+		((Spawner)CurrInteractObject).Spawn(obj);
 	}
 
-	public void SpawnBuilding(Building building)
-	{
-		BuildingManager.Instance.SpawnBuilding(building, this);
-	}
-
-	public void InteractWithObject()
-	{
-		CurrInteractObject.Interact();
-	}
-
-	public void ChangeInteractableObject(IInteractable obj)
-	{
-		CurrInteractObject = obj;
-	}
 	// _______________________________________________________________
 
 

@@ -5,111 +5,66 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-public class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel, ITeamMember
+public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel, ITeamMember
 {
-
-	Color ITeamMember.TeamColor { get => TeamColor; set => TeamColor = value; }
-	string ITeamMember.TeamName { get => TeamName; set => TeamName = value; }
 	float IDestructible.Health { get => _health; set => _health = value; }
 	string IAlive.Name { get => _unit_name; set => _unit_name = value; }
 	GameObject IHavePanel.Panel { get => Panel; set => Panel = value; }
 
-	public List<Loot> LootBag { get; private set; } = new List<Loot>();
-	public Color TeamColor { get; protected set; }
-	public string TeamName { get; protected set; }
+	public Inventory LootCounter { get; set; } = new Inventory();
 	public GameObject Panel { get; protected set; }
+	public Team Team_ { get; set; }
 
+	// Unit_info___________________
 	protected string _unit_name = "Default";
-	protected int _bag_capacity = 2;
-	protected float _health;
-	protected int _money;
+	protected int _holder_capacity = 2;
+	protected float _health = 100;
+	// ____________________________
 
 
 	public void Awake()
 	{
 		gameObject.layer = LayerMask.NameToLayer(PubNames.UnitsLayer);
 		gameObject.tag = PubNames.UnitTag;
-		LootBag.Add(new Loot(LootType.Wood));
-		TeamColor = Player.Instance.TeamColor;
-		GetComponent<Renderer>().material.color = TeamColor;
 	}
 
 	public void Start()
-	{
-		UnitSelectionManager.Instance.AddUnit(gameObject);
+	{ 
+		GetComponent<Renderer>().material.color = Team_.TeamColor;
+		UnitSelectionManager.Instance.AllUnits.Add(gameObject);
 	}
 
 	public void Update()
 	{
-		if (IsOutOfMap(transform.position))
+		if (IsOutOfMap(transform.position) || _health <= 0)
 		{ Destroy(this); }
+	}
+	public void OnMouseDown()
+	{
+		Team_.ChangeInteractableObject(this);
+		((IHavePanel)this).ShowPanel();
 	}
 
 	private bool IsOutOfMap(Vector3 pos)
 	{
-		if (pos.y < -5) return true;
+		if (pos.y < -5)
+		{
+			UIManager.Instance.UpdateWarningPanel($"The {_unit_name} fell off a map");
+			return true;
+		}
 		return false;
 	}
 
-	public void OnMouseDown()
-	{
-		Player.Instance.ChangeInteractableObject(this);
-		ShowPanel();
-	}
-
-
-	// Visual___________________________________________________________
-	public virtual void ShowPanel()
-	{
-		if (Panel == null)
-		{ UIManager.Instance.UpdateWarningPanel("Uses Unit panel (not initialising here)"); }
-		UIManager.Instance.EnableDisablePanel(Panel);
-	}
-
-	public virtual void UpdatePanelInfo()
-	{
-		if (Panel == null)
-		{ UIManager.Instance.UpdateWarningPanel("Uses Unit panel (not initialising here)"); }
-	}
-	// _________________________________________________________________
+	public abstract void Interact();
 
 
 	// Fight____________________________________________________________
 	private void OnDestroy()
-	{ UnitSelectionManager.Instance.RemoveUnit(gameObject); }
+	{ UnitSelectionManager.Instance.AllUnits.Remove(gameObject); }
 
 	public void TakeDamage(float damage)
 	{
 		throw new System.NotImplementedException();
-	}
-	// _________________________________________________________________
-
-
-	// Actions__________________________________________________________
-	public void Interact()
-	{
-		throw new System.NotImplementedException();
-	}
-
-	public void Spawn(GameObject obj)
-	{
-		throw new NotImplementedException();
-	}
-
-	public void TakeLoot(List<Loot> loot)
-	{
-		for (int i = loot.Count - 1; i >= 0; i--)
-		{
-			if (LootBag.Count >= _bag_capacity) break;
-			LootBag.Add(new Loot(loot[i].Type));
-			loot.RemoveAt(i);
-		}
-	}
-
-	public void SetTeam(Color teamColor, string teamName)
-	{
-		TeamColor = teamColor;
-		TeamName = teamName;
 	}
 	// _________________________________________________________________
 }

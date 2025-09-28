@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Team : MonoBehaviour, ITeamMember
+public abstract class Team : MonoBehaviour, ILootContainer
 {
-	Color ITeamMember.TeamColor { get => TeamColor; set => TeamColor = value; }
-	string ITeamMember.TeamName { get => TeamName; set => TeamName = value; }
 	// Sources
-	public Dictionary<LootType, int> LootCount { get; protected set; } 
-	 = new Dictionary<LootType, int>() { { LootType.Wood, 0 } };
+	public Inventory LootCounter { get; set; } = new Inventory { { LootType.Wood, 0 } };
+	public IInteractable CurrInteractObject { get; protected set; }
 	public Shop Shop { get; protected set; } = new Shop();
 	//__________________
 	// Members/Buildings
@@ -27,7 +25,7 @@ public abstract class Team : MonoBehaviour, ITeamMember
 	{
 		var build = Instantiate(MainController.Instance.MainBuildingPrefab, BaseLocation, Quaternion.identity);
 		MainBuilding_ = build.GetComponent<MainBuilding>();
-		MainBuilding_.SetTeam(TeamColor, TeamName);
+		((ITeamMember)MainBuilding_).SetTeam(this);
 	}
 
 	public void Update()
@@ -36,6 +34,7 @@ public abstract class Team : MonoBehaviour, ITeamMember
 		{ Debug.Log($"Team {TeamName} was defeated"); }
 
 		RecalculateLoot();
+		UpdateMoneyInMainBuilding();
 	}
 
 	public void SetTeam(Color teamColor, string teamName)
@@ -44,7 +43,23 @@ public abstract class Team : MonoBehaviour, ITeamMember
 		TeamName = teamName;
 	}
 
+	public void InteractWithObject()
+	{ CurrInteractObject.Interact(); }
+
+	public void ChangeInteractableObject(IInteractable obj)
+	{ CurrInteractObject = obj; }
+
+	public void SpawnBuilding(Building building)
+	{ BuildingManager.Instance.SpawnBuilding(building, this); }
+
+
 	// Database_______________________________________________________
+	public void UpdateMoneyInMainBuilding()
+	{
+		if (LootCounter.ContainsKey(LootType.Gold))
+		{ MainBuilding_.Wallet_.SetMoney(LootCounter[LootType.Gold]);}
+	}
+
 	public void RegisterBuilding(Building building)
 	{ Buildings.Add(building); }
 
@@ -53,19 +68,19 @@ public abstract class Team : MonoBehaviour, ITeamMember
 
 	public void RecalculateLoot()
 	{
-		LootCount.Clear();
+		LootCounter.Clear();
 
 		foreach (var build in Buildings)
 		{
-			if (build is not Warehouse)
+			if (build is not ILootTaker)
 			{ continue; }
 
-			foreach (var loot in ((Warehouse)build).LootCount)
+			foreach (var loot in ((ILootTaker)build).LootCounter)
 			{
-				if (LootCount.ContainsKey(loot.Key))
-				{ LootCount[loot.Key] += loot.Value; }
+				if (LootCounter.ContainsKey(loot.Key))
+				{ LootCounter[loot.Key] += loot.Value; }
 				else
-				{ LootCount.Add(loot.Key, loot.Value); }
+				{ LootCounter.Add(loot.Key, loot.Value); }
 
 			}
 

@@ -14,18 +14,16 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(BoxCollider))]
 public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible, IHavePanel, ITeamMember
 {
-	Color ITeamMember.TeamColor { get => TeamColor; set => TeamColor = value; }
-	string ITeamMember.TeamName { get => TeamName; set => TeamName = value; }
 	GameObject IHavePanel.Panel { get => _panel; set => _panel = value; }
 	float IDestructible.Health { get => _health; set => _health = value; }
-	public Color TeamColor { get; protected set; }
-	public string TeamName { get; protected set; }
+	// Building_info________
 	public Vector3Int Size { get; private set; }
 	public bool Placed { get; protected set; }
 	public abstract string Name { get; }
-	
-	protected GameObject _panel;
 	protected float _health;
+	// _____________________
+	public Team Team_ { get; set; }
+	protected GameObject _panel;
 
 
 	private void Awake()
@@ -36,6 +34,11 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
 		Player.Instance.RegisterBuilding(this);
+	}
+
+	public void Update()
+	{
+		UpdatePanelInfo();
 	}
 
 
@@ -54,12 +57,6 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		Placed = true;
 	}
 
-	public void SetTeam(Color teamColor, string teamName)
-	{
-		TeamColor = teamColor;
-		TeamName = teamName;
-	}
-
 	public virtual void TakeDamage(float damage)
 	{ }
 
@@ -76,18 +73,12 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		if (Placed)
 		{ 
 			Player.Instance.ChangeInteractableObject(this);
-			ShowPanel();
+			((IHavePanel)this).ShowPanel();
 		}
 	}
 
-	public virtual void ShowPanel()
-	{ UIManager.Instance.EnableDisablePanel(_panel); }
-
 	public virtual void Interact()
 	{ UIManager.Instance.UpdateWarningPanel("Building class Interact shouldn't be called"); }
-
-	public virtual void Spawn(GameObject obj)
-	{ UIManager.Instance.UpdateWarningPanel("Building class Spawn shouldn't be called"); }
 
 	public virtual void UpdatePanelInfo()
 	{ UIManager.Instance.UpdateWarningPanel("Building class UpdatePanelInfo shouldn't be called"); }

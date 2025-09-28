@@ -3103,7 +3103,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1251017664}
   m_OnClick:
     m_PersistentCalls:
@@ -4947,7 +4947,7 @@ Camera:
     y: 0.68
     width: 0.1593
     height: 0.28
-  near clip plane: 0.3
+  near clip plane: 100
   far clip plane: 500
   field of view: 90.30308
   orthographic: 1

@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LootHolder : MonoBehaviour, ILootGiver
+public abstract class LootHolder : MonoBehaviour, ILootGiver
 {
-	public List<Loot> Loot_ { get; protected set; } = new List<Loot>();
+	public Inventory LootCounter { get; set; } = new Inventory();
 	public bool IsEmpty { get; protected set; } = false;
 	protected int _maxLootCount = 20;
 
@@ -16,14 +16,14 @@ public class LootHolder : MonoBehaviour, ILootGiver
 
 	public void FillHolderFully(LootType lootType)
 	{
-		for (int i = 0; i < _maxLootCount; i++)
-		{ Loot_.Add(new Loot(lootType)); }
+		LootCounter.Add(lootType,_maxLootCount); 
 	}
 
-	public List<Loot> GiveAllLoot(List<Loot> allLoot)
+	public Inventory GiveAllLoot()
 	{
 		IsEmpty = true;
-		return ((ILootGiver)this).GiveAllLoot(allLoot);
+
+		return ((ILootGiver)this).GiveAllLoot();
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -33,7 +33,7 @@ public class LootHolder : MonoBehaviour, ILootGiver
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			((ILootTaker)unit).TakeLoot(Loot_);
+			((ILootTaker)unit).TakeAllLoot(LootCounter);
 
 			IsEmpty = true;
 		}

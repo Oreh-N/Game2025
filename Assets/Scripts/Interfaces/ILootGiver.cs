@@ -1,22 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public interface ILootGiver
+public interface ILootGiver : ILootContainer
 {
 	/// <summary>
-	/// Rewrites loot to the new list and clear given loot holder (allLoot)
+	/// Rewrites loot to the new dictionary and clear given loot holder (allLoot)
 	/// </summary>
 	/// <param name="allLoot">Loot holder (can contain loot of any type)</param>
-	/// <returns>Returns a new loot list</returns>
-	public List<Loot> GiveAllLoot(List<Loot> allLoot)
+	/// <returns>Returns a new loot dictionary</returns>
+	public Inventory GiveAllLoot()
 	{
-		List<Loot> retLoot = new List<Loot>();
+		var retLoot = new Inventory();
 
-		foreach (var loot in allLoot)
-		{ retLoot.Add(new Loot(loot.Type)); }
+		foreach (var loot in LootCounter)
+		{ retLoot.Add(loot.Key, loot.Value); }
 
-		allLoot.Clear();
+		LootCounter.Clear();
 		return retLoot;
+	}
+
+	public Inventory GiveLootPart(int part)
+	{
+		var returnLoot = new Inventory();
+		MoveLootPart(LootCounter, returnLoot, part);
+		return returnLoot;
 	}
 }
