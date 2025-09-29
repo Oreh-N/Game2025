@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MeleeUnit : Unit
 {
 	public override string UnitName => "MeleeUnit";
-	float _attackCooldown = 3f;
+	float _attackCooldown = 1f;
 	float _cooldown = 0;
 	bool _allowAttack = true;
 	int _damage = 20;

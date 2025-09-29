@@ -72,6 +72,7 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 	private void OnDestroy()
 	{
 		UnitSelectionManager.Instance.AllUnits.Remove(gameObject);
+		UnitSelectionManager.Instance.UnitsSelected.Remove(gameObject);
 	}
 
 	public virtual void TakeDamage(float damage)
