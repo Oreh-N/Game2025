@@ -32,7 +32,7 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 
 	public void Start()
 	{ 
-		GetComponent<Renderer>().material.color = Team_.TeamColor;
+		//GetComponent<Renderer>().material.color = Team_.TeamColor;
 		UnitSelectionManager.Instance.AllUnits.Add(gameObject);
 		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
 	}
@@ -44,9 +44,9 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 			Destroy(GetComponent<UnitMovement>());
 			Destroy(gameObject);
 		}
-		if (!Panel.activeSelf)
+		if (Panel != null && !Panel.activeSelf)
 		{ NowInteracting = false; }
-		if (NowInteracting)
+		if (NowInteracting && Team_.TeamName == Player.Instance.TeamName)
 		{ UpdatePanelInfo(); }
 	}
 	public void OnMouseDown()

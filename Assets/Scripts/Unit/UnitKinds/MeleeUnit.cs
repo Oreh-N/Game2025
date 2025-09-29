@@ -32,7 +32,8 @@ public class MeleeUnit : Unit
 
 	private void OnTriggerStay(Collider other)
 	{
-		if (other != null && other.tag == PubNames.UnitTag && _allowAttack)
+		if (other != null && other.tag == PubNames.UnitTag &&
+			_allowAttack && other.GetComponent<Unit>().Team_.TeamName != Team_.TeamName)
 		{
 			other.GetComponent<Unit>().TakeDamage(_damage);
 			_cooldown = 0;
