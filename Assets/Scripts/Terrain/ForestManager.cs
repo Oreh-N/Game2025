@@ -34,7 +34,7 @@ public class ForestManager : MonoBehaviour
 	}
 
 	public void DestroyPrefab(GameObject prefab)
-	{ Destroy(prefab); }
+	{ Destroy(prefab.gameObject); }
 
 	public void SpawnTreePrefabInChunk(Chunk chunk, int treeIndex)
 	{

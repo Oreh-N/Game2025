@@ -7,12 +7,13 @@ using UnityEngine;
 // ! Later connect shop prices to UI elements
 public class Shop
 {   
-	List<string> _shop_items = new List<string>() { "Spawner0", "Warehouse0", "Tower0", "Miner" };
-	List<int> _shop_item_prices = new List<int>() { 100, 50, 200, 20 };
+	List<string> _shop_items = new List<string>() { "Spawner0", "Warehouse0", "Tower0", "Miner", "MeleeUnit" };
+	List<int> _shop_item_prices = new List<int>() { 100, 50, 200, 20, 50 };
 
 
 	/// <summary>
-	/// Tries to buy an item
+	/// Tries to buy an item. If there is no such an item 
+	/// or you don't have enough money you will be warned on warning panel.
 	/// </summary>
 	/// <param name="itemName"> The Item you want to buy</param>
 	/// <param name="mBuild"> Someone's wallet</param>

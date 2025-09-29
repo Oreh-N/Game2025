@@ -46,7 +46,12 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	{ CurrInteractObject.Interact(); }
 
 	public void ChangeInteractableObject(IInteractable obj)
-	{ CurrInteractObject = obj; }
+	{
+		if (CurrInteractObject != null)
+		{ CurrInteractObject.NowInteracting = false; }
+		CurrInteractObject = obj;
+		CurrInteractObject.NowInteracting = true;
+	}
 
 	public void SpawnBuilding(Building building)
 	{ BuildingManager.Instance.SpawnBuilding(building, this); }

@@ -17,6 +17,8 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 
 	// Unit_info___________________
 	public abstract string UnitName { get; }
+	public bool NowInteracting { get; set; }
+
 	protected int _holder_capacity = 2;
 	protected float _health = 100;
 	// ____________________________
@@ -32,12 +34,20 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 	{ 
 		GetComponent<Renderer>().material.color = Team_.TeamColor;
 		UnitSelectionManager.Instance.AllUnits.Add(gameObject);
+		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
 	}
 
 	public void Update()
 	{
 		if (IsOutOfMap(transform.position) || _health <= 0)
-		{ Destroy(this); }
+		{
+			Destroy(GetComponent<UnitMovement>());
+			Destroy(gameObject);
+		}
+		if (!Panel.activeSelf)
+		{ NowInteracting = false; }
+		if (NowInteracting)
+		{ UpdatePanelInfo(); }
 	}
 	public void OnMouseDown()
 	{
@@ -60,11 +70,13 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 
 	// Fight____________________________________________________________
 	private void OnDestroy()
-	{ UnitSelectionManager.Instance.AllUnits.Remove(gameObject); }
-
-	public void TakeDamage(float damage)
 	{
-		throw new System.NotImplementedException();
+		UnitSelectionManager.Instance.AllUnits.Remove(gameObject);
 	}
+
+	public virtual void TakeDamage(float damage)
+	{ _health -= damage; }
+
+	public abstract void UpdatePanelInfo();
 	// _________________________________________________________________
 }

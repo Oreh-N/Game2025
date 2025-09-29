@@ -5,7 +5,8 @@ using UnityEngine;
 public interface IHavePanel
 {
 	public GameObject Panel { get; set; }
-	public void UpdatePanelInfo()
+
+	public virtual void UpdatePanelInfo()
 	{
 		if (Panel == null)
 		{ UIManager.Instance.UpdateWarningPanel("Panel here is null"); }

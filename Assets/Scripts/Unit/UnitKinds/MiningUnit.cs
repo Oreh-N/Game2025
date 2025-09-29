@@ -25,14 +25,12 @@ public class MiningUnit : Unit
 		base.Start();
 		_chunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
 		ForestManager.Instance.InitializeUnitInChunk(gameObject);
-		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
 	}
 
 	private new void Update()
 	{
 		base.Update();
 		UpdateChunk();
-		UpdatePanelInfo();
 	}
 
 	private void UpdateChunk()
@@ -48,11 +46,10 @@ public class MiningUnit : Unit
 
 
 	// Visual_________________________________________________
-	public void UpdatePanelInfo()
+	public override void UpdatePanelInfo()
 	{
-		((IHavePanel)this).UpdatePanelInfo();
 		Text[] panels = Panel.GetComponentsInChildren<Text>(true);
-		panels[0].text = $"Unit name: {UnitName}\nTeam: {Team_.TeamName}";
+		panels[0].text = $"Unit name: {UnitName}\nTeam: {Team_.TeamName}\nHealth: {_health}";
 		panels[1].text = InventoryContentToStr();
 		Button[] buttons = panels[2].gameObject.GetComponentsInChildren<Button>();
 		for (int i = 0; i < buttons.Length; i++)
@@ -74,6 +71,8 @@ public class MiningUnit : Unit
 	}
 
 	public override void Interact()
-	{ ((IHavePanel)this).ShowPanel(); }
+	{ 
+		((IHavePanel)this).ShowPanel();
+	}
 	// _______________________________________________________
 }

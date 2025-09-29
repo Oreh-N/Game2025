@@ -23,7 +23,9 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public abstract string Name { get; }
 	protected float _health;
 	// _____________________
+	public bool NowInteracting { get; set; }
 	public Team Team_ { get; set; }
+
 	protected GameObject _panel;
 
 
@@ -40,6 +42,8 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public void Update()
 	{
 		UpdatePanelInfo();
+		if (!_panel.activeSelf)
+		{ NowInteracting = false; }
 	}
 
 
