@@ -68,23 +68,6 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	{ 
 		Player.Instance.RemoveBuilding(this);
 	}
-
-	private void OnDrawGizmosSelected()
-	{
-		Size = new Vector2Int(20, 20);
-		for (int x = 0; x < Size.x; x++)
-		{
-			for (int y = 0; y < Size.y; y++)
-			{
-				Gizmos.color = new Color(1f, 0.9f, 0.01f, 0.7f);
-				Vector3 center_ = transform.position;
-				center_ = new Vector3(center_.x - (Size.x / 2), center_.y, center_.z - (Size.y / 2));
-				center_ += new Vector3(x, y: 0, z: y);
-				Gizmos.DrawCube(center: center_, size: new Vector3(x: 1, y: 1f, z: 1));
-			}
-		}
-	}
-
 	// _______________________________________________________________
 
 

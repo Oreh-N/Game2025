@@ -70,12 +70,12 @@ public class BuildingManager : MonoBehaviour
 	private void CheckPlace()
 	{
 		if (!CanBePlaced(CurrBuilding) && _is_default_cursor)
-		{ 
+		{
 			ChangeCursor(_declineCursor, false);
 			ColorCurrBuilding(Color.red);
 		}
 		else if (CanBePlaced(CurrBuilding))
-		{ 
+		{
 			ChangeCursor(_defaultCursor, true);
 			ColorCurrBuilding(Color.green);
 		}
@@ -83,23 +83,22 @@ public class BuildingManager : MonoBehaviour
 
 
 	// Grid____________________________________________________________
+	const int _areaPadding = 3;
+	const int _startPadding = 1;
+
 	public bool CanBePlaced(Building build)
 	{
 		if (Vector3.Distance(build.transform.position, _buildingAreaCenter) > _buildingRadius)
 		{ return false; }
 
-		var size3 = new Vector3Int(build.Size.x, 0, build.Size.y);
-		var center = build.transform.position;
-		var start = new Vector3(center.x - (size3.x / 2) - 1, center.y, center.z - (size3.z / 2) - 1);
-		var startInt = new Vector3Int(Mathf.RoundToInt(start.x),
-										Mathf.RoundToInt(start.y),
-										Mathf.RoundToInt(start.z));
-		for (int x = 0; x < build.Size.x + 3; x++)
+		Vector3Int startInt = GetAreaStartPos(build);
+
+		for (int x = 0; x < build.Size.x + _areaPadding; x++)
 		{
-			for (int y = 0; y < build.Size.y + 3; y++)
+			for (int y = 0; y < build.Size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
-				if (Tilemap_.GetTile(Grid_.WorldToCell(currPos)) == _busyTile) 
+				if (Tilemap_.GetTile(Grid_.WorldToCell(currPos)) == _busyTile)
 				{ return false; }
 			}
 		}
@@ -108,20 +107,27 @@ public class BuildingManager : MonoBehaviour
 
 	public void TakeAreaForCurrBuild(Building build, TileBase tile)
 	{
-		var size3 = new Vector3Int(build.Size.x, 0, build.Size.y);
-		var center = build.transform.position;
-		var start = new Vector3(center.x - (size3.x / 2) - 1, center.y, center.z - (size3.z / 2) - 1);
-		var startInt = new Vector3Int(  Mathf.RoundToInt(start.x), 
-										Mathf.RoundToInt(start.y), 
-										Mathf.RoundToInt(start.z));
-		for (int x = 0; x < build.Size.x+3; x++)
+		Vector3Int start = GetAreaStartPos(build);
+
+		for (int x = 0; x < build.Size.x + _areaPadding; x++)
 		{
-			for (int y = 0; y < build.Size.y+3; y++)
+			for (int y = 0; y < build.Size.y + _areaPadding; y++)
 			{
-				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
+				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
 				Tilemap_.SetTile(Grid_.WorldToCell(currPos), _busyTile);
 			}
 		}
+	}
+
+	public Vector3Int GetAreaStartPos(Building build)
+	{
+		var size3 = new Vector3Int(build.Size.x, 0, build.Size.y);
+		var center = build.transform.position;
+		var start = new Vector3(center.x - (size3.x / 2) - _startPadding, center.y, 
+								center.z - (size3.z / 2) - _startPadding);
+		return new Vector3Int(Mathf.RoundToInt(start.x),
+							Mathf.RoundToInt(start.y),
+							Mathf.RoundToInt(start.z));
 	}
 
 	/// <summary>
@@ -147,7 +153,7 @@ public class BuildingManager : MonoBehaviour
 		if (CurrBuilding != null && !CurrBuilding.Placed)
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
 
-		if (!Player.Instance.Shop_.TryBuyItem(building.Name, Player.Instance.MainBuilding_)) 
+		if (!Player.Instance.Shop_.TryBuyItem(building.Name, Player.Instance.MainBuilding_))
 		{ return; }
 
 		GameObject obj = Instantiate(building.gameObject, MapCoordToGrid(GetMouseWorldPos()), building.transform.rotation);
