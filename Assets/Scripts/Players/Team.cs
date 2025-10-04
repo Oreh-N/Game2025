@@ -23,9 +23,11 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	public void Start()
 	{
-		var build = Instantiate(MainController.Instance.MainBuildingPrefab, BaseLocation, Quaternion.identity);
+		var building = MainController.Instance.MainBuildingPrefab;
+
+		var build = BuildingManager.Instance.SpawnBuildOnPos
+		(building, this, BaseLocation);
 		MainBuilding_ = build.GetComponent<MainBuilding>();
-		((ITeamMember)MainBuilding_).SetTeam(this);
 	}
 
 	public void Update()
@@ -54,7 +56,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	}
 
 	public void SpawnBuilding(Building building)
-	{ BuildingManager.Instance.SpawnBuilding(building, this); }
+	{ BuildingManager.Instance.SpawnMovableBuild(building, this); }
 
 
 	// Database_______________________________________________________

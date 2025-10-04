@@ -11,8 +11,9 @@ public class Warehouse : Building, ILootTaker
 	public override string Name => "Warehouse0";
 
 
-	private void Start()
+	private new void Start()
 	{
+		base.Start();
 		_panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
 	}
 

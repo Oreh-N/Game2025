@@ -15,15 +15,16 @@ public class BasicTower : Building
 
 
 
-	private void Awake()
+	private new void Awake()
 	{
+		base.Awake();
 		GetComponent<SphereCollider>().radius = _attackRadius;
 		_damage = 30;
 	}
 
-	void Start()
+	new void Start()
     {
-        
+        base.Start();
     }
 
 	// Fill panel part

@@ -7,8 +7,9 @@ public class Spawner : Building
 	public override string Name => "Spawner0";
 
 
-	private void Start()
-	{
+	private new void Start()
+	{ 
+		base.Start();
         _panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 	}
 	private new void Update()

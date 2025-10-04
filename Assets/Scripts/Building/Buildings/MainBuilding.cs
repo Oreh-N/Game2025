@@ -10,14 +10,17 @@ public class MainBuilding : Building, ILootTaker
 	public int BuildingRadius { get; protected set; } = 50;
 	public override string Name => "MainBuilding";
 
-	private void Awake()
+
+	private new void Awake()
 	{
+		base.Awake();
 		_health = 1000;
 		Placed = true;
 	}
 
-	private void Start()
+	private new void Start()
 	{
+		base.Start();
 		_panel = UIManager.Instance.GetPanelWithTag(PubNames.MainBuildingPanelTag);
 		Color buildColor = Team_.TeamColor;
 		buildColor.a = 0.5f;
@@ -26,7 +29,7 @@ public class MainBuilding : Building, ILootTaker
 
 	private new void Update()
 	{
-		//base.Update();
+		base.Update();
 	}
 
 	public void UpgradeBuildingArea()

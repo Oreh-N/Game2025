@@ -29,13 +29,18 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	protected GameObject _panel;
 
 
-	private void Awake()
+	public void Awake()
 	{
 		BoxCollider box = GetComponent<BoxCollider>();
 		box.enabled = false;
 		Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
-		Player.Instance.RegisterBuilding(this);
+		
+	}
+
+	public void Start()
+	{
+		Team_.RegisterBuilding(this);
 	}
 
 	public void Update()

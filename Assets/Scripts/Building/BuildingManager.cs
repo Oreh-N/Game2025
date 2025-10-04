@@ -19,11 +19,9 @@ public class BuildingManager : MonoBehaviour
 	[SerializeField] LayerMask _obstacles;
 	[SerializeField] TileBase _busyTile;
 
-	Vector3 _buildingAreaCenter = new Vector3();
 	bool _is_default_cursor = true;
 	bool _allowBuilding = false;
 	Renderer[] _childrens_rends;
-	int _buildingRadius;
 
 
 	private void Awake()
@@ -63,7 +61,7 @@ public class BuildingManager : MonoBehaviour
 	{
 		ColorCurrBuilding(Color.white);
 		CurrBuilding.Construct();
-		TakeAreaForCurrBuild(CurrBuilding, _busyTile);
+		TakeAreaForCurrBuild();
 		_allowBuilding = false;
 	}
 
@@ -87,8 +85,11 @@ public class BuildingManager : MonoBehaviour
 	const int _startPadding = 1;
 
 	public bool CanBePlaced(Building build)
-	{
-		if (Vector3.Distance(build.transform.position, _buildingAreaCenter) > _buildingRadius)
+	{ 
+		Vector3 center = CurrBuilding.Team_.MainBuilding_.transform.position;
+		int radius = CurrBuilding.Team_.MainBuilding_.BuildingRadius;
+
+		if (Vector3.Distance(build.transform.position, center) > radius)
 		{ return false; }
 
 		Vector3Int startInt = GetAreaStartPos(build);
@@ -105,13 +106,13 @@ public class BuildingManager : MonoBehaviour
 		return true;
 	}
 
-	public void TakeAreaForCurrBuild(Building build, TileBase tile)
+	public void TakeAreaForCurrBuild()
 	{
-		Vector3Int start = GetAreaStartPos(build);
+		Vector3Int start = GetAreaStartPos(CurrBuilding);
 
-		for (int x = 0; x < build.Size.x + _areaPadding; x++)
+		for (int x = 0; x < CurrBuilding.Size.x + _areaPadding; x++)
 		{
-			for (int y = 0; y < build.Size.y + _areaPadding; y++)
+			for (int y = 0; y < CurrBuilding.Size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
 				Tilemap_.SetTile(Grid_.WorldToCell(currPos), _busyTile);
@@ -123,7 +124,7 @@ public class BuildingManager : MonoBehaviour
 	{
 		var size3 = new Vector3Int(build.Size.x, 0, build.Size.y);
 		var center = build.transform.position;
-		var start = new Vector3(center.x - (size3.x / 2) - _startPadding, center.y, 
+		var start = new Vector3(center.x - (size3.x / 2) - _startPadding, center.y,
 								center.z - (size3.z / 2) - _startPadding);
 		return new Vector3Int(Mathf.RoundToInt(start.x),
 							Mathf.RoundToInt(start.y),
@@ -145,24 +146,35 @@ public class BuildingManager : MonoBehaviour
 
 
 	// Actions_________________________________________________________
-	public void SpawnBuilding(Building building, Team team)
+	public void SpawnMovableBuild(Building build, Team team)
 	{
-		_buildingAreaCenter = team.MainBuilding_.transform.position;
-		_buildingRadius = team.MainBuilding_.BuildingRadius;
-
 		if (CurrBuilding != null && !CurrBuilding.Placed)
-		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
+		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return ; }
 
-		if (!Player.Instance.Shop_.TryBuyItem(building.Name, Player.Instance.MainBuilding_))
-		{ return; }
+		if (!Player.Instance.Shop_.TryBuyItem(build.GetComponent<Building>().Name, Player.Instance.MainBuilding_))
+		{ return ; }
 
-		GameObject obj = Instantiate(building.gameObject, MapCoordToGrid(GetMouseWorldPos()), building.transform.rotation);
-		CurrBuilding = obj.GetComponent<Building>();
-		((ITeamMember)CurrBuilding).SetTeam(team);
+		var obj = SpawnBuilding(build.gameObject, team, MapCoordToGrid(GetMouseWorldPos()));
 		obj.AddComponent<Movable>();
 
 		_childrens_rends = CurrBuilding.GetComponentsInChildren<Renderer>();
 		_allowBuilding = true;
+	}
+
+	private GameObject SpawnBuilding(GameObject build, Team team, Vector3 pos)
+	{
+		GameObject obj = Instantiate(build.gameObject, pos, build.transform.rotation);
+		CurrBuilding = obj.GetComponent<Building>();
+		((ITeamMember)CurrBuilding).SetTeam(team);
+		
+		return obj;
+	}
+
+	public GameObject SpawnBuildOnPos(GameObject build, Team team, Vector3 pos)
+	{
+		var obj = SpawnBuilding(build, team, pos);
+		TakeAreaForCurrBuild();
+		return obj;
 	}
 
 	private void ChangeCursor(Texture2D cursor, bool is_default)
