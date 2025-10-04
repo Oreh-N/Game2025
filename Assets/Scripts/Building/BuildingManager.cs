@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using UnityEngine;
 using Unity.VisualScripting;
+using System;
 
 
 public class BuildingManager : MonoBehaviour
@@ -21,6 +22,7 @@ public class BuildingManager : MonoBehaviour
 	Vector3 _buildingAreaCenter = new Vector3();
 	bool _is_default_cursor = true;
 	bool _allowBuilding = false;
+	Renderer[] _childrens_rends;
 	int _buildingRadius;
 
 
@@ -40,19 +42,12 @@ public class BuildingManager : MonoBehaviour
 	{
 		if (!_allowBuilding || CurrBuilding == null) return;
 
-		if (!CanBePlaced(CurrBuilding) && _is_default_cursor)
-		{ ChangeCursor(_declineCursor, false); }
-		else if (CanBePlaced(CurrBuilding) && !_is_default_cursor)
-		{ ChangeCursor(_defaultCursor, true); }
+		CheckPlace();
 
 		if (Input.GetMouseButtonDown(1))
 		{
 			if (CanBePlaced(CurrBuilding))
-			{
-				CurrBuilding.Construct();
-				TakeArea(CurrBuilding.transform.position, CurrBuilding.Size, _busyTile);
-				_allowBuilding = false;
-			}
+			{ PlaceBuilding(); }
 		}
 		else if (Input.GetKeyDown(KeyCode.Escape))
 		{
@@ -64,82 +59,81 @@ public class BuildingManager : MonoBehaviour
 		}
 	}
 
+	public void PlaceBuilding()
+	{
+		ColorCurrBuilding(Color.white);
+		CurrBuilding.Construct();
+		TakeAreaForCurrBuild(CurrBuilding, _busyTile);
+		_allowBuilding = false;
+	}
+
+	private void CheckPlace()
+	{
+		if (!CanBePlaced(CurrBuilding) && _is_default_cursor)
+		{ 
+			ChangeCursor(_declineCursor, false);
+			ColorCurrBuilding(Color.red);
+		}
+		else if (CanBePlaced(CurrBuilding))
+		{ 
+			ChangeCursor(_defaultCursor, true);
+			ColorCurrBuilding(Color.green);
+		}
+	}
+
 
 	// Grid____________________________________________________________
-	public bool CanBePlaced(Building building)
+	public bool CanBePlaced(Building build)
 	{
-		if (Vector3.Distance(building.transform.position, _buildingAreaCenter) > _buildingRadius)
+		if (Vector3.Distance(build.transform.position, _buildingAreaCenter) > _buildingRadius)
 		{ return false; }
-		BoundsInt area = new BoundsInt();
-		area.position = Grid_.WorldToCell(building.transform.position);
-		area.size = building.Size;
-		TileBase[] baseArr = GetTilesBlock(area, Tilemap_);
-		foreach (var b in baseArr)
+
+		var size3 = new Vector3Int(build.Size.x, 0, build.Size.y);
+		var center = build.transform.position;
+		var start = new Vector3(center.x - (size3.x / 2) - 1, center.y, center.z - (size3.z / 2) - 1);
+		var startInt = new Vector3Int(Mathf.RoundToInt(start.x),
+										Mathf.RoundToInt(start.y),
+										Mathf.RoundToInt(start.z));
+		for (int x = 0; x < build.Size.x + 3; x++)
 		{
-			if (b == _busyTile) return false;
+			for (int y = 0; y < build.Size.y + 3; y++)
+			{
+				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
+				if (Tilemap_.GetTile(Grid_.WorldToCell(currPos)) == _busyTile) 
+				{ return false; }
+			}
 		}
 		return true;
 	}
 
-	private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
+	public void TakeAreaForCurrBuild(Building build, TileBase tile)
 	{
-		TileBase[] arr = new TileBase[area.size.x * area.size.y * area.size.z];
-		int counter = 0;
-
-		foreach (var vector in area.allPositionsWithin)
+		var size3 = new Vector3Int(build.Size.x, 0, build.Size.y);
+		var center = build.transform.position;
+		var start = new Vector3(center.x - (size3.x / 2) - 1, center.y, center.z - (size3.z / 2) - 1);
+		var startInt = new Vector3Int(  Mathf.RoundToInt(start.x), 
+										Mathf.RoundToInt(start.y), 
+										Mathf.RoundToInt(start.z));
+		for (int x = 0; x < build.Size.x+3; x++)
 		{
-			Vector3Int pos = new Vector3Int(vector.x, vector.y, z: 0);
-			arr[counter] = Tilemap_.GetTile(pos);
-			counter++;
+			for (int y = 0; y < build.Size.y+3; y++)
+			{
+				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
+				Tilemap_.SetTile(Grid_.WorldToCell(currPos), _busyTile);
+			}
 		}
-		return arr;
-	}
-
-	/// <summary>
-	/// Computes bottom left and top right coordinates (to fill the whole area under the object correctly) 
-	/// </summary>
-	/// <param name="start">The object start position</param>
-	/// <param name="size">Object's size</param>
-	/// <returns>(BottomLeftCoordinates, TopRightCoordinates)</returns>
-	private static (Vector3Int, Vector3Int) CompAreaBordersCoords(Vector3Int start, Vector3Int size)
-	{
-		Vector3Int bottomLeft = new Vector3Int(
-		start.x - size.x / 2,
-		start.y - size.y / 2,
-		start.z
-	);
-
-		Vector3Int topRight = new Vector3Int(
-			bottomLeft.x + size.x,
-			bottomLeft.y + size.y,
-			start.z
-		);
-		return (bottomLeft, topRight);
-	}
-
-	public static void TakeArea(Vector3 pos, Vector3Int size, TileBase tile)
-	{
-		size = Grid_.LocalToCell(size);
-		var bottomLeft = new Vector3Int();
-		var topRight = new Vector3Int();
-		Vector3Int start = Grid_.WorldToCell(pos);
-		(bottomLeft, topRight) = CompAreaBordersCoords(start, size);
-		//Debug.Log(start);
-		//Debug.Log(bottomLeft);
-		//Debug.Log(topRight);
-		Tilemap_.BoxFill(start, tile, bottomLeft.x, bottomLeft.y, topRight.x, topRight.y);
 	}
 
 	/// <summary>
 	/// Maps coordinates to the grid
 	/// </summary>
-	/// <param name="position">Real coordinates (will be transformed to the grid coordinates)</param>
+	/// <param name="worldPos">Real coordinates (will be transformed to the grid coordinates)</param>
 	/// <returns></returns>
-	public Vector3 MapCoordToGrid(Vector3 position)
+	public Vector3 MapCoordToGrid(Vector3 worldPos)
 	{
-		Vector3Int cellPos = Grid_.WorldToCell(position);
-		position = Grid_.GetCellCenterWorld(cellPos);
-		return position;
+		Vector3Int cellPos = Grid_.WorldToCell(worldPos);
+		worldPos = Grid_.GetCellCenterWorld(cellPos);
+		return worldPos;
 	}
 	// ________________________________________________________________
 
@@ -149,20 +143,22 @@ public class BuildingManager : MonoBehaviour
 	{
 		_buildingAreaCenter = team.MainBuilding_.transform.position;
 		_buildingRadius = team.MainBuilding_.BuildingRadius;
-		bool was_bought = false;
+
 		if (CurrBuilding != null && !CurrBuilding.Placed)
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
 
-		was_bought = Player.Instance.Shop_.TryBuyItem(building.Name, Player.Instance.MainBuilding_);
+		if (!Player.Instance.Shop_.TryBuyItem(building.Name, Player.Instance.MainBuilding_)) 
+		{ return; }
 
-		if (!was_bought) { return; }
-		Vector3 spawnPos = MapCoordToGrid(GetMouseWorldPos());
-		GameObject obj = Instantiate(building.gameObject, spawnPos, building.transform.rotation);
+		GameObject obj = Instantiate(building.gameObject, MapCoordToGrid(GetMouseWorldPos()), building.transform.rotation);
 		CurrBuilding = obj.GetComponent<Building>();
-		((ITeamMember)CurrBuilding.GetComponent<Building>()).SetTeam(team);
+		((ITeamMember)CurrBuilding).SetTeam(team);
 		obj.AddComponent<Movable>();
+
+		_childrens_rends = CurrBuilding.GetComponentsInChildren<Renderer>();
 		_allowBuilding = true;
 	}
+
 	private void ChangeCursor(Texture2D cursor, bool is_default)
 	{
 		Cursor.SetCursor(cursor, new Vector2(0, 0), CursorMode.Auto);
@@ -180,6 +176,12 @@ public class BuildingManager : MonoBehaviour
 		if (Physics.Raycast(ray, out RaycastHit hit))
 			return hit.point;
 		return Vector3.zero;
+	}
+
+	public void ColorCurrBuilding(Color color)
+	{
+		foreach (Renderer rend in _childrens_rends)
+		{ rend.material.color = color; }
 	}
 	// ________________________________________________________________
 }

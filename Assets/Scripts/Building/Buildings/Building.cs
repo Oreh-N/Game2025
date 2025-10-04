@@ -18,7 +18,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	GameObject IHavePanel.Panel { get => _panel; set => _panel = value; }
 	float IDestructible.Health { get => _health; set => _health = value; }
 	// Building_info________
-	public Vector3Int Size { get; private set; }
+	public Vector2Int Size { get; private set; }
 	public bool Placed { get; protected set; }
 	public abstract string Name { get; }
 	protected float _health;
@@ -33,8 +33,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	{
 		BoxCollider box = GetComponent<BoxCollider>();
 		box.enabled = false;
-		Size = new Vector3Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
-							  Mathf.CeilToInt(box.size.y * transform.localScale.y),
+		Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
 		Player.Instance.RegisterBuilding(this);
 	}
@@ -69,6 +68,23 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	{ 
 		Player.Instance.RemoveBuilding(this);
 	}
+
+	private void OnDrawGizmosSelected()
+	{
+		Size = new Vector2Int(20, 20);
+		for (int x = 0; x < Size.x; x++)
+		{
+			for (int y = 0; y < Size.y; y++)
+			{
+				Gizmos.color = new Color(1f, 0.9f, 0.01f, 0.7f);
+				Vector3 center_ = transform.position;
+				center_ = new Vector3(center_.x - (Size.x / 2), center_.y, center_.z - (Size.y / 2));
+				center_ += new Vector3(x, y: 0, z: y);
+				Gizmos.DrawCube(center: center_, size: new Vector3(x: 1, y: 1f, z: 1));
+			}
+		}
+	}
+
 	// _______________________________________________________________
 
 

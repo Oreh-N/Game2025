@@ -10,7 +10,6 @@ public class MainBuilding : Building, ILootTaker
 	public int BuildingRadius { get; protected set; } = 50;
 	public override string Name => "MainBuilding";
 
-
 	private void Awake()
 	{
 		_health = 1000;
@@ -27,7 +26,7 @@ public class MainBuilding : Building, ILootTaker
 
 	private new void Update()
 	{
-		base.Update();
+		//base.Update();
 	}
 
 	public void UpgradeBuildingArea()
