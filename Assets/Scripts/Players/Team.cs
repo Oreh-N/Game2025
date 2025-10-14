@@ -51,6 +51,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	{
 		if (CurrInteractObject != null)
 		{ CurrInteractObject.NowInteracting = false; }
+
 		CurrInteractObject = obj;
 		CurrInteractObject.NowInteracting = true;
 	}

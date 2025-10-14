@@ -28,6 +28,12 @@ public class UIManager : MonoBehaviour
 
 
 	// Actions_________________________________________
+	public void HideAllPanels()
+	{	
+		foreach (GameObject panel in _collapsiblePanels)
+		{ panel.SetActive(false); }
+	}
+
 	public void UpdateWarningPanel(string warning)
 	{
 		if (_warningPanel == null) 

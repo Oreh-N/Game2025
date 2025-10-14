@@ -45,6 +45,8 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public void Update()
 	{
+		if (_health <= 0)
+		{ Destroy(gameObject); }
 		UpdatePanelInfo();
 		if (!_panel.activeSelf)
 		{ NowInteracting = false; }

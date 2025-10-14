@@ -50,7 +50,7 @@ public class UnitSelectionManager : MonoBehaviour
 
 		RaycastHit hit;
 		// If we are hitting a unit
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _units))
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _units, QueryTriggerInteraction.Ignore))
 		{
 			if (Input.GetKey(KeyCode.LeftShift))
 			{ MultiSelect(hit.collider.gameObject); }
