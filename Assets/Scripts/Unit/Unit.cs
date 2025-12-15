@@ -5,23 +5,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, ILootTaker, IHavePanel, ITeamMember
+public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHavePanel, ITeamMember
 {
-	float IDestructible.Health { get => _health; set => _health = value; }
-	GameObject IHavePanel.Panel { get => Panel; set => Panel = value; }
-	string IAlive.Name { get => UnitName; }
-
-	public Inventory LootCounter { get; set; } = new Inventory();
-	public GameObject Panel { get; protected set; }
-	public Team Team_ { get; set; }
-
-	// Unit_info___________________
-	public abstract string UnitName { get; }
-	public bool NowInteracting { get; set; }
-
-	protected int _holder_capacity = 2;
-	protected float _health = 100;
-	// ____________________________
+	protected UnitData data;
 
 
 	public void Awake()
@@ -34,39 +20,38 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 	{ 
 		//GetComponent<Renderer>().material.color = Team_.TeamColor;
 		UnitSelectionManager.Instance.AllUnits.Add(gameObject);
-		Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
+		data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
 	}
 
 	public void Update()
 	{
-		if (IsOutOfMap(transform.position) || _health <= 0)
+		if (IsOutOfMap(transform.position) || data.Health <= 0)
 		{
 			Destroy(GetComponent<UnitMovement>());
 			Destroy(gameObject);
 		}
-		if (Panel != null && !Panel.activeSelf)
-		{ NowInteracting = false; }
-		if (NowInteracting && Team_.TeamName == Player.Instance.TeamName)
+		if (data.Panel != null && !data.Panel.activeSelf)
+		{ data.NowInteracting = false; }
+		if (data.NowInteracting && UnitManager.GetTeamName(data.TeamID) == UnitManager.GetPlayerTeamName())
 		{ UpdatePanelInfo(); }
 	}
 	public void OnMouseDown()
 	{
-		Team_.ChangeInteractableObject(this);
-		((IHavePanel)this).ShowPanel();
+		UnitManager.GetTeam(data.TeamID).ChangeInteractableObject(this);
+		((IHavePanel)this).ShowPanel(data.Panel);
 	}
 
 	private bool IsOutOfMap(Vector3 pos)
 	{
 		if (pos.y < -5)
 		{
-			UIManager.Instance.UpdateWarningPanel($"The {UnitName} fell off a map");
+			UIManager.Instance.UpdateWarningPanel($"The {data.Name} fell off a map");
 			return true;
 		}
 		return false;
 	}
 
 	public abstract void Interact();
-
 
 	// Fight____________________________________________________________
 	private void OnDestroy()
@@ -76,8 +61,24 @@ public abstract class Unit : MonoBehaviour, IAlive, IInteractable, ILootGiver, I
 	}
 
 	public virtual void TakeDamage(float damage)
-	{ _health -= damage; }
+	{ data.Health -= damage; }
 
 	public abstract void UpdatePanelInfo();
+
+	public Inventory GetInventory()
+	{
+		return data.LootCounter;
+	}
+
+	public void SetTeam(int teamID)
+	{
+		data.TeamID = teamID;
+	}
+
+	public string GetTeamName()
+	{
+		return UnitManager.GetTeamName(data.TeamID);
+	}
+
 	// _________________________________________________________________
 }

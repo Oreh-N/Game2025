@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Warehouse : Building, ILootTaker
+public class Warehouse : Building, ILootContainer
 {
 	public List<LootType> _content { get; protected set; } = new List<LootType>() { LootType.Wood };
 	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Wood, 0 } };
-	public override string Name => "Warehouse0";
 
 
 	private new void Start()
 	{
 		base.Start();
-		_panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
+		//data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
+		Data.Name = "Warehouse0";
 	}
 
 	private new void Update()
@@ -29,7 +29,7 @@ public class Warehouse : Building, ILootTaker
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			ILootContainer.MoveSpecificLoot(unit.LootCounter, LootCounter, _content);
+			BuildingManager.Instance.MoveLoot(unit, this, _content);
 		}
 	}
 	// _______________________________________________________
@@ -43,7 +43,12 @@ public class Warehouse : Building, ILootTaker
 		{
 			text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
 		}
-		_panel.GetComponent<Text>().text = text;
+		BuildingManager.ShowMessage(text);
+	}
+
+	public Inventory GetInventory()
+	{
+		return LootCounter;
 	}
 	// _______________________________________________________
 }

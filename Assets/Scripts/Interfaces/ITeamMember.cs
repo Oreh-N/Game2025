@@ -4,7 +4,5 @@ using UnityEngine;
 
 public interface ITeamMember
 {
-	public Team Team_ {  get; set; }
-
-	public void SetTeam(Team team) { Team_ = team;}
+	public void SetTeam(int teamID);
 }

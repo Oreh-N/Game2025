@@ -3,33 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainBuilding : Building, ILootTaker
+public class MainBuilding : Building, ILootContainer
 {
 	public Inventory LootCounter { get; set; } = new Inventory() { { LootType.Gold, 500 } };
 	List<LootType> _content = new List<LootType>() { LootType.Gold };
 	public int BuildingRadius { get; protected set; } = 50;
-	public override string Name => "MainBuilding";
 
 
 	private new void Awake()
 	{
 		base.Awake();
-		_health = 1000;
-		Placed = true;
+		Data.IsPlaced = true;
+		Data.Name = "MainBuilding";
 	}
 
 	private new void Start()
 	{
 		base.Start();
-		_panel = UIManager.Instance.GetPanelWithTag(PubNames.MainBuildingPanelTag);
-		Color buildColor = Team_.TeamColor;
-		buildColor.a = 0.5f;
-		GetComponentInChildren<Renderer>().material.color = buildColor;
+		HealthSys.SetHealth(1000);
+		ColorBuilding();
 	}
 
 	private new void Update()
 	{
 		base.Update();
+	}
+
+	public override void ColorBuilding()
+	{
+		Team t = BuildingManager.GetTeam(Data.TeamID);
+		if (!t) return;
+		Color buildColor = t.GetColor();
+		buildColor.a = 0.5f;
+		GetComponentInChildren<Renderer>().material.color = buildColor;
 	}
 
 	public void UpgradeBuildingArea()
@@ -41,11 +47,11 @@ public class MainBuilding : Building, ILootTaker
 		if (int.TryParse(text.text, out upgradePrice) && Pay(upgradePrice))
 		{
 			text.text = ((int)(upgradePrice*1.5)).ToString();
-			BuildingRadius += (int)(BuildingRadius * 0.3f); 
-			UIManager.Instance.UpdateWarningPanel("Building area has increased by 30%");
+			BuildingRadius += (int)(BuildingRadius * 0.3f);
+			BuildingManager.ShowMessage("Building area has increased by 30%");
 		}
 		else
-		{ UIManager.Instance.UpdateWarningPanel("Not enough gold"); }
+		{ BuildingManager.ShowMessage("Not enough gold"); }
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -53,7 +59,7 @@ public class MainBuilding : Building, ILootTaker
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			ILootContainer.MoveSpecificLoot(unit.LootCounter, LootCounter, _content);
+			BuildingManager.Instance.MoveLoot(unit, this, _content);
 		}
 	}
 	/// <summary>
@@ -84,13 +90,18 @@ public class MainBuilding : Building, ILootTaker
 	// Visual_________________________________________________
 	public override void UpdatePanelInfo()
 	{
-		Text text = _panel.GetComponentInChildren<Text>();
-		text.text = $"{Name}\nTeam: {Team_.TeamName}\nHealth: {_health}\n";
+		string text = "";
+		text = $"{Data.Name}\nTeam: {UnitManager.GetTeamName(Data.TeamID)}\nHealth: {HealthSys.GetHealth()}\n";
 		foreach (var item in LootCounter)
 		{
-			text.text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
+			text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
 		}
-		UIManager.Instance.UpdateMoneyPanel(LootCounter[LootType.Gold]);
+		BuildingManager.Instance.UpdatePanelText(text, Data.PanelID);
+	}
+
+	public Inventory GetInventory()
+	{
+		return LootCounter;
 	}
 	// ________________________________________________________
 }

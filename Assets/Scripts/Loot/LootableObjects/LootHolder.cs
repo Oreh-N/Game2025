@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class LootHolder : MonoBehaviour, ILootGiver
+public abstract class LootHolder : MonoBehaviour, ILootContainer
 {
 	public Inventory LootCounter { get; set; } = new Inventory();
 	public bool IsEmpty { get; protected set; } = false;
@@ -23,7 +23,7 @@ public abstract class LootHolder : MonoBehaviour, ILootGiver
 	{
 		IsEmpty = true;
 
-		return ((ILootGiver)this).GiveAllLoot();
+		return GiveAllLoot();
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -33,9 +33,14 @@ public abstract class LootHolder : MonoBehaviour, ILootGiver
 		if (collision.collider.tag == PubNames.UnitTag)
 		{
 			var unit = collision.gameObject.GetComponent<Unit>();
-			((ILootTaker)unit).TakeAllLoot(LootCounter);
+			ILootContainer.TakeAllLoot(unit.GetInventory(), LootCounter);
 
 			IsEmpty = true;
 		}
+	}
+
+	public Inventory GetInventory()
+	{
+		return LootCounter;
 	}
 }

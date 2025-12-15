@@ -13,67 +13,62 @@ using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IDestructible, IHavePanel, ITeamMember
+public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember
 {
-	GameObject IHavePanel.Panel { get => _panel; set => _panel = value; }
-	float IDestructible.Health { get => _health; set => _health = value; }
-	// Building_info________
-	public Vector2Int Size { get; private set; }
-	public bool Placed { get; protected set; }
-	public abstract string Name { get; }
-	protected float _health;
-	// _____________________
-	public bool NowInteracting { get; set; }
-	public Team Team_ { get; set; }
+	protected BuildingData Data = new BuildingData();
+	public HealthSystem HealthSys { get; protected set; } = new HealthSystem();
 
-	protected GameObject _panel;
 
 
 	public void Awake()
 	{
 		BoxCollider box = GetComponent<BoxCollider>();
 		box.enabled = false;
-		Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
+		Data.Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x),
 							  Mathf.CeilToInt(box.size.z * transform.localScale.z));
 		
 	}
 
 	public void Start()
 	{
-		Team_.RegisterBuilding(this);
+		BuildingManager.AddBuilding(this, Data.TeamID);
 	}
 
 	public void Update()
 	{
-		if (_health <= 0)
+		if (HealthSys.GetHealth() <= 0)
 		{ Destroy(gameObject); }
-		UpdatePanelInfo();
-		if (!_panel.activeSelf)
-		{ NowInteracting = false; }
+		//UpdatePanelInfo();
+		//if (!BuildingManager.TeamIsInteracting(Data.TeamID))
+		//{ Data.NowInteracting = false; }
 	}
 
-
-	// Build/Destruct_________________________________________________
 	public virtual void Construct()
 	{
-		gameObject.AddComponent<NavMeshObstacle>();
-		var mesh = gameObject.GetComponent<NavMeshObstacle>();
-		mesh.center = gameObject.GetComponent<BoxCollider>().center;
-		mesh.size = gameObject.GetComponent<BoxCollider>().size;
-		mesh.carveOnlyStationary = false;
-		mesh.carving = true;
-
 		gameObject.GetComponent<BoxCollider>().enabled = true;
 		Destroy(gameObject.GetComponent<Movable>());
-		Placed = true;
+		ColorBuilding();
+		Data.IsPlaced = true;
 	}
 
-	public virtual void TakeDamage(float damage)
-	{ }
+	public virtual void ColorBuilding()
+	{
+		Color teamColor = BuildingManager.GetTeam(Data.TeamID).GetColor();
+		Renderer[] renderers = GetComponentsInChildren<Renderer>();
+		foreach (Renderer rend in renderers)
+		{
+			foreach (Material mat in rend.materials)
+			{
+				if (mat.HasProperty("_Color"))
+				{ mat.color = teamColor; }
+			}
+		}
+	}
 
 	private void OnDestroy()
 	{ 
-		Player.Instance.RemoveBuilding(this);
+		Debug.Log("Building destroing is not implemented yet");
+		//BuildingManager.RemoveBuilding(this, Data.TeamID);
 	}
 	// _______________________________________________________________
 
@@ -84,17 +79,33 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		if (EventSystem.current.IsPointerOverGameObject())
 			return;
 
-		if (Placed)
-		{ 
-			Player.Instance.ChangeInteractableObject(this);
-			((IHavePanel)this).ShowPanel();
+		if (Data.IsPlaced)
+		{
+			BuildingManager.SetInteractableObj(this, Data.TeamID);
+			BuildingManager.ShowPanel(Data.PanelID);
 		}
 	}
 
 	public virtual void Interact()
-	{ UIManager.Instance.UpdateWarningPanel("Building class Interact shouldn't be called"); }
+	{ BuildingManager.ShowMessage("Building class Interact shouldn't be called"); }
 
 	public virtual void UpdatePanelInfo()
-	{ UIManager.Instance.UpdateWarningPanel("Building class UpdatePanelInfo shouldn't be called"); }
+	{ BuildingManager.ShowMessage("Building class UpdatePanelInfo shouldn't be called"); }
+
+	// DATA_TRANSFERRING_______________________________________________________________
+
+	public bool IsPlaced() { return Data.IsPlaced; }
+
+	public int GetTeamID() { return Data.TeamID; }
+
+	public string GetName() { return Data.Name; }
+
+	public Vector2 GetSize() { return Data.Size; }
+
+	public void SetTeam(int teamID) { Data.TeamID = teamID; }
+
+	public Vector2Int GetTakeAreaSize() { return Data.Size; }
+
+	public Vector3 GetPos() { return transform.position; }
 	// _______________________________________________________________
 }

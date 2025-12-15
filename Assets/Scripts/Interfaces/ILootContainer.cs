@@ -5,8 +5,6 @@ using UnityEngine;
 
 public interface ILootContainer
 {
-	public Inventory LootCounter { get; set; }
-
 	/// <summary>
 	/// Add loot to a loot holder
 	/// </summary>
@@ -58,4 +56,41 @@ public interface ILootContainer
 			}
 		}
 	}
+	/// <summary>
+	/// Rewrites loot to the new dictionary and clear given loot holder (allLoot)
+	/// </summary>
+	/// <param name="allLoot">Loot holder (can contain loot of any type)</param>
+	/// <returns>Returns a new loot dictionary</returns>
+	public static Inventory GiveAllLoot(Inventory from)
+	{
+		var retLoot = new Inventory();
+
+		foreach (var loot in from)
+		{ retLoot.Add(loot.Key, loot.Value); }
+
+		from.Clear();
+		return retLoot;
+	}
+
+	public static Inventory GiveLootPart(int part, Inventory from)
+	{
+		var returnLoot = new Inventory();
+		MoveLootPart(from, returnLoot, part);
+		return returnLoot;
+	}
+
+	public static Inventory GiveSpecificLoot(List<LootType> lootForGiving, Inventory from)
+	{
+		var returnLoot = new Inventory();
+		MoveSpecificLoot(from, returnLoot, lootForGiving);
+		return returnLoot;
+	}
+	public static void TakeAllLoot(Inventory loot, Inventory lootHolder)
+	{
+		foreach (var item in loot)
+		{ AddLootTo(lootHolder, item.Key, item.Value); }
+		loot.Clear();
+	}
+
+	public Inventory GetInventory();
 }

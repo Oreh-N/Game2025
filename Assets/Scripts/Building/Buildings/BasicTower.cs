@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BasicTower : Building
 {
-	public override string Name => "Tower0";
     float _attackRadius = 10f;
 	Unit _currTarget;
 	float _attackCooldown = 2f;
@@ -17,6 +16,7 @@ public class BasicTower : Building
 
 	private new void Awake()
 	{
+		Data.Name = "Tower0";
 		base.Awake();
 		GetComponent<SphereCollider>().radius = _attackRadius;
 		_damage = 30;
