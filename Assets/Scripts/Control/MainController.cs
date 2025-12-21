@@ -5,31 +5,24 @@ using UnityEngine;
 
 public class MainController : MonoBehaviour
 {
-    public static MainController Instance;
+	public static MainController Instance;
 
-    [SerializeField] public GameObject MainBuildingPrefab;
-    [SerializeField] public GameObject EmptyEnemyObj;
-    Team[] _teams;
+	[SerializeField] public GameObject MainBuildingPrefab;
+	[SerializeField] public GameObject EmptyEnemyObj;
+	Team[] _teams;
 
 	private void Awake()
 	{
-		_teams = new Team[2] { Player.Instance, CreateEnemy() };
-	}
-
-	void Start()
-    {
 		if (Instance != null && Instance != this)
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
 
-
+		_teams = new Team[2] { Player.Instance, CreateEnemy() };
 	}
 
-    void Update()
-    {
-        
-    }
+
+	public Team[] GetAllTeams() { return _teams; }
 
 	/// <summary>
 	/// Returns team by its ID

@@ -27,11 +27,6 @@ public class BuildingManager : MonoBehaviour
 	{
 	}
 
-	public void UpdateBuildArea(MainBuilding mainBuilding)
-	{
-		mainBuilding.UpgradeBuildingArea();
-	}
-
 	public static void ShowMessage(string m)
 	{
 		if (m == null) return;

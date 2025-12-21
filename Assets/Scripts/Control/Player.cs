@@ -16,7 +16,7 @@ public class Player : Team
 		else
 		{ Instance = this; }
 
-		data.BaseLocation = new Vector3(52, 0, 52);
+		data.BaseCenter = new Vector3(52, 0, 52);
 		SetTeam(new Color(0.7f, 0.4f, 0.9f), "Nuts");
 	}
 

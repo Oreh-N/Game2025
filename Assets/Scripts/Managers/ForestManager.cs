@@ -27,7 +27,7 @@ public class ForestManager : MonoBehaviour
 	void Update()
 	{
 		foreach (var chunk in _chunks.Values)
-		{ 
+		{
 			chunk.ActivateIfHaveUnits();
 			chunk.EraseCutOffTrees();
 		}
@@ -130,5 +130,17 @@ public class ForestManager : MonoBehaviour
 		{
 			Debug.Log($"{chunk.Key} : contains {chunk.Value.TreeIndices.Count} trees");
 		}
+	}
+
+	public Dictionary<Vector3, float> GetBaseAreaInfo()
+	{
+		var areasInfo = new Dictionary<Vector3, float>();
+		Team[] teams = MainController.Instance.GetAllTeams();
+
+		if (teams != null)
+			foreach (var t in teams)
+			{ areasInfo.Add(t.GetCenter(), t.GetBuildingRadius()); }
+
+		return areasInfo;
 	}
 }

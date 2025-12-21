@@ -7,11 +7,21 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Color = UnityEngine.Color;
+using Rnd = UnityEngine.Random;
+
 
 public class Map : MonoBehaviour
 {
+	public enum CellType
+	{
+		Empty = 0,
+		Building = 1,
+		Unit = 2,
+		Tree = 3
+	}
 	public static Map Instance;
 	MapData data = new MapData();
+	float treeGenFrequency = 60;
 
 
 	private void Awake()
@@ -25,6 +35,29 @@ public class Map : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
+
+	private void Start()
+	{
+		GenVirtForest();
+	}
+
+
+	private void GenVirtForest()
+	{
+		Dictionary<Vector3, float> areasInfo = ForestManager.Instance.GetBaseAreaInfo();
+
+		for (int x = 0; x < data.Map.GetLength(0); x++)
+		{
+			for (int z = 0; z < data.Map.GetLength(1); z++)
+			{
+				if (data.Map[x, z] != CellType.Empty) continue;
+
+				if (Rnd.Range(0, treeGenFrequency) < treeGenFrequency)
+					data.Map[x, z] = CellType.Tree;
+			}
+		}
+	}
+
 
 	/// <summary>
 	/// Convert map index to world position (vertex of the cell)
@@ -49,7 +82,7 @@ public class Map : MonoBehaviour
 		int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
 
 
-		if (x >= data.MapSize.x || z >= data.MapSize.y || x < 0 || z < 0)
+		if (x >= MapData.MapSize[0] || z >= MapData.MapSize[1] || x < 0 || z < 0)
 		{
 			Debug.Log("Out of range (WorldToMap)");
 			return new Vector2Int(0, 0);
@@ -58,17 +91,18 @@ public class Map : MonoBehaviour
 		return new Vector2Int(x, z);
 	}
 
-	#region
+	#region TESTING
 	public bool showGrid;
 	public GameObject targetForGizmo;
+	public bool showMap;
 
 	private void OnDrawGizmos()
 	{
 		if (showGrid)
 		{
 			Gizmos.color = new Color(0.8f, 0, 0, 0.3f);
-			for (int x = 0; x < data.MapSize.x; x++)
-				for (int z = 0; z < data.MapSize.y; z++)
+			for (int x = 0; x < MapData.MapSize[0]; x++)
+				for (int z = 0; z < MapData.MapSize[1]; z++)
 				{
 					Gizmos.DrawCube(MapToWorld(x, z), data.CellSize);
 				}
@@ -84,17 +118,19 @@ public class Map : MonoBehaviour
 			var size = new Vector3(sizeOnMap.x, 0, sizeOnMap.y);
 			Gizmos.DrawCube(MapToWorld(worldPos.x, worldPos.y), size);
 		}
+
+		if (showMap) ShowMapGizmo();
 	}
 	void ShowMapGizmo()
 	{
 		Gizmos.color = new Color(0.7f, 0, 0.4f, 0.3f);
 
-		for (int x = 0; x < data.MapSize.x; x++)
-			for (int y = 0; y < data.MapSize.y; y++)
+		for (int x = 0; x < MapData.MapSize[0]; x++)
+			for (int z = 0; z < MapData.MapSize[1]; z++)
 			{
-				if (data.Map[x, y] == 0) continue;   // will through an error if used not during the game
+				if (data.Map[x, z] == 0) continue;   // will through an error if used not during the game
 
-				Vector3 world = MapToWorld(x, y);
+				Vector3 world = MapToWorld(x, z);
 				Gizmos.DrawCube(world, data.CellSize);
 			}
 	}

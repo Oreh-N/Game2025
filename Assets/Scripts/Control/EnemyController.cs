@@ -6,7 +6,7 @@ public class EnemyController : Team
 {
 	private void Awake()
 	{
-		data.BaseLocation = new Vector3(360, 0, 400);
+		data.BaseCenter = new Vector3(360, 0, 400);
 		SetTeam(new Color(0.7f, 0.1f, 0.2f), "Velvet");
 
 	}

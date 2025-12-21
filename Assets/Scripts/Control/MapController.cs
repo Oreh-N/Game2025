@@ -43,8 +43,6 @@ public class MapController : MonoBehaviour {
 	}
 
 
-
-
 	/// <summary>
 	/// Maps coordinates to the grid
 	/// </summary>
@@ -71,7 +69,7 @@ public class MapController : MonoBehaviour {
 	{
 		int teamID = build.GetTeamID();
 		Vector3 center = MainController.Instance.GetTeam(teamID).GetCenter();
-		int radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
+		float radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
 
 		if (Vector3.Distance(build.transform.position, center) > radius)
 		{ return false; }

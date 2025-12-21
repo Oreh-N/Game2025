@@ -11,15 +11,14 @@ public class TeamData
 	public Inventory LootCounter = new Inventory { { LootType.Wood, 0 } };
 	public IInteractable CurrInteractObject;
 	public Shop Shop_ = new Shop();
-	public bool NowInteracting;
 	//__________________
 	// Members/Buildings
 	public List<Building> Buildings = new List<Building>();
 	public List<Unit> Members = new List<Unit>();
 	//___________________
 	// Team identifier
-	public Vector3 BaseLocation = new Vector3();
-	public int BuildingRadius;
+	public Vector3 BaseCenter = new Vector3(0,0,0);
+	public float BuildingRadius = 50;
 	public string TeamName = "";
 	public Color TeamColor = Color.white;
 	public int ID;

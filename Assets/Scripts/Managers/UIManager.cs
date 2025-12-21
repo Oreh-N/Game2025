@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
+
+/// <summary>
+/// Use UI to display information to the player
+/// </summary>
 public class UIManager : MonoBehaviour
 {
 	public static UIManager Instance;
@@ -110,5 +114,7 @@ public class UIManager : MonoBehaviour
 	{
 		return data._allPanels[panelID];
 	}
+
+
 	// ________________________________________________
 }

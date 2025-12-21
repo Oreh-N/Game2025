@@ -7,6 +7,8 @@ using UnityEngine;
 
 public static class UnitManager
 {
+	// DATA_TRANSFERRING_______________________________________________________________
+
 	public static string GetTeamName(int teamID)
 	{
 		Team t = GetTeam(teamID);
@@ -29,7 +31,7 @@ public static class UnitManager
 	{
 		return Player.Instance.GetTeamName();
 	}
-
+	// __________________________________________________________________________________
 	public static void HitUnit(Unit injuredUnit, int damage)
 	{
 		injuredUnit.TakeDamage(damage);
