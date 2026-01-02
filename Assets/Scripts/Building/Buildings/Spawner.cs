@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Spawner : Building
 {
-
+	private new void Awake()
+	{
+		base.Awake();
+	}
 
 	private new void Start()
 	{ 

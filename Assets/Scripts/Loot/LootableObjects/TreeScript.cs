@@ -13,9 +13,7 @@ public class TreeScript : LootHolder, IPlaceableOnMap
 
 	public Vector2Int GetTakeAreaSize()
 	{
-		var box = transform.GetComponent<BoxCollider>();
-		Vector2Int takeAreaSize = new Vector2Int((int)box.size.x+1, (int)box.size.z + 1);
-		return takeAreaSize;
+		return new Vector2Int(1, 1);
 	}
 
 	private void Awake()

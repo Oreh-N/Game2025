@@ -258,7 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfcd98b7b02a15544aa93e2771ee7822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Map
-  TreePrefab: {fileID: 1675362174508088656, guid: a3ee4b833cd857248bfc80007976c1f0, type: 3}
   showGrid: 0
   targetForGizmo: {fileID: 2084046360}
   showMap: 0
@@ -6125,15 +6124,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7554146673681384727, guid: 53781dbba17ac9a4caf6640b2e0070ba, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 33.48
+      value: 32.37
       objectReference: {fileID: 0}
     - target: {fileID: 7554146673681384727, guid: 53781dbba17ac9a4caf6640b2e0070ba, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.31
+      value: -0.00000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 7554146673681384727, guid: 53781dbba17ac9a4caf6640b2e0070ba, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 123.31
+      value: 125.97
       objectReference: {fileID: 0}
     - target: {fileID: 7554146673681384727, guid: 53781dbba17ac9a4caf6640b2e0070ba, type: 3}
       propertyPath: m_LocalRotation.w

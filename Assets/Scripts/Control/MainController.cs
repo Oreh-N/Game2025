@@ -18,9 +18,12 @@ public class MainController : MonoBehaviour
 		else
 		{ Instance = this; }
 
-		_teams = new Team[2] { Player.Instance, CreateEnemy() };
 	}
 
+	private void Start()
+	{
+		_teams = new Team[2] { Player.Instance, CreateEnemy() };
+	}
 
 	public Team[] GetAllTeams() { return _teams; }
 

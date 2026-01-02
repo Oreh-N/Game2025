@@ -16,8 +16,8 @@ public class BasicTower : Building
 
 	private new void Awake()
 	{
-		Data.Name = "Tower0";
 		base.Awake();
+		Data.Name = "Tower0";
 		GetComponent<SphereCollider>().radius = _attackRadius;
 		_damage = 30;
 	}
