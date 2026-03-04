@@ -5,9 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
-using Rnd = UnityEngine.Random;
 
 
 public class Map : MonoBehaviour
@@ -18,12 +18,13 @@ public class Map : MonoBehaviour
 		Building = 1,
 		Unit = 2,
 		Tree = 3,
-		BuildArea = 100
+		BuildArea = 100,
+		Road = 101,
+		Error = 505
 	}
 	public static Map Instance;
 	public GameObject TreePrefab;
 	MapData data = new MapData();
-	float treeGenFrequency = 5;
 
 
 	private void Awake()
@@ -40,43 +41,61 @@ public class Map : MonoBehaviour
 
 	private void Start()
 	{
-		SignBuildingArea();
-		GenVirtForest();
-		GenForest();
 	}
 
-	private void SignBuildingArea()
+	public bool TrySetCell(Vector2Int coord, CellType type)
 	{
-		Team[] ts = MainController.Instance.GetAllTeams();
-		foreach (Team t in ts)
-		{
-			Vector2Int coord = WorldToMap(t.GetCenter());
-			int mapRadius = Mathf.RoundToInt(t.GetBuildingRadius() / data.CellSize.x);
-			FillMapArea(coord, mapRadius, CellType.BuildArea);
-		}
+		if (IsOutOfMap(coord) || data.Map[coord.x, coord.y] != CellType.Empty) 
+			return false;
+
+		data.Map[coord.x, coord.y] = type;
+		return true;
+	}
+
+	public void ForceSetcell(Vector2Int coord, CellType type)
+	{
+		if (IsOutOfMap(coord)) return;
+		data.Map[coord.x, coord.y] = type;
+	}
+
+	public bool CellIs(CellType type, Vector2Int coord)
+	{
+		if (IsOutOfMap(coord)) return false;
+		return data.Map[coord.x, coord.y] == type;
+	}
+
+	public bool CellIs(CellType type, int x, int z)
+	{
+		if (IsOutOfMap(new Vector2Int(x,z))) return false;
+		return data.Map[x, z] == type;
+	}
+
+	public CellType GetCell(Vector2Int coord)
+	{
+		return !IsOutOfMap(coord) ? data.Map[coord.x, coord.y] : CellType.Error;
 	}
 
 	/// <summary>
 	/// Fill the area on map (circular filling)
 	/// </summary>
 	/// <param name="centerCoords"> - coordinates of the center of the area that need to be filled</param>
-	/// <param name="mapRadius"> - translate world radius (radius, 0, 0) to map map radius (mapRadius, 0) with WorldToMap method</param>
+	/// <param name="radius"> - translate world radius (radius, 0, 0) to map map radius (mapRadius, 0) with WorldToMap method</param>
 	/// <param name="filling"> - cell type which will fill the area</param>
-	private void FillMapArea(Vector2Int centerCoords, int mapRadius, CellType filling)
+	public void FillMapArea(Vector2Int centerCoords, int radius, CellType filling)
 	{
-		data.Map[centerCoords.x, centerCoords.y] = filling;
+		ForceSetcell(centerCoords, filling);
 		Queue<Vector2Int> toFill = new Queue<Vector2Int>();
 		AddNearbyCellsToQueue(ref toFill, centerCoords);
-		
+
 		while (toFill.Count > 0)
 		{
 			var currCell = toFill.Dequeue();
-			if (data.Map[currCell.x, currCell.y] == filling) continue; 
 			int dx = currCell.x - centerCoords.x;
 			int dy = currCell.y - centerCoords.y;
-			if (dx * dx + dy * dy > mapRadius * mapRadius) continue;
+			if (dx * dx + dy * dy > radius * radius) continue;
 
-			data.Map[currCell.x, currCell.y] = filling;
+			if (!TrySetCell(currCell, filling))
+				continue;
 			AddNearbyCellsToQueue(ref toFill, currCell);
 		}
 	}
@@ -96,46 +115,12 @@ public class Map : MonoBehaviour
 		}
 	}
 
-	private bool IsOutOfMap(Vector2Int mapCoord)
+	public bool IsOutOfMap(Vector2Int mapCoord)
 	{
-		return !(mapCoord.x < MapData.MapSize[0] && mapCoord.x >= 0 
+		return !(mapCoord.x < MapData.MapSize[0] && mapCoord.x >= 0
 			 && mapCoord.y < MapData.MapSize[1] && mapCoord.y >= 0);
 	}
 
-
-	private void GenVirtForest()
-	{
-		Dictionary<Vector3, float> areasInfo = ForestManager.Instance.GetBaseAreaInfo();
-
-		for (int x = 0; x < data.Map.GetLength(0); x++)
-		{
-			for (int z = 0; z < data.Map.GetLength(1); z++)
-			{
-				if (data.Map[x, z] != CellType.Empty) continue;
-
-				if (Rnd.Range(0, 100) < treeGenFrequency)
-				{ data.Map[x, z] = CellType.Tree; }
-			}
-		}
-	}
-
-	private void GenForest()
-	{
-		if (TreePrefab == null)
-		{
-			Debug.Log("Not initialized tree prefab");
-			return;
-		}
-
-		for (int x = 0; x < data.Map.GetLength(0); x++)
-		{
-			for (int z = 0; z < data.Map.GetLength(1); z++)
-			{
-				if (data.Map[x, z] == CellType.Tree)
-				{ Instantiate(TreePrefab, MapToWorld(x, z), Quaternion.identity); }
-			}
-		}
-	}
 
 	/// <summary>
 	/// Convert map index to world position (vertex of the cell)
@@ -148,6 +133,16 @@ public class Map : MonoBehaviour
 		return data.MapStart + new Vector3(x, 0, y);
 	}
 
+
+	public Vector3 GetCellSize()
+	{
+		return data.CellSize;
+	}
+
+	public int[] GetSize()
+	{
+		return MapData.MapSize;
+	}
 
 	/// <summary>
 	/// Convert world position to map index
@@ -167,6 +162,9 @@ public class Map : MonoBehaviour
 
 		return new Vector2Int(x, z);
 	}
+
+
+
 
 	#region TESTING
 
@@ -206,7 +204,7 @@ public class Map : MonoBehaviour
 		for (int x = 0; x < MapData.MapSize[0] / 10; x++)
 			for (int z = 0; z < MapData.MapSize[1] / 10; z++)
 			{
-				if (data.Map[x, z] == CellType.Empty) continue;
+				if (CellIs(CellType.Empty, x, z)) continue;
 
 				Vector3 world = MapToWorld(x, z);
 				Gizmos.DrawCube(world, data.CellSize);

@@ -6111,7 +6111,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _treePrefab: {fileID: 1675362174508088656, guid: a3ee4b833cd857248bfc80007976c1f0, type: 3}
-  _map: {fileID: 143972250}
 --- !u!1001 &2084046358
 PrefabInstance:
   m_ObjectHideFlags: 0

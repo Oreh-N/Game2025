@@ -22,7 +22,7 @@ public class MainController : MonoBehaviour
 
 	private void Start()
 	{
-		_teams = new Team[2] { Player.Instance, CreateEnemy() };
+		_teams = new Team[3] { Player.Instance, CreateEnemy(new Vector2(100,100)), CreateEnemy(new Vector2(250, 50)) };
 	}
 
 	public Team[] GetAllTeams() { return _teams; }
@@ -40,7 +40,7 @@ public class MainController : MonoBehaviour
 		return null;
 	}
 
-	private Team CreateEnemy()
+	private Team CreateEnemy(Vector2 pos)
 	{
 		GameObject enemyObj = Instantiate(EmptyEnemyObj);
 		enemyObj.AddComponent<EnemyController>();
