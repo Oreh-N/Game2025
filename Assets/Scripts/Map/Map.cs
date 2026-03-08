@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
+using MapCoord = UnityEngine.Vector2Int;
 
 
 public class Map : MonoBehaviour
@@ -43,7 +44,7 @@ public class Map : MonoBehaviour
 	{
 	}
 
-	public bool TrySetCell(Vector2Int coord, CellType type)
+	public bool TrySetCell(MapCoord coord, CellType type)
 	{
 		if (IsOutOfMap(coord) || data.Map[coord.x, coord.y] != CellType.Empty) 
 			return false;
@@ -52,13 +53,13 @@ public class Map : MonoBehaviour
 		return true;
 	}
 
-	public void ForceSetcell(Vector2Int coord, CellType type)
+	public void ForceSetcell(MapCoord coord, CellType type)
 	{
 		if (IsOutOfMap(coord)) return;
 		data.Map[coord.x, coord.y] = type;
 	}
 
-	public bool CellIs(CellType type, Vector2Int coord)
+	public bool CellIs(CellType type, MapCoord coord)
 	{
 		if (IsOutOfMap(coord)) return false;
 		return data.Map[coord.x, coord.y] == type;
@@ -66,11 +67,11 @@ public class Map : MonoBehaviour
 
 	public bool CellIs(CellType type, int x, int z)
 	{
-		if (IsOutOfMap(new Vector2Int(x,z))) return false;
+		if (IsOutOfMap(new MapCoord(x,z))) return false;
 		return data.Map[x, z] == type;
 	}
 
-	public CellType GetCell(Vector2Int coord)
+	public CellType GetCell(MapCoord coord)
 	{
 		return !IsOutOfMap(coord) ? data.Map[coord.x, coord.y] : CellType.Error;
 	}
@@ -81,10 +82,10 @@ public class Map : MonoBehaviour
 	/// <param name="centerCoords"> - coordinates of the center of the area that need to be filled</param>
 	/// <param name="radius"> - translate world radius (radius, 0, 0) to map map radius (mapRadius, 0) with WorldToMap method</param>
 	/// <param name="filling"> - cell type which will fill the area</param>
-	public void FillMapArea(Vector2Int centerCoords, int radius, CellType filling)
+	public void FillMapArea(MapCoord centerCoords, int radius, CellType filling)
 	{
 		ForceSetcell(centerCoords, filling);
-		Queue<Vector2Int> toFill = new Queue<Vector2Int>();
+		Queue<MapCoord> toFill = new Queue<MapCoord>();
 		AddNearbyCellsToQueue(ref toFill, centerCoords);
 
 		while (toFill.Count > 0)
@@ -100,7 +101,7 @@ public class Map : MonoBehaviour
 		}
 	}
 
-	private void AddNearbyCellsToQueue(ref Queue<Vector2Int> queue, Vector2Int currCoords)
+	private void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords)
 	{
 		List<int> range = new List<int>() { -1, 0, 1 };
 		foreach (int i in range)
@@ -108,19 +109,24 @@ public class Map : MonoBehaviour
 			foreach (int j in range)
 			{
 				if (i == 0 && j == 0) continue;
-				Vector2Int newCoords = new Vector2Int(currCoords.x + i, currCoords.y + j);
+				MapCoord newCoords = new MapCoord(currCoords.x + i, currCoords.y + j);
 				if (IsOutOfMap(newCoords)) continue;
 				queue.Enqueue(newCoords);
 			}
 		}
 	}
 
-	public bool IsOutOfMap(Vector2Int mapCoord)
+	public bool IsOutOfMap(MapCoord mapCoord)
 	{
 		return !(mapCoord.x < MapData.MapSize[0] && mapCoord.x >= 0
 			 && mapCoord.y < MapData.MapSize[1] && mapCoord.y >= 0);
 	}
 
+	public bool IsOutOfMap(Vector2 coord)
+	{
+		var mapCoord = WorldToMap(new Vector3(coord.x, 0, coord.y));
+		return IsOutOfMap(mapCoord);
+	}
 
 	/// <summary>
 	/// Convert map index to world position (vertex of the cell)
@@ -149,7 +155,7 @@ public class Map : MonoBehaviour
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <returns>Map position (indicies)</returns>
-	public Vector2Int WorldToMap(Vector3 pos)
+	public MapCoord WorldToMap(Vector3 pos)
 	{
 		int x = Mathf.FloorToInt(pos.x - data.MapStart.x);
 		int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
@@ -157,10 +163,10 @@ public class Map : MonoBehaviour
 
 		if (x >= MapData.MapSize[0] || z >= MapData.MapSize[1] || x < 0 || z < 0)
 		{
-			throw new Exception("WorldToMap: Out of range");
+			throw new Exception($"Map.WorldToMap: Out of range. Did you mean ({pos.x}, {pos.y}, {pos.z}) position");
 		}
 
-		return new Vector2Int(x, z);
+		return new MapCoord(x, z);
 	}
 
 
@@ -189,7 +195,7 @@ public class Map : MonoBehaviour
 		if (targetForGizmo && targetForGizmo.TryGetComponent<IPlaceableOnMap>(out comp))
 		{
 			Gizmos.color = new Color(1f, 0.4f, 1f, 0.5f);
-			Vector2Int worldPos = WorldToMap(comp.GetPos());
+			MapCoord worldPos = WorldToMap(comp.GetPos());
 			var sizeOnMap = (comp.GetTakeAreaSize());   // Some objects sizes are initialized during the game
 			var size = new Vector3(sizeOnMap.x, 0, sizeOnMap.y);
 			Gizmos.DrawCube(MapToWorld(worldPos.x, worldPos.y), size);

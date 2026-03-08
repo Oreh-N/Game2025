@@ -75,7 +75,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static void AddBuilding(Building b, int teamID)
 	{
-		Team t = MainController.Instance.GetTeam(teamID);
+		Team t = MainController.Instance.GetTeam((uint)teamID);
 		if (t) t.RegisterBuilding(b);
 		else Debug.Log("Couldn't register the building");
 			
@@ -102,7 +102,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static Team GetTeam(int teamID)
 	{
-		return MainController.Instance.GetTeam(teamID);
+		return MainController.Instance.GetTeam((uint)teamID);
 	}
 
 

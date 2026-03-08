@@ -4,20 +4,34 @@ using UnityEngine;
 
 public class EnemyController : Team
 {
-	private void Awake()
-	{
-		data.BaseCenter = new Vector3(360, 0, 400);
-		SetTeam(new Color(0.7f, 0.1f, 0.2f), "Velvet");
-
-	}
-
 	private new void Start()
 	{
 		base.Start();
 	}
 
 	private new void Update()
-    {
-        base.Update();
-    }
+	{
+		base.Update();
+	}
+
+
+	/// <summary>
+	/// Setup enemy base. If had troubles (out of map, etc.) will return false, otherwise true.
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="color"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	public bool Setup(Vector2 position, Color color, string name)
+	{
+		if (Map.Instance.IsOutOfMap(position))
+		{
+			Destroy(this);
+			Debug.Log("The base is out of map. It will be ignored.");
+			return false;
+		}
+		data.BaseCenter = new Vector3(position.x, 0, position.y);
+		SetTeam(color, name);
+		return true;
+	}
 }

@@ -22,7 +22,11 @@ public class MainController : MonoBehaviour
 
 	private void Start()
 	{
-		_teams = new Team[3] { Player.Instance, CreateEnemy(new Vector2(100,100)), CreateEnemy(new Vector2(250, 50)) };
+		_teams = new Team[3] { 
+			Player.Instance,
+			CreateEnemy(new Vector2(700,800), Color.orchid, ":3"),
+			CreateEnemy(new Vector2(360, 100), Color.aliceBlue, "Alice")
+		};
 	}
 
 	public Team[] GetAllTeams() { return _teams; }
@@ -32,7 +36,7 @@ public class MainController : MonoBehaviour
 	/// </summary>
 	/// <param name="teamID"></param>
 	/// <returns>Returns team if exists, else returns null</returns>
-	public Team GetTeam(int teamID)
+	public Team GetTeam(uint teamID)
 	{
 		if (teamID < _teams.Length)
 			return _teams[teamID];
@@ -40,10 +44,12 @@ public class MainController : MonoBehaviour
 		return null;
 	}
 
-	private Team CreateEnemy(Vector2 pos)
+	private Team CreateEnemy(Vector2 pos, Color c, string name)
 	{
 		GameObject enemyObj = Instantiate(EmptyEnemyObj);
-		enemyObj.AddComponent<EnemyController>();
+		var enemy = enemyObj.AddComponent<EnemyController>();
+		enemy.Setup(pos, c, name);
+		
 		return enemyObj.GetComponent<Team>();
 	}
 }

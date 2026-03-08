@@ -68,8 +68,8 @@ public class MapController : MonoBehaviour {
 	public bool CanBePlaced(Building build)
 	{
 		int teamID = build.GetTeamID();
-		Vector3 center = MainController.Instance.GetTeam(teamID).GetCenter();
-		float radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
+		Vector3 center = MainController.Instance.GetTeam((uint)teamID).GetCenter();
+		float radius = MainController.Instance.GetTeam((uint)teamID).GetBuildingRadius();
 
 		if (Vector3.Distance(build.transform.position, center) > radius)
 		{ return false; }
