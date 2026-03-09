@@ -6,51 +6,47 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class MainCameraMovement : MonoBehaviour
 {
-	float _speed = 0.5f; // 1 = 100 % (full speed)
-	Vector3 _initPos;
-    
+	float _speed = 3f; 
+	Vector3 _dir = new Vector3();
 
-    void Start()
-    {
-		_initPos = transform.position;
-	}
 
 	void Update()
     {
-		float act_speed = Mathf.Sqrt(_speed);    // actual speed on each axis
+		_dir = UpdateDir();
+		if (_dir != Vector3.zero)
+		{ MakeStep(_dir); }
+	}
 
-		if (Input.GetKey(KeyCode.A))
-		{
-			if (IsOutOfMap(transform.position + Vector3.left * act_speed) && IsOutOfMap(transform.position + Vector3.forward * act_speed)) return;
-			transform.position += Vector3.left * act_speed;
-			transform.position += Vector3.forward * act_speed;
-		}
-		else if (Input.GetKey(KeyCode.S))
-		{
-			if (IsOutOfMap(transform.position + Vector3.back * act_speed) && IsOutOfMap(transform.position + Vector3.left * act_speed)) return;
-			transform.position += Vector3.back * act_speed;
-			transform.position += Vector3.left * act_speed;
-		}
-		else if (Input.GetKey(KeyCode.D))
-		{
-			if (IsOutOfMap(transform.position + Vector3.right * act_speed) && IsOutOfMap(transform.position + Vector3.back * act_speed)) return;
-			transform.position += Vector3.right * act_speed;
-			transform.position += Vector3.back * act_speed;
-		}
-		else if (Input.GetKey(KeyCode.W))
-		{
-			if (IsOutOfMap(transform.position + Vector3.forward * act_speed) && IsOutOfMap(transform.position + Vector3.right * act_speed)) return;
-			transform.position += Vector3.forward * act_speed;
-			transform.position += Vector3.right * act_speed;
-		}
+	public Vector3 GetDir() { return _dir; }
+	public Vector3 GetPos() { return transform.position; }
+
+	private Vector3 UpdateDir()
+	{
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.UpArrow))
+		{ return Vector3.Normalize(Vector3.left + Vector3.forward); }
+		else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+		{ return Vector3.Normalize(Vector3.back + Vector3.left); }
+		else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.LeftArrow))
+		{ return Vector3.Normalize(Vector3.right + Vector3.back); }
+		else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.RightArrow))
+		{ return Vector3.Normalize(Vector3.forward + Vector3.right); }
+		return Vector3.zero;
+	}
+
+	private void MakeStep(Vector3 dir)
+	{
+		if (IsOutOfMap(transform.position + dir * _speed)) 
+			return;
+		transform.position += dir * _speed;
 	}
 
 	private bool IsOutOfMap(Vector3 pos)
 	{
+		Vector2Int map_lim = new Vector2Int(-20, 1000);
 		var cam = GetComponent<Camera>();
 		float camSideLength = Mathf.Cos(transform.rotation.x) * cam.farClipPlane /4;
-		if (pos.x < _initPos.x - 50		 || pos.z < _initPos.z - 50		|| 
-			pos.x > 1000 - camSideLength || pos.z > 1000 - camSideLength)
+		if (pos.z < map_lim.x || pos.x > map_lim.y - camSideLength || 
+			pos.x < map_lim.x || pos.z > map_lim.y - camSideLength)
 			return true;
 		return false;
 	}

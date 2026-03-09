@@ -13,6 +13,7 @@ public class ForestManager : MonoBehaviour
 	static Dictionary<Vector2Int, Chunk> _chunks = new Dictionary<Vector2Int, Chunk>();
 	[SerializeField] GameObject _treePrefab;
 	Map _map;
+	MainCameraMovement _cam_move;
 
 
 	private void Awake()
@@ -26,7 +27,8 @@ public class ForestManager : MonoBehaviour
 	private void Start()
 	{
 		_map = Map.Instance;
-		
+		_cam_move = Camera.main.GetComponent<MainCameraMovement>();
+
 		SignBuildingArea(_map);
 		RoadGenerator.GenRoadsBetweenAllTeams(_map, new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
 		ForestGenerator.GenVirtForest(_map);
@@ -94,8 +96,8 @@ public class ForestManager : MonoBehaviour
 
 	public void InitializeUnitInChunk(GameObject unit)
 	{
-		//if (!ObjIsOnTerrain(unit))
-		//{ return; }
+		if (_map != null && !_map.IsOutOfMap(unit.transform.position))
+		{ return; }
 
 		Vector2Int chunkPos = GetChunkPosition(unit.transform.position);
 		_chunks[chunkPos].UnitsOnChunk.Add(unit);
@@ -103,8 +105,8 @@ public class ForestManager : MonoBehaviour
 
 	public void UpdateUnitCountInChunks(GameObject unit, Chunk prevChunk)
 	{
-		//if (!ObjIsOnTerrain(unit))
-		//{ return; }
+		if (_map != null && !_map.IsOutOfMap(unit.transform.position))
+		{ return; }
 
 		Vector2Int chunkPos = GetChunkPosition(unit.transform.position);
 

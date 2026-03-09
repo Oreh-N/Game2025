@@ -7,16 +7,17 @@ using UnityEngine;
 using static Map;
 using static UnityEditor.PlayerSettings;
 
+/// <summary>
+/// Simple road generator. Doesn't see obstacles. Not optimized. 
+/// Call only at the very beggining of the game, because taking too much time.
+/// </summary>
 public static class RoadGenerator
 {
 	const int roadWidth = 30;
 
 
-	// Lets assume that there will be max 4 teams
 	/// <summary>
-	/// If two teams are close to each other the road will be generated directly between them,
-	/// if they are far from each other, then roads will be generated to the map center from 
-	/// centeres of each team. The roads can only be generated over empty cells.
+	/// Generates roads from each base to the center of the map.
 	/// </summary>
 	public static void GenRoadsBetweenAllTeams(Map map, Vector2Int map_size)
 	{
@@ -26,9 +27,7 @@ public static class RoadGenerator
 		{
 			if (ts[i] == null) continue;
 			var baseCenter = new Vector2Int((int)ts[i].GetCenter().x, (int)ts[i].GetCenter().z);
-			Debug.Log($"From: {baseCenter}	To: {mapCenter}");
 			SignRoadOnMap(baseCenter, mapCenter, map);
-
 		}
 	}
 
@@ -81,22 +80,20 @@ public static class RoadGenerator
 		return road;
 	}
 
-	static bool is_close(Vector2Int curr, Vector2Int goal, int radius = 50)
+	static bool is_close(Vector2Int curr, Vector2Int goal, int goal_radius = 50)
 	{
-		return Vector2Int.Distance(curr, goal) < radius;
+		return Vector2Int.Distance(curr, goal) < goal_radius;
 	}
 
 	static void WidenRoad(Vector2Int center, int width, Vector2Int perpDir, Map map)
 	{
 		int r = width / 2;
 		
-
 		for (int x = -r; x <= r; x++)
 			for (int y = -r; y <= r; y++)
 			{
 				if (x * x + y * y > r * r)
 					continue;
-
 				SetRoadOnPosition(new Vector2Int(center.x + x, center.y + y), map);
 			}
 	}
@@ -107,6 +104,4 @@ public static class RoadGenerator
 
 		map.TrySetCell(coord, CellType.Road);
 	}
-
-
 }

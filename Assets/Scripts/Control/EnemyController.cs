@@ -22,7 +22,7 @@ public class EnemyController : Team
 	/// <param name="color"></param>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	public bool Setup(Vector2 position, Color color, string name)
+	public bool Setup(Vector2Int position, Color color, string name)
 	{
 		if (Map.Instance.IsOutOfMap(position))
 		{

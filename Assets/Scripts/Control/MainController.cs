@@ -24,8 +24,8 @@ public class MainController : MonoBehaviour
 	{
 		_teams = new Team[3] { 
 			Player.Instance,
-			CreateEnemy(new Vector2(700,800), Color.orchid, ":3"),
-			CreateEnemy(new Vector2(360, 100), Color.aliceBlue, "Alice")
+			CreateEnemy(new Vector2Int(700,800), Color.orchid, ":3"),
+			CreateEnemy(new Vector2Int(360, 100), Color.aliceBlue, "Alice")
 		};
 	}
 
@@ -44,7 +44,7 @@ public class MainController : MonoBehaviour
 		return null;
 	}
 
-	private Team CreateEnemy(Vector2 pos, Color c, string name)
+	private Team CreateEnemy(Vector2Int pos, Color c, string name)
 	{
 		GameObject enemyObj = Instantiate(EmptyEnemyObj);
 		var enemy = enemyObj.AddComponent<EnemyController>();

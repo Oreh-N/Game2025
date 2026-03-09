@@ -40,10 +40,6 @@ public class Map : MonoBehaviour
 		}
 	}
 
-	private void Start()
-	{
-	}
-
 	public bool TrySetCell(MapCoord coord, CellType type)
 	{
 		if (IsOutOfMap(coord) || data.Map[coord.x, coord.y] != CellType.Empty) 
@@ -53,7 +49,7 @@ public class Map : MonoBehaviour
 		return true;
 	}
 
-	public void ForceSetcell(MapCoord coord, CellType type)
+	public void ForceSetCell(MapCoord coord, CellType type)
 	{
 		if (IsOutOfMap(coord)) return;
 		data.Map[coord.x, coord.y] = type;
@@ -71,7 +67,7 @@ public class Map : MonoBehaviour
 		return data.Map[x, z] == type;
 	}
 
-	public CellType GetCell(MapCoord coord)
+	public CellType GetCellType(MapCoord coord)
 	{
 		return !IsOutOfMap(coord) ? data.Map[coord.x, coord.y] : CellType.Error;
 	}
@@ -84,7 +80,7 @@ public class Map : MonoBehaviour
 	/// <param name="filling"> - cell type which will fill the area</param>
 	public void FillMapArea(MapCoord centerCoords, int radius, CellType filling)
 	{
-		ForceSetcell(centerCoords, filling);
+		ForceSetCell(centerCoords, filling);
 		Queue<MapCoord> toFill = new Queue<MapCoord>();
 		AddNearbyCellsToQueue(ref toFill, centerCoords);
 
@@ -122,9 +118,9 @@ public class Map : MonoBehaviour
 			 && mapCoord.y < MapData.MapSize[1] && mapCoord.y >= 0);
 	}
 
-	public bool IsOutOfMap(Vector2 coord)
+	public bool IsOutOfMap(Vector3 coord)
 	{
-		var mapCoord = WorldToMap(new Vector3(coord.x, 0, coord.y));
+		var mapCoord = WorldToMap(new Vector3(coord.x, 0, coord.z));
 		return IsOutOfMap(mapCoord);
 	}
 
@@ -135,20 +131,13 @@ public class Map : MonoBehaviour
 	/// <param name="y"></param>
 	/// <returns>World position</returns>
 	public Vector3 MapToWorld(int x, int y)
-	{
-		return data.MapStart + new Vector3(x, 0, y);
-	}
-
+	{ return data.MapStart + new Vector3(x, 0, y); }
 
 	public Vector3 GetCellSize()
-	{
-		return data.CellSize;
-	}
+	{ return data.CellSize; }
 
 	public int[] GetSize()
-	{
-		return MapData.MapSize;
-	}
+	{ return MapData.MapSize; }
 
 	/// <summary>
 	/// Convert world position to map index
