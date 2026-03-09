@@ -16,7 +16,7 @@ public static class ForestGenerator
 
 	public static void GenVirtForest(Map map)
 	{
-		Dictionary<Vector3, float> areasInfo = ForestManager.Instance.GetBaseAreaInfo();
+		Dictionary<Vector3, float> areasInfo = EnvManager.Instance.GetBaseAreaInfo();
 
 		for (int x = 0; x < map.GetSize()[0]; x++)
 		{
@@ -28,7 +28,7 @@ public static class ForestGenerator
 		}
 	}
 
-	public static void GenForest(GameObject treePrefab, Map map)
+	public static void GenWholeMapForest(GameObject treePrefab, Map map)
 	{
 		if (treePrefab == null)
 		{
@@ -44,6 +44,11 @@ public static class ForestGenerator
 				{ GameObject.Instantiate(treePrefab, map.MapToWorld(x, z), Quaternion.identity); }
 			}
 		}
+	}
+
+	public static void GenForestChunk(Dictionary<Vector2Int, Chunk> chunks, Vector3 cam_pos)
+	{
+		
 	}
 }
 

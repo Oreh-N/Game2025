@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class MiningUnit : Unit
 {
 	string[] _abilities = new string[2] ;
-	Chunk _chunk = new Chunk();
+	//Chunk _chunk = new Chunk();
 
 
 	private new void Awake()
@@ -23,26 +23,26 @@ public class MiningUnit : Unit
 	private new void Start()
 	{
 		base.Start();
-		_chunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
-		ForestManager.Instance.InitializeUnitInChunk(gameObject);
+		//_chunk = EnvManager.Instance.GetChunkOnPosition(transform.position);
+		//EnvManager.Instance.InitializeUnitInChunk(gameObject);
 	}
 
 	private new void Update()
 	{
 		base.Update();
-		UpdateChunk();
+		//UpdateChunk();
 	}
 
-	private void UpdateChunk()
-	{
-		Chunk currChunk = ForestManager.Instance.GetChunkOnPosition(transform.position);
+	//private void UpdateChunk()
+	//{
+	//	Chunk currChunk = EnvManager.Instance.GetChunkOnPosition(transform.position);
 
-		if (_chunk != currChunk)
-		{
-			ForestManager.Instance.UpdateUnitCountInChunks(gameObject, _chunk);
-			_chunk = currChunk;
-		}
-	}
+	//	if (_chunk != currChunk)
+	//	{
+	//		EnvManager.Instance.UpdateUnitCountInChunks(gameObject, _chunk);
+	//		_chunk = currChunk;
+	//	}
+	//}
 
 
 	// Visual_________________________________________________

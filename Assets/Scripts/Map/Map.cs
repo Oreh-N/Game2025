@@ -24,7 +24,6 @@ public class Map : MonoBehaviour
 		Error = 505
 	}
 	public static Map Instance;
-	public GameObject TreePrefab;
 	MapData data = new MapData();
 
 
