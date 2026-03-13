@@ -6,12 +6,12 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class MainCameraMovement : MonoBehaviour
 {
-	float _speed = 3f; 
+	float _speed = 3f;
 	Vector3 _dir = new Vector3();
 
 
 	void Update()
-    {
+	{
 		_dir = UpdateDir();
 		if (_dir != Vector3.zero)
 		{ MakeStep(_dir); }
@@ -35,7 +35,7 @@ public class MainCameraMovement : MonoBehaviour
 
 	private void MakeStep(Vector3 dir)
 	{
-		if (IsOutOfMap(transform.position + dir * _speed)) 
+		if (IsOutOfMap(transform.position + dir * _speed))
 			return;
 		transform.position += dir * _speed;
 	}
@@ -44,10 +44,11 @@ public class MainCameraMovement : MonoBehaviour
 	{
 		Vector2Int map_lim = new Vector2Int(-20, 1000);
 		var cam = GetComponent<Camera>();
-		float camSideLength = Mathf.Cos(transform.rotation.x) * cam.farClipPlane /4;
-		if (pos.z < map_lim.x || pos.x > map_lim.y - camSideLength || 
+		float camSideLength = Mathf.Cos(transform.rotation.x) * cam.farClipPlane / 4;
+		if (pos.z < map_lim.x || pos.x > map_lim.y - camSideLength ||
 			pos.x < map_lim.x || pos.z > map_lim.y - camSideLength)
 			return true;
 		return false;
 	}
+
 }

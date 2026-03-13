@@ -157,6 +157,24 @@ public class Map : MonoBehaviour
 		return new MapCoord(x, z);
 	}
 
+	/// <summary>
+	/// Convert world position to map index. If given position is out of map, 
+	/// then the position will be cutted to fit into the map.
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns>Map position (indicies)</returns>
+	public MapCoord WorldToMapWithCut(Vector3 pos)
+	{
+		int x = Mathf.FloorToInt(pos.x - data.MapStart.x);
+		int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
+
+		if (x < 0) { x = 0; }
+		else if (x >= MapData.MapSize[0]) {  x = MapData.MapSize[0]; }
+		if (z < 0) { z = 0; }
+		else if (z >= MapData.MapSize[1]) { z = MapData.MapSize[1]; }
+
+		return new MapCoord(x, z);
+	}
 
 
 
