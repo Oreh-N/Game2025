@@ -22,13 +22,13 @@ public class MainCameraMovement : MonoBehaviour
 
 	private Vector3 UpdateDir()
 	{
-		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.UpArrow))
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
 		{ return Vector3.Normalize(Vector3.left + Vector3.forward); }
 		else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
 		{ return Vector3.Normalize(Vector3.back + Vector3.left); }
-		else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.LeftArrow))
+		else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
 		{ return Vector3.Normalize(Vector3.right + Vector3.back); }
-		else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.RightArrow))
+		else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
 		{ return Vector3.Normalize(Vector3.forward + Vector3.right); }
 		return Vector3.zero;
 	}

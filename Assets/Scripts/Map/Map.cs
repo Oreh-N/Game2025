@@ -196,9 +196,9 @@ public class Map : MonoBehaviour
 				}
 		}
 
-		IPlaceableOnMap comp;
+		IMyPlaceableOnMap comp;
 
-		if (targetForGizmo && targetForGizmo.TryGetComponent<IPlaceableOnMap>(out comp))
+		if (targetForGizmo && targetForGizmo.TryGetComponent<IMyPlaceableOnMap>(out comp))
 		{
 			Gizmos.color = new Color(1f, 0.4f, 1f, 0.5f);
 			MapCoord worldPos = WorldToMap(comp.GetPos());

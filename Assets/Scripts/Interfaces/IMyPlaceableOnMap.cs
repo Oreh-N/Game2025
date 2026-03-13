@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public interface IPlaceableOnMap
+public interface IMyPlaceableOnMap
 {
 	public Vector2Int GetTakeAreaSize();
 	public Vector3 GetPos();

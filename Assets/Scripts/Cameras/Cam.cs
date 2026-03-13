@@ -12,15 +12,15 @@ public class Cam : MonoBehaviour
 
 	private void Start()
 	{
-		var cam = GetComponent<Camera>();
-		height = cam.orthographicSize * 2;
-		width = height * cam.aspect;
-		Debug.Log($"W: {width}		H: {height}");
+		_cam = GetComponent<Camera>();
+		height = _cam.orthographicSize * 2;
+		width = height * _cam.aspect;
 	}
 
 
 	// Unity uses LEFT-handed coordination system
-	public Vector3 FindCamProjectionCenter()
+	// With help of AI
+	public Vector3 GetCamProjectionCenter()
 	{
 		if (_cam == null) return new Vector3();
 
@@ -31,16 +31,25 @@ public class Cam : MonoBehaviour
 		return center;
 	}
 
-	public List<Vector3> GetCamProjBorderPoints(Map map)
+	// With help of AI
+	/// <summary>
+	/// Computes camera view border points. Precisely, returns approximately (depends on resolution) 
+	/// central points of each border side.
+	/// </summary>
+	/// <returns></returns>
+	public List<Vector3> GetCamProjBorderPoints()
 	{
 		if (_cam == null) return new List<Vector3>();
 
-		var center = FindCamProjectionCenter();
-		Vector3 forward_dir = Vector3.ProjectOnPlane(_cam.transform.forward, Vector3.up).normalized;
+		var center = GetCamProjectionCenter();
+		Vector3 f = _cam.transform.forward;
+
+		float halfH = _cam.orthographicSize / Mathf.Abs(f.y);
+		float halfW = width / 2;
+
+		Vector3 forward_dir = Vector3.ProjectOnPlane(f, Vector3.up).normalized;
 		Vector3 right_dir = Vector3.ProjectOnPlane(_cam.transform.right, Vector3.up).normalized;
 
-		float halfH = height / 2;
-		float halfW = width / 2;
 		var top = center + forward_dir * halfH;
 		var bottom = center - forward_dir * halfH;
 		var right = center + right_dir * halfW;

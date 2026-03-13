@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(BoxCollider))]
-public class Chest : LootHolder, IPlaceableOnMap
+public class Chest : LootHolder, IMyPlaceableOnMap
 {
 	public Vector3 GetPos()
 	{

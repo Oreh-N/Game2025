@@ -13,7 +13,7 @@ using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(BoxCollider))]
-public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember, IPlaceableOnMap
+public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember, IMyPlaceableOnMap
 {
 	protected BuildingData Data = new BuildingData();
 	public HealthSystem HealthSys { get; protected set; } = new HealthSystem();
