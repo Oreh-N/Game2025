@@ -42,54 +42,107 @@ public class EnvManager : MonoBehaviour
 	void Update()
 	{
 		if (_cam_move.GetDir() != Vector3.zero)
-		{ 
+		{
 			UpdateForestChunksInCameraView(_cam_move.GetPos());
-			TryDisableChunksOutOfView(_cam_move.GetDir());
+			TryDisableChunksOutOfView();
 		}
 	}
 
 	#region Dynamic Forest Generation
 
-	private void TryDisableChunksOutOfView(Vector3 cam_dir)
+	/// <summary>
+	/// Get 3 points from the position camera just left
+	/// </summary>
+	/// <param name="cam_dir"></param>
+	/// <returns></returns>
+	private Vector3[] GetJustLeftPoints()
 	{
-		var op_dir = -cam_dir;
-		var out_of_view_pos = _cam_move.GetPos() + op_dir * _cam.width;
-		var map_pos = _map.WorldToMapWithCut(out_of_view_pos);
-		var chunk_pos = Chunk.GetChunkMapPos(map_pos, _map);
-		if (_chunks.ContainsKey(chunk_pos))
+		var cam_proj_center = _cam.GetCamProjectionCenter();
+
+		Vector3 dir = _cam_move._last_dir.normalized;
+		dir.y = 0;
+		dir.Normalize();
+
+		Vector3 right = Vector3.Cross(Vector3.up, dir).normalized;
+		Vector3 left = -right;
+
+		float dist = _cam.width;
+
+		Vector3 basePoint = cam_proj_center - dir * dist;
+
+		Vector3[] points = new Vector3[3] {
+		basePoint,
+		basePoint + right * dist/2,
+		basePoint - right * dist/2
+	};
+
+		return points;
+	}
+
+	private void TryDisableChunksOutOfView()
+	{
+		var out_of_view_points = GetJustLeftPoints();
+		int i = 1;
+		foreach (var out_p in out_of_view_points)
 		{
-			_chunks[chunk_pos].Disable();
-			_chunks.Remove(chunk_pos);
+			Debug.Log($"{out_p}   index: {i}");
+			i++;
+			var map_pos = _map.WorldToMapWithCut(out_p);
+			var chunk_pos = Chunk.GetChunkMapPos(map_pos, _map);
+			if (_chunks.ContainsKey(chunk_pos) && _chunks[chunk_pos].IsEnabled())
+			{ _chunks[chunk_pos].Disable(); }
 		}
 	}
 
 	void UpdateForestChunksInCameraView(Vector3 cam_pos)
 	{
 		List<Vector3> map_border_points = _cam.GetCamProjBorderPoints();
-		foreach(var p in map_border_points)
+		foreach (var p in map_border_points)
 		{
-			var chunk_pos = Chunk.GetChunkMapPos(_map.WorldToMap(p), _map);
-			if (!_chunks.ContainsKey(chunk_pos))
+			var world_pos = _map.WorldToMapWithCut(p);
+			var chunk_pos = Chunk.GetChunkMapPos(world_pos, _map);
+			if (_chunks.ContainsKey(chunk_pos) && !_chunks[chunk_pos].IsEnabled())
+			{ _chunks[chunk_pos].Enable(_map); }
+			else if (!_chunks.ContainsKey(chunk_pos))   // if we see chunk for the first time, add it to _chunks
 			{
-				var chunk = new Chunk(chunk_pos, _map);
-				chunk.Enable(_map);
-				_chunks.Add(chunk_pos, chunk);
+				_chunks.Add(chunk_pos, new Chunk(world_pos, _map));
+				// Debug.Log($"{chunk_pos}      {_chunks.Count}");
+				_chunks[chunk_pos].Enable(_map);
 			}
 		}
 	}
 
+	/*/
 	private void OnDrawGizmos()
 	{
 		if (!Application.isPlaying || _cam == null) return;
 		Gizmos.color = Color.darkGoldenRod;
 		var points = _cam.GetCamProjBorderPoints();
-		foreach (var p in points)
-		{ 
-			Gizmos.DrawSphere(p,1);
-			Gizmos.DrawSphere(_cam.GetCamProjectionCenter(), 1);
+		foreach (var p in points) { 
+		
+			Gizmos.DrawSphere(p,3);
 		}
-	
 	}
+	/**/
+
+	/**/
+	private void OnDrawGizmos()
+	{
+		if (!Application.isPlaying || _cam == null) return;
+		
+		var points = GetJustLeftPoints();
+
+		Gizmos.color = Color.deepPink;
+		Gizmos.DrawSphere(points[0], 0.5f);
+
+		Gizmos.color = Color.red;
+		Gizmos.DrawSphere(points[1], 0.5f);
+
+		Gizmos.color = Color.black;
+		Gizmos.DrawSphere(points[2], 0.5f);
+		
+	}
+	/**/
 	#endregion
 
 
@@ -103,7 +156,7 @@ public class EnvManager : MonoBehaviour
 			{
 				if (t == null) { Debug.Log("Team is NULL"); continue; }
 				if (!areasInfo.ContainsKey(t.GetCenter()))
-				areasInfo.Add(t.GetCenter(), t.GetBuildingRadius());
+					areasInfo.Add(t.GetCenter(), t.GetBuildingRadius());
 			}
 
 		return areasInfo;

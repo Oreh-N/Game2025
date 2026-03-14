@@ -45,10 +45,5 @@ public static class ForestGenerator
 			}
 		}
 	}
-
-	public static void GenForestChunk(Dictionary<Vector2Int, Chunk> chunks, Vector3 cam_pos)
-	{
-		
-	}
 }
 

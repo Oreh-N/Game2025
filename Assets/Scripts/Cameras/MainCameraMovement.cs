@@ -8,11 +8,13 @@ public class MainCameraMovement : MonoBehaviour
 {
 	float _speed = 3f;
 	Vector3 _dir = new Vector3();
+	public Vector3 _last_dir = new Vector3();
 
 
 	void Update()
 	{
 		_dir = UpdateDir();
+		if (_dir != Vector3.zero) _last_dir = _dir;
 		if (_dir != Vector3.zero)
 		{ MakeStep(_dir); }
 	}

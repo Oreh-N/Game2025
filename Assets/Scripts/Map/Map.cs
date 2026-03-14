@@ -132,6 +132,9 @@ public class Map : MonoBehaviour
 	public Vector3 MapToWorld(int x, int y)
 	{ return data.MapStart + new Vector3(x, 0, y); }
 
+	public Vector3 MapToWorld(Vector2Int map_pos)
+	{ return data.MapStart + new Vector3(map_pos.x, 0, map_pos.y); }
+
 	public Vector3 GetCellSize()
 	{ return data.CellSize; }
 
