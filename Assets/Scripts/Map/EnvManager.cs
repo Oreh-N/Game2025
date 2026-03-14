@@ -66,14 +66,16 @@ public class EnvManager : MonoBehaviour
 		Vector3 right = Vector3.Cross(Vector3.up, dir).normalized;
 		Vector3 left = -right;
 
-		float dist = _cam.width;
+		float dist = ChunkData._size.x * 2.5f;
 
 		Vector3 basePoint = cam_proj_center - dir * dist;
 
-		Vector3[] points = new Vector3[3] {
+		Vector3[] points = new Vector3[5] {
 		basePoint,
 		basePoint + right * dist/2,
-		basePoint - right * dist/2
+		basePoint - right * dist/2,
+		basePoint + right * dist,
+		basePoint - right * dist,
 	};
 
 		return points;
@@ -82,13 +84,12 @@ public class EnvManager : MonoBehaviour
 	private void TryDisableChunksOutOfView()
 	{
 		var out_of_view_points = GetJustLeftPoints();
-		int i = 1;
 		foreach (var out_p in out_of_view_points)
 		{
-			Debug.Log($"{out_p}   index: {i}");
-			i++;
 			var map_pos = _map.WorldToMapWithCut(out_p);
 			var chunk_pos = Chunk.GetChunkMapPos(map_pos, _map);
+			if (Chunk.GetChunkMapPos(_cam.GetCamProjectionCenter(), _map) == chunk_pos) 
+				continue;
 			if (_chunks.ContainsKey(chunk_pos) && _chunks[chunk_pos].IsEnabled())
 			{ _chunks[chunk_pos].Disable(); }
 		}
@@ -140,6 +141,12 @@ public class EnvManager : MonoBehaviour
 
 		Gizmos.color = Color.black;
 		Gizmos.DrawSphere(points[2], 0.5f);
+
+		Gizmos.color = Color.pink;
+		Gizmos.DrawSphere(points[3], 0.5f);
+
+		Gizmos.color = Color.peachPuff;
+		Gizmos.DrawSphere(points[4], 0.5f);
 		
 	}
 	/**/
