@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class MapControllerData :  MonoBehaviour
+public class MapControllerData
 {
-	public Tilemap Tilemap_ = FindFirstObjectByType<Tilemap>();
-	public Grid MapGrid = FindFirstObjectByType<Grid>();
+	public Tilemap Tilemap_;
+	public Grid MapGrid;
 
 	public bool AllowBuilding = false;
 	public Building CurrBuilding;

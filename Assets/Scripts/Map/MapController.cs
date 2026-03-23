@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Color = UnityEngine.Color;
 
 public class MapController : MonoBehaviour {
@@ -18,19 +19,22 @@ public class MapController : MonoBehaviour {
 		{ Destroy(gameObject); }
 		else
 		{ Instance = this; }
+
+		data.CurrBuilding = null;
+		data.MapGrid = FindFirstObjectByType<Grid>();
+		data.Tilemap_ = FindFirstObjectByType<Tilemap>();
 	}
 
 	private void Update()
 	{
-
 		if (!data.AllowBuilding || data.CurrBuilding == null) return;
 
-		CheckPlace();
+		CheckPlace(data.CurrBuilding);
 
 		if (Input.GetMouseButtonDown(1))
 		{
 			if (CanBePlaced(data.CurrBuilding))
-			{ PlaceBuilding(); }
+			{ PlaceBuilding(data.CurrBuilding); }
 		}
 		else if (Input.GetKeyDown(KeyCode.Escape))
 		{
@@ -154,25 +158,25 @@ public class MapController : MonoBehaviour {
 		return Vector3.zero;
 	}
 
-	public void PlaceBuilding()
+	public void PlaceBuilding(Building b)
 	{
-		BuildingManager.Instance.ColorCurrBuilding(Color.white);
+		BuildingManager.ColorCurrBuilding(b, Color.white);
 		data.CurrBuilding.Construct();
 		TakeAreaForCurrBuild();
 		data.AllowBuilding = false;
 	}
 
-	private void CheckPlace()
+	private void CheckPlace(Building b)
 	{
 		if (!CanBePlaced(data.CurrBuilding))
 		{
 			UIManager.Instance.ChangeCursor(false);
-			BuildingManager.Instance.ColorCurrBuilding(Color.red);
+			BuildingManager.ColorCurrBuilding(b, Color.red);
 		}
 		else if (CanBePlaced(data.CurrBuilding))
 		{
 			UIManager.Instance.ChangeCursor(true);
-			BuildingManager.Instance.ColorCurrBuilding(Color.green);
+			BuildingManager.ColorCurrBuilding(b, Color.green);
 		}
 	}
 

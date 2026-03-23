@@ -26,7 +26,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		box.enabled = false;
 		Data.Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x + 1),
 							  Mathf.CeilToInt(box.size.y * transform.localScale.y)+1);
-		
+		//Data.RendererChildren = GetComponent<Renderer>().GetComponentsInChildren<Renderer>();
 	}
 
 	public void Start()
@@ -107,5 +107,8 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public Vector2Int GetTakeAreaSize() { return Data.Size; }
 
 	public Vector3 GetPos() { return transform.position; }
+
+	public Renderer[] GetRendererChildren() { return Data.RendererChildren; }
+
 	// _______________________________________________________________
 }

@@ -25,7 +25,7 @@ public class MainController : MonoBehaviour
 		_teams = new Team[3] { 
 			Player.Instance,
 			CreateEnemy(new Vector2Int(700,800), Color.orchid, ":3"),
-			CreateEnemy(new Vector2Int(360, 100), Color.aliceBlue, "Alice")
+			CreateEnemy(new Vector2Int(100, 300), Color.aliceBlue, "Alice")
 		};
 	}
 
@@ -53,3 +53,6 @@ public class MainController : MonoBehaviour
 		return enemyObj.GetComponent<Team>();
 	}
 }
+
+// coroutine (nebo vedlejsi vlakno)
+// nemenit verze unity

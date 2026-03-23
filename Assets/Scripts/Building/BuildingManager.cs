@@ -53,20 +53,26 @@ public class BuildingManager : MonoBehaviour
 		else { UIManager.Instance.UpdateWarningPanel("Try to access a null panel"); }
 	}
 
-	public void SpawnObjOnPos(GameObject obj_, Team t, Vector3 pos)
+	public GameObject SpawnObjOnPos(GameObject obj_, Team t, Vector3 pos)
 	{
 		var obj = Instantiate(obj_, pos, Quaternion.identity);
 		if (obj.GetComponent<ITeamMember>() != null)
 		{ obj.GetComponent<ITeamMember>().SetTeam(t.GetID()); }
+		return obj;
 	}
 
-	public void SpawnMovableBBuild() { }
+	public void SpawnMovableBuild(Building build_prefab) {
+		if (!build_prefab) Debug.Log("No building is set to this button");
+		var b = GameObject.Instantiate(build_prefab, MapController.GetMouseWorldPos(), Quaternion.identity);
+		b.AddComponent<Movable>();
+	}
 
 	// Actions_________________________________________________________
 
-	public void ColorCurrBuilding(Color color)
+	public static void ColorCurrBuilding(Building b, Color color)
 	{
-		foreach (Renderer rend in data.Childrens_rends)
+		if (!b) return;
+		foreach (Renderer rend in b.GetRendererChildren())
 		{ rend.material.color = color; }
 	}
 	// ________________________________________________________________

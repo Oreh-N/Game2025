@@ -17,9 +17,11 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	{
 		var building = MainController.Instance.MainBuildingPrefab;
 
-		BuildingManager.Instance.SpawnObjOnPos
+		var obj = BuildingManager.Instance.SpawnObjOnPos
 		(building, this, data.BaseCenter);
 
+		
+		//BuildingManager.ColorCurrBuilding(obj.GetComponent<MainBuilding>(), data.TeamColor);
 	}
 
 	public void Update()

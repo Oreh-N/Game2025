@@ -24,9 +24,9 @@ public class Cam : MonoBehaviour
 	{
 		if (_cam == null) return new Vector3();
 
-		Vector3 c_pos = _cam.transform.position;
+		Vector3 cam_pos = _cam.transform.position;
 		Vector3 f_dir = _cam.transform.forward;
-		Vector3 center = c_pos + f_dir * (-c_pos.y / f_dir.y);
+		Vector3 center = cam_pos + f_dir * (-cam_pos.y / f_dir.y);
 		center.y = 0;
 		return center;
 	}

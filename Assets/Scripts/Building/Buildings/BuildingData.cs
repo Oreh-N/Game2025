@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class BuildingData
 {
+	public Renderer[] RendererChildren;
 	public Vector2Int Size;
 	public string Name;
 	public int PanelID;
