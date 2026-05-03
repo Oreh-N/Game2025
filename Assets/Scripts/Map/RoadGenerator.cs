@@ -21,6 +21,7 @@ public static class RoadGenerator
 	/// </summary>
 	public static void GenRoadsBetweenAllTeams(Map map, Vector2Int map_size)
 	{
+		if (!MainController.Instance.Ready) return;
 		var mapCenter = new Vector2Int(map_size.x / 2, map_size.y / 2);
 		Team[] ts = MainController.Instance.GetAllTeams();
 		for (int i = 0; i < ts.Length; i++)

@@ -35,7 +35,7 @@ public class EnvManager : MonoBehaviour
 
 		SignBuildingArea(_map);
 		RoadGenerator.GenRoadsBetweenAllTeams(_map, new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
-		ForestGenerator.GenVirtForest(_map);
+		StartCoroutine(ForestGenerator.GenVirtForest(_map));
 		UpdateForestChunksInCameraView(_cam.transform.position);
 	}
 
@@ -155,6 +155,8 @@ public class EnvManager : MonoBehaviour
 
 	public Dictionary<Vector3, float> GetBaseAreaInfo()
 	{
+		if (!MainController.Instance.Ready) return null;
+
 		var areasInfo = new Dictionary<Vector3, float>();
 		Team[] teams = MainController.Instance.GetAllTeams();
 
@@ -172,7 +174,7 @@ public class EnvManager : MonoBehaviour
 
 	private void SignBuildingArea(Map map)
 	{
-		if (map == null || MainController.Instance == null) return;
+		if (map == null || MainController.Instance == null || !MainController.Instance.Ready) return;
 		Team[] ts = MainController.Instance.GetAllTeams();
 		foreach (Team t in ts)
 		{

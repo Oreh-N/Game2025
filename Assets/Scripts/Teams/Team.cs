@@ -15,15 +15,6 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	public void Start()
 	{
-		var mb = BuildingPrefabs.MainBuildPref;
-		var b = Instantiate(mb).GetComponent<Building>(); // b.SetTeam(data.ID);
-		MapController.Instance.PlaceBuilding(b);
-		if (UnitPrefabs.WorkerPref == null) Debug.Log("Didn't find unit");
-		int init_unit_count = 3;
-		for (int i = 0; i < init_unit_count; i++)
-		{ Instantiate(UnitPrefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i), Quaternion.identity); }
-		
-		//BuildingManager.ColorCurrBuilding(obj.GetComponent<MainBuilding>(), data.TeamColor);
 	}
 
 	public void Update()
@@ -110,10 +101,46 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		}
 	}
 
+	public Team CreateBase()
+	{
+		var mb = Prefabs.MainBuildPref;
+		var b = Instantiate(mb).GetComponent<Building>(); // b.SetTeam(data.ID);
+		MapController.Instance.PlaceBuilding(b, this);
+		if (Prefabs.WorkerPref == null) Debug.Log("Didn't find unit");
+		int init_unit_count = 3;
+		for (int i = 0; i < init_unit_count; i++)
+		{ Instantiate(Prefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i), Quaternion.identity); }
+		return this;
+		//BuildingManager.ColorCurrBuilding(b.GetComponent<MainBuilding>(), data.TeamColor);
+	}
+
 	// _______________________________________________________________
 
 
 	// DATA_TRANSFERRING_______________________________________________________________
+	/// <summary>
+	/// Setup team. If there are troubles (base center is out of map, etc.) then method will return false, otherwise true.
+	/// </summary>
+	/// <param name="BasePos"></param>
+	/// <param name="teamColor"></param>
+	/// <param name="teamName"></param>
+	/// <returns></returns>
+	public virtual Team Setup(Vector2Int BasePos, Color teamColor, string teamName)
+	{
+		data.ID = TeamData.FreeID;
+		TeamData.FreeID++;
+
+		if (Map.Instance.IsOutOfMap(BasePos))
+		{
+			Destroy(this);
+			Debug.Log("The base is out of map. Setup will be ignored.");
+			return null;
+		}
+		data.BaseCenter = new Vector3(BasePos.x, 0, BasePos.y);
+		data.TeamColor = teamColor;
+		data.TeamName = teamName;
+		return this;
+	}
 
 	public void SetTeam(Color teamColor, string teamName, int id)
 	{

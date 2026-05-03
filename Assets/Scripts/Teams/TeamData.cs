@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class TeamData
 {
+	public static int FreeID = 0;
 	// Sources
 	public Inventory LootCounter = new Inventory { { LootType.Wood, 0 } };
 	public IInteractable CurrInteractObject;

@@ -13,7 +13,7 @@ public class UnitSelectionManager : MonoBehaviour
 	public List<GameObject> UnitsSelected { get; private set; } = new List<GameObject>();
 	public List<GameObject> AllUnits { get; private set; } = new List<GameObject>();
 
-	[SerializeField] GameObject _groundMarker;
+	public GameObject GroundMarker;
 
 	LayerMask _ground;
 	LayerMask _units;
@@ -91,7 +91,7 @@ public class UnitSelectionManager : MonoBehaviour
 		foreach (var unit in UnitsSelected)
 		{ SelectUnit(unit, false); }
 
-		_groundMarker.SetActive(false);
+		GroundMarker.SetActive(false);
 		UnitsSelected.Clear();
 	}
 
@@ -131,9 +131,9 @@ public class UnitSelectionManager : MonoBehaviour
 		// If we are hitting a ground with right button
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
 		{
-			_groundMarker.transform.position = new Vector3(hit.point.x, .1f, hit.point.z);
-			_groundMarker.SetActive(false);
-			_groundMarker.SetActive(true);
+			GroundMarker.transform.position = new Vector3(hit.point.x, .1f, hit.point.z);
+			GroundMarker.SetActive(false);
+			GroundMarker.SetActive(true);
 		}
 	}
 	// ___________________________________________________________

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -26,16 +27,17 @@ public class MapController : MonoBehaviour {
 		data.Tilemap_ = FindFirstObjectByType<Tilemap>();
 	}
 
+
 	private void Update()
 	{
-		if (!data.AllowBuilding || !data.CurrBuilding) return;
+		if (!data.AllowBuilding || !data.CurrBuilding || !MainController.Instance.Ready) return;
 
 		CheckPlace(data.CurrBuilding);
 
 		if (data.CurrBuilding && Input.GetMouseButtonDown(0))
 		{
 			if (CanBePlaced(data.CurrBuilding))
-			{ PlaceBuilding(data.CurrBuilding); }
+			{ PlaceBuilding(data.CurrBuilding, MainController.Instance.GetTeam(data.CurrBuilding.GetTeamID())); }
 		}
 		else if (Input.GetKeyDown(KeyCode.Escape))
 		{
@@ -67,7 +69,7 @@ public class MapController : MonoBehaviour {
 
 	public bool CanBePlaced(Building build)
 	{
-		if (!build || Map.Instance.IsOutOfMap(build.transform.position)) return false;
+		if (!build || Map.Instance.IsOutOfMap(build.transform.position) || !MainController.Instance.Ready) return false;
 		int teamID = build.GetTeamID();
 		Vector3 center = MainController.Instance.GetTeam(teamID).GetCenter();
 		float radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
@@ -131,14 +133,14 @@ public class MapController : MonoBehaviour {
 		//if (!Player.Instance.Shop_.TryBuyItem(build.GetName(), Player.Instance.MainBuilding_))
 		//{ return; }
 		if (data.CurrBuilding != null) 
-			RemoveMovableBuild();
+			RemoveCurrBuild();
 		var b = SpawnBuilding(build, teamID, MapCoordToGrid(GetMouseWorldPos()));
 		b.AddComponent<Movable>();
 		data.CurrBuilding = b;
 		data.AllowBuilding = true;
 	}
 
-	public void RemoveMovableBuild()
+	public void RemoveCurrBuild()
 	{
 		if (data.CurrBuilding != null)
 		{
@@ -169,9 +171,8 @@ public class MapController : MonoBehaviour {
 		return Vector3.zero;
 	}
 
-	public void PlaceBuilding(Building b)
+	public void PlaceBuilding(Building b, Team t)
 	{
-		var t = MainController.Instance.GetTeam(b.GetTeamID());
 		if (!t) return;
 		Color c = t.GetColor();
 		BuildingManager.ColorCurrBuilding(b, c);

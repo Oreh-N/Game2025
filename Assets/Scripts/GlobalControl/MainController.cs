@@ -6,7 +6,9 @@ using UnityEngine;
 public class MainController : MonoBehaviour
 {
 	public static MainController Instance;
+	GameObject managers;
 	Team[] _teams;
+	public bool Ready { get; private set; } = false;
 
 	private void Awake()
 	{
@@ -15,17 +17,55 @@ public class MainController : MonoBehaviour
 		else
 		{ Instance = this; }
 
+
+		managers = GameObject.FindWithTag("Managers");  // This object needed to control flow of scripts initialization
+		if (!managers) Debug.Log("Can't find manager holder");
 	}
 
 	private void Start()
 	{
-		_teams = new Team[3] { 
-			Player.Instance,
-			CreateEnemy(new Vector2Int(700,800), Color.red, ":3", 1),
-			CreateEnemy(new Vector2Int(100, 300), Color.green, "Alice", 2)
-		};
+		StartCoroutine(InitializeManagers());
+
 	}
 
+
+	IEnumerator InitializeManagers()
+	{
+		managers.AddComponent<UIManager>();
+		yield return null;
+
+		managers.AddComponent<Map>();
+		yield return null;
+
+		managers.AddComponent<MapController>();
+		yield return null;
+
+		managers.AddComponent<Player>();
+		yield return null;
+
+		managers.AddComponent<BuildingManager>();
+		yield return null;
+
+		managers.AddComponent<UnitSelectionManager>();
+		UnitSelectionManager.Instance.GroundMarker = GameObject.FindWithTag("Marker");
+		if (!UnitSelectionManager.Instance.GroundMarker) 
+			Debug.Log("Didn't find ground marker for UnitSelectionManager");
+		UnitSelectionManager.Instance.GroundMarker.SetActive(false);
+		yield return null;
+
+		_teams = new Team[3] {
+			Player.Instance.Setup(new Vector2Int(50, 50), new Color(0.7f, 0.4f, 0.9f), "Nuts").CreateBase(),
+			CreateEnemy(new Vector2Int(700,800), Color.red, ":3").CreateBase(),
+			CreateEnemy(new Vector2Int(100, 300), Color.green, "Alice").CreateBase()
+		};
+		yield return null;
+
+		managers.AddComponent<EnvManager>();
+		EnvManager.Instance._treePrefab = Prefabs.Tree1;
+		yield return null;
+
+		Ready = true;
+	}
 
 	public Team[] GetAllTeams() { return _teams; }
 
@@ -44,11 +84,11 @@ public class MainController : MonoBehaviour
 		return null;
 	}
 
-	private Team CreateEnemy(Vector2Int pos, Color c, string name, int index)
+	private Team CreateEnemy(Vector2Int pos, Color c, string name)
 	{
 		var enemyObj = new GameObject();
 		var enemy = enemyObj.AddComponent<EnemyController>();
-		enemy.Setup(pos, c, name, index);
+		enemy.Setup(pos, c, name);
 		
 		return enemyObj.GetComponent<Team>();
 	}

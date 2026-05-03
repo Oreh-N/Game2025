@@ -19,6 +19,8 @@ TagManager:
   - MoneyPanel
   - WoodPanel
   - WarningPanel
+  - Managers
+  - Marker
   layers:
   - Default
   - TransparentFX

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,8 +15,10 @@ public static class ForestGenerator
 
 	static float treeGenFrequency = 5;
 
-	public static void GenVirtForest(Map map)
+	public static IEnumerator GenVirtForest(Map map)
 	{
+		if (!MainController.Instance.Ready) return null;
+
 		Dictionary<Vector3, float> areasInfo = EnvManager.Instance.GetBaseAreaInfo();
 
 		for (int x = 0; x < map.GetSize()[0]; x++)
@@ -26,6 +29,7 @@ public static class ForestGenerator
 				{ map.TrySetCell(new Vector2Int(x, z), CellType.Tree); }
 			}
 		}
+		return null;
 	}
 
 	public static void GenWholeMapForest(GameObject treePrefab, Map map)
