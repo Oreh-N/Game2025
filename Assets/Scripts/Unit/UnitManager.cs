@@ -17,7 +17,7 @@ public static class UnitManager
 	}
 	public static Team GetTeam(int teamID)
 	{
-		Team t = MainController.Instance.GetTeam((uint)teamID);
+		Team t = MainController.Instance.GetTeam(teamID);
 		if (t) return t;
 		return null;
 	}

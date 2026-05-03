@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MeleeUnit : Unit
+public class MeleeUnit : UnitSelf<MeleeUnit>
 {
 	float _attackCooldown = 1f;
 	float _cooldown = 0;

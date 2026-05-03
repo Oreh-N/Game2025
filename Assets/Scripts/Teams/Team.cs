@@ -15,11 +15,13 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	public void Start()
 	{
-		var building = MainController.Instance.MainBuildingPrefab;
-
-		var obj = BuildingManager.Instance.SpawnObjOnPos
-		(building, this, data.BaseCenter);
-
+		var mb = BuildingPrefabs.MainBuildPref;
+		var b = Instantiate(mb).GetComponent<Building>(); // b.SetTeam(data.ID);
+		MapController.Instance.PlaceBuilding(b);
+		if (UnitPrefabs.WorkerPref == null) Debug.Log("Didn't find unit");
+		int init_unit_count = 3;
+		for (int i = 0; i < init_unit_count; i++)
+		{ Instantiate(UnitPrefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i), Quaternion.identity); }
 		
 		//BuildingManager.ColorCurrBuilding(obj.GetComponent<MainBuilding>(), data.TeamColor);
 	}
@@ -113,10 +115,11 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	// DATA_TRANSFERRING_______________________________________________________________
 
-	public void SetTeam(Color teamColor, string teamName)
+	public void SetTeam(Color teamColor, string teamName, int id)
 	{
 		data.TeamColor = teamColor;
 		data.TeamName = teamName;
+		data.ID = id;
 	}
 
 	public void ChangeInteractableObject(IInteractable obj) { data.CurrInteractObject = obj; }
@@ -127,7 +130,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	public Color GetColor() { return data.TeamColor; }
 
-	public void RegisterBuilding(Building building) { data.Buildings.Add(building); }
+	public void RegisterBuilding(Building building) { data.Buildings.Add(building); Debug.Log("Building added"); }
 
 	public void RemoveBuilding(Building building) { data.Buildings.Remove(building); }
 

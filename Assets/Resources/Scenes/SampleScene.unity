@@ -917,9 +917,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1814694244}
-        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: SpawnMovableBuild
+      - m_Target: {fileID: 1082362876}
+        m_TargetAssemblyTypeName: MapController, Assembly-CSharp
+        m_MethodName: SpawnPlayerMovableBuild
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 8428193907886133401, guid: de91fff4fb95ce34b816cfc7e3f9bf36, type: 3}
@@ -2810,9 +2810,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1814694244}
-        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: SpawnMovableBuild
+      - m_Target: {fileID: 1082362876}
+        m_TargetAssemblyTypeName: MapController, Assembly-CSharp
+        m_MethodName: SpawnPlayerMovableBuild
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1985269837757849125, guid: 347d2fee2ec86904ca6ca88d726dadf0, type: 3}
@@ -5214,9 +5214,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1814694244}
-        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: SpawnMovableBuild
+      - m_Target: {fileID: 1082362876}
+        m_TargetAssemblyTypeName: MapController, Assembly-CSharp
+        m_MethodName: SpawnPlayerMovableBuild
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 5832809008171393579, guid: 43e8e9b993f8e7e4f89c828e90d6d10f, type: 3}
@@ -6349,9 +6349,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1814694244}
-        m_TargetAssemblyTypeName: BuildingManager, Assembly-CSharp
-        m_MethodName: SpawnMovableBuild
+      - m_Target: {fileID: 1082362876}
+        m_TargetAssemblyTypeName: MapController, Assembly-CSharp
+        m_MethodName: SpawnPlayerMovableBuild
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 9090281927436024995, guid: f4a71cd542716014380d646fab191d33, type: 3}

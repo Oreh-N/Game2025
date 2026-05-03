@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
@@ -152,9 +146,9 @@ public class Map : MonoBehaviour
 		int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
 
 
-		if (x >= MapData.MapSize[0] || z >= MapData.MapSize[1] || x < 0 || z < 0)
+		if (IsOutOfMap(new MapCoord(x, z)))
 		{
-			throw new Exception($"Map.WorldToMap: Out of range. Did you mean ({pos.x}, {pos.y}, {pos.z}) position");
+			return WorldToMapWithCut(pos);
 		}
 
 		return new MapCoord(x, z);

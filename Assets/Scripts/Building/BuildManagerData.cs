@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class BuildManagerData : MonoBehaviour
+public class BuildManagerData
 {
 	public Renderer[] Childrens_rends;
 	public LayerMask Obstacles;

@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 
 public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHavePanel, ITeamMember
 {
-	protected UnitData data;
+	protected UnitData data = new UnitData();
 
 
 	public void Awake()
@@ -18,6 +19,7 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 
 	public void Start()
 	{ 
+		data.Health = 100;
 		//GetComponent<Renderer>().material.color = Team_.TeamColor;
 		UnitSelectionManager.Instance.AllUnits.Add(gameObject);
 		data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
@@ -35,6 +37,8 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		if (data.NowInteracting && UnitManager.GetTeamName(data.TeamID) == UnitManager.GetPlayerTeamName())
 		{ UpdatePanelInfo(); }
 	}
+
+
 	public void OnMouseDown()
 	{
 		UnitManager.GetTeam(data.TeamID).ChangeInteractableObject(this);
@@ -82,3 +86,5 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 
 	// _________________________________________________________________
 }
+
+public abstract class UnitSelf<TSelf> : Unit where TSelf : Unit { }

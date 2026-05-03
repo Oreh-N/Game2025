@@ -22,16 +22,16 @@ public class EnemyController : Team
 	/// <param name="color"></param>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	public bool Setup(Vector2Int position, Color color, string name)
+	public bool Setup(Vector2Int position, Color color, string name, int id)
 	{
 		if (Map.Instance.IsOutOfMap(position))
 		{
 			Destroy(this);
-			Debug.Log("The base is out of map. It will be ignored.");
+			Debug.Log("The base is out of map. Setup will be ignored.");
 			return false;
 		}
 		data.BaseCenter = new Vector3(position.x, 0, position.y);
-		SetTeam(color, name);
+		SetTeam(color, name, id);
 		return true;
 	}
 }

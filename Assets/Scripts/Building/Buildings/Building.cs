@@ -1,15 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using UnityEngine.Experimental.GlobalIllumination;
-using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-
+using UnityEngine;
 
 
 [RequireComponent(typeof(BoxCollider))]
@@ -23,15 +13,16 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public void Awake()
 	{
 		BoxCollider box = GetComponent<BoxCollider>();
-		box.enabled = false;
 		Data.Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x + 1),
-							  Mathf.CeilToInt(box.size.y * transform.localScale.y)+1);
-		//Data.RendererChildren = GetComponent<Renderer>().GetComponentsInChildren<Renderer>();
+								   Mathf.CeilToInt(box.size.y * transform.localScale.y + 1));
+		box.enabled = false;
+		HealthSys.SetHealth(100);
+		Data.RendererChildren = GetComponentsInChildren<Renderer>();
+		if (Data.RendererChildren == null) Debug.Log("No renderers in this building");
 	}
 
 	public void Start()
 	{
-		BuildingManager.AddBuilding(this, Data.TeamID);
 	}
 
 	public void Update()
@@ -49,13 +40,14 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		Destroy(gameObject.GetComponent<Movable>());
 		ColorBuilding();
 		Data.IsPlaced = true;
+		BuildingManager.AddBuilding(this, Data.TeamID);
+
 	}
 
 	public virtual void ColorBuilding()
 	{
 		Color teamColor = BuildingManager.GetTeam(Data.TeamID).GetColor();
-		Renderer[] renderers = GetComponentsInChildren<Renderer>();
-		foreach (Renderer rend in renderers)
+		foreach (Renderer rend in Data.RendererChildren)
 		{
 			foreach (Material mat in rend.materials)
 			{
@@ -67,13 +59,10 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	private void OnDestroy()
 	{ 
-		Debug.Log("Building destroing is not implemented yet");
-		//BuildingManager.RemoveBuilding(this, Data.TeamID);
+		BuildingManager.RemoveBuilding(this, Data.TeamID);
 	}
-	// _______________________________________________________________
 
 
-	// Building actions_______________________________________________
 	public void OnMouseDown()
 	{
 		if (EventSystem.current.IsPointerOverGameObject())
@@ -92,7 +81,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	public virtual void UpdatePanelInfo()
 	{ BuildingManager.ShowMessage("Building class UpdatePanelInfo shouldn't be called"); }
 
-	// DATA_TRANSFERRING_______________________________________________________________
+	#region Data transfering
 
 	public bool IsPlaced() { return Data.IsPlaced; }
 
@@ -110,5 +99,5 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public Renderer[] GetRendererChildren() { return Data.RendererChildren; }
 
-	// _______________________________________________________________
+	#endregion 
 }

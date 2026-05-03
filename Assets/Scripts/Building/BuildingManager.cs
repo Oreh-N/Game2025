@@ -11,7 +11,7 @@ using System;
 public class BuildingManager : MonoBehaviour
 {
 	public static BuildingManager Instance;
-	protected BuildManagerData data;
+	protected BuildManagerData data = new BuildManagerData();
 
 
 	private void Awake()
@@ -23,10 +23,9 @@ public class BuildingManager : MonoBehaviour
 	}
 
 
-	void Update()
-	{
-	}
 
+
+	# region Interaction with player
 	public static void ShowMessage(string m)
 	{
 		if (m == null) return;
@@ -53,6 +52,10 @@ public class BuildingManager : MonoBehaviour
 		else { UIManager.Instance.UpdateWarningPanel("Try to access a null panel"); }
 	}
 
+	# endregion 
+
+
+
 	public GameObject SpawnObjOnPos(GameObject obj_, Team t, Vector3 pos)
 	{
 		var obj = Instantiate(obj_, pos, Quaternion.identity);
@@ -61,27 +64,22 @@ public class BuildingManager : MonoBehaviour
 		return obj;
 	}
 
-	public void SpawnMovableBuild(Building build_prefab) {
-		if (!build_prefab) Debug.Log("No building is set to this button");
-		var b = GameObject.Instantiate(build_prefab, MapController.GetMouseWorldPos(), Quaternion.identity);
-		b.AddComponent<Movable>();
-	}
+	
 
-	// Actions_________________________________________________________
 
 	public static void ColorCurrBuilding(Building b, Color color)
 	{
-		if (!b) return;
+		if (!b || b.GetRendererChildren() == null) return;
 		foreach (Renderer rend in b.GetRendererChildren())
 		{ rend.material.color = color; }
 	}
-	// ________________________________________________________________
 
-	// DATA_TRANSFERRING_______________________________________________________________
+	
 
+	# region Data transfering
 	public static void AddBuilding(Building b, int teamID)
 	{
-		Team t = MainController.Instance.GetTeam((uint)teamID);
+		Team t = MainController.Instance.GetTeam(teamID);
 		if (t) t.RegisterBuilding(b);
 		else Debug.Log("Couldn't register the building");
 			
@@ -89,6 +87,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static void RemoveBuilding(Building b, int teamID)
 	{
+		Debug.Log("The building has been removed from team list");
 		GetTeam(teamID).RemoveBuilding(b);
 	}
 
@@ -108,9 +107,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static Team GetTeam(int teamID)
 	{
-		return MainController.Instance.GetTeam((uint)teamID);
+		return MainController.Instance.GetTeam(teamID);
 	}
-
-
-	// ________________________________________________________________________________
+	#endregion
 }

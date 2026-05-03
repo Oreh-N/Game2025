@@ -34,13 +34,13 @@ public class BasicTower : Building
 		if (!_allowAttack && _cooldown >= _attackCooldown)
 		{ _allowAttack = true; }
 
-		if (_currProjectile._startPos != _currProjectile._endPos)
-		{ _currProjectile.Move(); }
-		else
-		{
-			_currTarget.TakeDamage(_damage);
-			Destroy(_currProjectile._projectile.gameObject);
-		}
+		//if (_currProjectile._startPos != _currProjectile._endPos)
+		//{ _currProjectile.Move(); }
+		//else
+		//{
+		//	_currTarget.TakeDamage(_damage);
+		//	Destroy(_currProjectile._projectile.gameObject);
+		//}
 	}
 
 

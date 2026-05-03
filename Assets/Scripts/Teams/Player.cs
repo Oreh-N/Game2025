@@ -17,7 +17,7 @@ public class Player : Team
 		{ Instance = this; }
 
 		data.BaseCenter = new Vector3(50, 0, 50);
-		SetTeam(new Color(0.7f, 0.4f, 0.9f), "Nuts");
+		SetTeam(new Color(0.7f, 0.4f, 0.9f), "Nuts", 0);
 	}
 
 	private new void Start()

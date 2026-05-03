@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MiningUnit : Unit
+public class MiningUnit : UnitSelf<MiningUnit>
 {
 	string[] _abilities = new string[2] ;
 

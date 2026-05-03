@@ -6,9 +6,6 @@ using UnityEngine;
 public class MainController : MonoBehaviour
 {
 	public static MainController Instance;
-
-	[SerializeField] public GameObject MainBuildingPrefab;
-	[SerializeField] public GameObject EmptyEnemyObj;
 	Team[] _teams;
 
 	private void Awake()
@@ -24,10 +21,11 @@ public class MainController : MonoBehaviour
 	{
 		_teams = new Team[3] { 
 			Player.Instance,
-			CreateEnemy(new Vector2Int(700,800), Color.orchid, ":3"),
-			CreateEnemy(new Vector2Int(100, 300), Color.aliceBlue, "Alice")
+			CreateEnemy(new Vector2Int(700,800), Color.red, ":3", 1),
+			CreateEnemy(new Vector2Int(100, 300), Color.green, "Alice", 2)
 		};
 	}
+
 
 	public Team[] GetAllTeams() { return _teams; }
 
@@ -36,22 +34,26 @@ public class MainController : MonoBehaviour
 	/// </summary>
 	/// <param name="teamID"></param>
 	/// <returns>Returns team if exists, else returns null</returns>
-	public Team GetTeam(uint teamID)
+	public Team GetTeam(int teamID)
 	{
-		if (teamID < _teams.Length)
+		if (teamID < 0) 
+			return null;
+		if (_teams != null && teamID < _teams.Length)
 			return _teams[teamID];
 		Debug.LogWarning("Team with ID " + teamID + " does not exist.");
 		return null;
 	}
 
-	private Team CreateEnemy(Vector2Int pos, Color c, string name)
+	private Team CreateEnemy(Vector2Int pos, Color c, string name, int index)
 	{
-		GameObject enemyObj = Instantiate(EmptyEnemyObj);
+		var enemyObj = new GameObject();
 		var enemy = enemyObj.AddComponent<EnemyController>();
-		enemy.Setup(pos, c, name);
+		enemy.Setup(pos, c, name, index);
 		
 		return enemyObj.GetComponent<Team>();
 	}
+
+	public int TeamCount() { return _teams.Length; }
 }
 
 // coroutine (nebo vedlejsi vlakno)

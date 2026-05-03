@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -27,11 +28,11 @@ public class MapController : MonoBehaviour {
 
 	private void Update()
 	{
-		if (!data.AllowBuilding || data.CurrBuilding == null) return;
+		if (!data.AllowBuilding || !data.CurrBuilding) return;
 
 		CheckPlace(data.CurrBuilding);
 
-		if (Input.GetMouseButtonDown(1))
+		if (data.CurrBuilding && Input.GetMouseButtonDown(0))
 		{
 			if (CanBePlaced(data.CurrBuilding))
 			{ PlaceBuilding(data.CurrBuilding); }
@@ -58,35 +59,29 @@ public class MapController : MonoBehaviour {
 		worldPos = data.MapGrid.GetCellCenterWorld(cellPos);
 		return worldPos;
 	}
-	private GameObject SpawnBuildOnPos(GameObject build, int teamID, Vector3 pos)
-	{
-		var obj = SpawnBuilding(build, teamID, pos);
-		TakeAreaForCurrBuild();
-		return obj;
-	}
 
-	// Grid____________________________________________________________
+
+	# region Grid
 	const int _areaPadding = 3;
 	const int _startPadding = 1;
 
 	public bool CanBePlaced(Building build)
 	{
+		if (!build || Map.Instance.IsOutOfMap(build.transform.position)) return false;
 		int teamID = build.GetTeamID();
-		Vector3 center = MainController.Instance.GetTeam((uint)teamID).GetCenter();
-		float radius = MainController.Instance.GetTeam((uint)teamID).GetBuildingRadius();
-
+		Vector3 center = MainController.Instance.GetTeam(teamID).GetCenter();
+		float radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
 		if (Vector3.Distance(build.transform.position, center) > radius)
 		{ return false; }
 
 		Vector3Int startInt = GetAreaStartPos(build);
 		Vector2 size = build.GetSize();
-
 		for (int x = 0; x < size.x + _areaPadding; x++)
 		{
 			for (int y = 0; y < size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
-				if (data.Tilemap_.GetTile(data.MapGrid.WorldToCell(currPos)) == data.BusyTile)
+				if (!Map.Instance.CellIs(Map.CellType.BuildArea, Map.Instance.WorldToMap(currPos)))
 				{ return false; }
 			}
 		}
@@ -95,6 +90,7 @@ public class MapController : MonoBehaviour {
 
 	private void TakeAreaForCurrBuild()
 	{
+		if (!data.CurrBuilding) return;
 		Vector3Int start = GetAreaStartPos(data.CurrBuilding);
 		Vector2 size = data.CurrBuilding.GetSize();
 
@@ -103,14 +99,14 @@ public class MapController : MonoBehaviour {
 			for (int y = 0; y < size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
-				data.Tilemap_.SetTile(data.MapGrid.WorldToCell(currPos), data.BusyTile);
+				Map.Instance.ForceSetCell(Map.Instance.WorldToMap(currPos), Map.CellType.Building);
 			}
 		}
 	}
 
 	private Vector3Int GetAreaStartPos(Building build)
 	{
-		Vector2 size = data.CurrBuilding.GetSize();
+		Vector2 size = build.GetSize();
 		Vector2Int sizeInt = new Vector2Int((int)size.x, (int)size.y);
 		var size3 = new Vector3Int(sizeInt.x, 0, sizeInt.y);
 		var center = build.transform.position;
@@ -121,24 +117,39 @@ public class MapController : MonoBehaviour {
 							Mathf.RoundToInt(start.z));
 	}
 
+	public void SpawnPlayerMovableBuild(Building build)
+	{
+		SpawnMovableBuild(build, Player.Instance.GetID());
+		Debug.Log($"Recieve: {build.GetSize()}");
+	}
+
 	public void SpawnMovableBuild(Building build, int teamID)
 	{
-		if (data.CurrBuilding != null && !data.CurrBuilding.IsPlaced())
+		if (data.CurrBuilding && !data.CurrBuilding.IsPlaced())
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
 
 		//if (!Player.Instance.Shop_.TryBuyItem(build.GetName(), Player.Instance.MainBuilding_))
 		//{ return; }
-
-		var obj = SpawnBuilding(build.gameObject, teamID, MapCoordToGrid(GetMouseWorldPos()));
-		obj.AddComponent<Movable>();
-
-		//data.Childrens_rends = data.CurrBuilding.GetComponentsInChildren<Renderer>();
+		if (data.CurrBuilding != null) 
+			RemoveMovableBuild();
+		var b = SpawnBuilding(build, teamID, MapCoordToGrid(GetMouseWorldPos()));
+		b.AddComponent<Movable>();
+		data.CurrBuilding = b;
 		data.AllowBuilding = true;
 	}
 
-	private GameObject SpawnBuilding(GameObject build, int teamID, Vector3 pos)
+	public void RemoveMovableBuild()
 	{
-		GameObject obj = Instantiate(build.gameObject, pos, build.transform.rotation);
+		if (data.CurrBuilding != null)
+		{
+			Destroy(data.CurrBuilding.GameObject());
+			data.CurrBuilding = null;
+		}
+	}
+
+	private Building SpawnBuilding(Building build, int teamID, Vector3 pos)
+	{
+		var obj = Instantiate(build, pos, build.transform.rotation);
 		data.CurrBuilding = obj.GetComponent<Building>();
 		((ITeamMember)data.CurrBuilding).SetTeam(teamID);
 
@@ -160,25 +171,30 @@ public class MapController : MonoBehaviour {
 
 	public void PlaceBuilding(Building b)
 	{
-		BuildingManager.ColorCurrBuilding(b, Color.white);
-		data.CurrBuilding.Construct();
+		var t = MainController.Instance.GetTeam(b.GetTeamID());
+		if (!t) return;
+		Color c = t.GetColor();
+		BuildingManager.ColorCurrBuilding(b, c);
+		b.Construct();
 		TakeAreaForCurrBuild();
+		data.CurrBuilding = null;
 		data.AllowBuilding = false;
 	}
 
 	private void CheckPlace(Building b)
 	{
-		if (!CanBePlaced(data.CurrBuilding))
+		if (!CanBePlaced(b))
 		{
+			b.GetSize();
 			UIManager.Instance.ChangeCursor(false);
 			BuildingManager.ColorCurrBuilding(b, Color.red);
 		}
-		else if (CanBePlaced(data.CurrBuilding))
+		else
 		{
 			UIManager.Instance.ChangeCursor(true);
 			BuildingManager.ColorCurrBuilding(b, Color.green);
 		}
 	}
-
+	#endregion
 
 }
