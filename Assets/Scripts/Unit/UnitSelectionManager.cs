@@ -32,6 +32,8 @@ public class UnitSelectionManager : MonoBehaviour
 
 	private void Update()
 	{
+		if (!MainController.Instance.Ready) return;
+
 		if (Input.GetMouseButtonDown(0))
 		{ TrySelectUnits(); }
 		else if (Input.GetMouseButtonDown(1) && UnitsSelected.Count > 0)

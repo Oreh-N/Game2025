@@ -10,13 +10,13 @@ using static Map;
 // Environment manager
 public class EnvManager : MonoBehaviour
 {
+	public bool Ready { get; private set; } = false;
 	public static EnvManager Instance;
 
 	static Dictionary<Vector2Int, Chunk> _chunks = new Dictionary<Vector2Int, Chunk>();
-	public GameObject _treePrefab;
 	MainCameraMovement _cam_move;
+	Coroutine _updateCoroutine = null;
 	Cam _cam;
-	Map _map;
 
 
 	private void Awake()
@@ -29,23 +29,35 @@ public class EnvManager : MonoBehaviour
 
 	private void Start()
 	{
-		_map = Map.Instance;
 		_cam = Camera.main.GetComponent<Cam>();
 		_cam_move = Camera.main.GetComponent<MainCameraMovement>();
 
-		SignBuildingArea(_map);
-		RoadGenerator.GenRoadsBetweenAllTeams(_map, new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
-		StartCoroutine(ForestGenerator.GenVirtForest(_map));
-		UpdateForestChunksInCameraView(_cam.transform.position);
+		
 	}
 
 	void Update()
 	{
+		if (!MainController.Instance.Ready) return;
+		if (!Ready)
+		{
+			Initialize();
+			Ready = true;
+		}
+
 		if (_cam_move.GetDir() != Vector3.zero)
 		{
-			UpdateForestChunksInCameraView(_cam_move.GetPos());
+			if (_updateCoroutine == null)
+				_updateCoroutine = StartCoroutine(UpdateForestChunksLoop());
 			TryDisableChunksOutOfView();
 		}
+	}
+
+	void Initialize()
+	{
+		SignBuildingArea();
+		RoadGenerator.GenRoadsBetweenAllTeams(new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
+		StartCoroutine(ForestGenerator.GenVirtForest());
+		StartCoroutine(UpdateForestChunksInCameraView(_cam.transform.position));
 	}
 
 	#region Dynamic Forest Generation
@@ -86,29 +98,49 @@ public class EnvManager : MonoBehaviour
 		var out_of_view_points = GetJustLeftPoints();
 		foreach (var out_p in out_of_view_points)
 		{
-			var map_pos = _map.WorldToMapWithCut(out_p);
-			var chunk_pos = Chunk.GetChunkMapPos(map_pos, _map);
-			if (Chunk.GetChunkMapPos(_cam.GetCamProjectionCenter(), _map) == chunk_pos) 
+			var map_pos = Map.WorldToMapWithCut(out_p);
+			var chunk_pos = Chunk.GetChunkMapPos(map_pos);
+			if (Chunk.GetChunkMapPos(_cam.GetCamProjectionCenter()) == chunk_pos) 
 				continue;
 			if (_chunks.ContainsKey(chunk_pos) && _chunks[chunk_pos].IsEnabled())
 			{ _chunks[chunk_pos].Disable(); }
 		}
 	}
 
-	void UpdateForestChunksInCameraView(Vector3 cam_pos)
+	IEnumerator UpdateForestChunksLoop()
+	{
+		while (true)
+		{
+			yield return StartCoroutine(UpdateForestChunksInCameraView(_cam_move.GetPos()));
+			yield return null;
+		}
+	}
+
+	IEnumerator UpdateForestChunksInCameraView(Vector3 cam_pos)
 	{
 		List<Vector3> map_border_points = _cam.GetCamProjBorderPoints();
+
+		float maxTime = 0.002f;
+		float startTime = Time.realtimeSinceStartup;
+
 		foreach (var p in map_border_points)
 		{
-			var world_pos = _map.WorldToMapWithCut(p);
-			var chunk_pos = Chunk.GetChunkMapPos(world_pos, _map);
+			var world_pos = Map.WorldToMapWithCut(p);
+			var chunk_pos = Chunk.GetChunkMapPos(world_pos);
+
 			if (_chunks.ContainsKey(chunk_pos) && !_chunks[chunk_pos].IsEnabled())
-			{ _chunks[chunk_pos].Enable(_map); }
+			{ _chunks[chunk_pos].Enable();}
+
 			else if (!_chunks.ContainsKey(chunk_pos))   // if we see chunk for the first time, add it to _chunks
 			{
-				_chunks.Add(chunk_pos, new Chunk(world_pos, _map));
-				// Debug.Log($"{chunk_pos}      {_chunks.Count}");
-				_chunks[chunk_pos].Enable(_map);
+				_chunks.Add(chunk_pos, new Chunk(world_pos));
+				_chunks[chunk_pos].Enable();
+			}
+
+			if (Time.realtimeSinceStartup - startTime > maxTime)
+			{
+				yield return null;
+				startTime = Time.realtimeSinceStartup;
 			}
 		}
 	}
@@ -172,16 +204,15 @@ public class EnvManager : MonoBehaviour
 	}
 
 
-	private void SignBuildingArea(Map map)
+	private void SignBuildingArea()
 	{
-		if (map == null || MainController.Instance == null || !MainController.Instance.Ready) return;
 		Team[] ts = MainController.Instance.GetAllTeams();
 		foreach (Team t in ts)
 		{
 			if (t == null) { Debug.Log("Team is NULL"); continue; }
-			Vector2Int coord = map.WorldToMap(t.GetCenter());
-			int mapRadius = Mathf.RoundToInt(t.GetBuildingRadius() / map.GetCellSize().x);
-			map.FillMapArea(coord, mapRadius, CellType.BuildArea);
+			Vector2Int coord = Map.WorldToMap(t.GetCenter());
+			int mapRadius = Mathf.RoundToInt(t.GetBuildingRadius() / Map.GetCellSize().x);
+			Map.FillMapArea(coord, mapRadius, CellType.BuildArea);
 		}
 	}
 

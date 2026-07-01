@@ -5,7 +5,7 @@ using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
 
 
-public class Map : MonoBehaviour
+public static class Map
 {
 	public enum CellType
 	{
@@ -17,23 +17,10 @@ public class Map : MonoBehaviour
 		Road = 101,
 		Error = 505
 	}
-	public static Map Instance;
-	MapData data = new MapData();
+	static MapData data = new MapData();
 
 
-	private void Awake()
-	{
-		if (Instance == null)
-		{
-			Instance = this;
-		}
-		else if (Instance != this)
-		{
-			Destroy(gameObject);
-		}
-	}
-
-	public bool TrySetCell(MapCoord coord, CellType type)
+	public static bool TrySetCell(MapCoord coord, CellType type)
 	{
 		if (IsOutOfMap(coord) || data.Map[coord.x, coord.y] != CellType.Empty) 
 			return false;
@@ -42,25 +29,25 @@ public class Map : MonoBehaviour
 		return true;
 	}
 
-	public void ForceSetCell(MapCoord coord, CellType type)
+	public static void ForceSetCell(MapCoord coord, CellType type)
 	{
 		if (IsOutOfMap(coord)) return;
 		data.Map[coord.x, coord.y] = type;
 	}
 
-	public bool CellIs(CellType type, MapCoord coord)
+	public static bool CellIs(CellType type, MapCoord coord)
 	{
 		if (IsOutOfMap(coord)) return false;
 		return data.Map[coord.x, coord.y] == type;
 	}
 
-	public bool CellIs(CellType type, int x, int z)
+	public static bool CellIs(CellType type, int x, int z)
 	{
 		if (IsOutOfMap(new MapCoord(x,z))) return false;
 		return data.Map[x, z] == type;
 	}
 
-	public CellType GetCellType(MapCoord coord)
+	public static CellType GetCellType(MapCoord coord)
 	{
 		return !IsOutOfMap(coord) ? data.Map[coord.x, coord.y] : CellType.Error;
 	}
@@ -71,7 +58,7 @@ public class Map : MonoBehaviour
 	/// <param name="centerCoords"> - coordinates of the center of the area that need to be filled</param>
 	/// <param name="radius"> - translate world radius (radius, 0, 0) to map map radius (mapRadius, 0) with WorldToMap method</param>
 	/// <param name="filling"> - cell type which will fill the area</param>
-	public void FillMapArea(MapCoord centerCoords, int radius, CellType filling)
+	public static void FillMapArea(MapCoord centerCoords, int radius, CellType filling)
 	{
 		ForceSetCell(centerCoords, filling);
 		Queue<MapCoord> toFill = new Queue<MapCoord>();
@@ -90,7 +77,7 @@ public class Map : MonoBehaviour
 		}
 	}
 
-	private void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords)
+	private static void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords)
 	{
 		List<int> range = new List<int>() { -1, 0, 1 };
 		foreach (int i in range)
@@ -105,13 +92,13 @@ public class Map : MonoBehaviour
 		}
 	}
 
-	public bool IsOutOfMap(MapCoord mapCoord)
+	public static bool IsOutOfMap(MapCoord mapCoord)
 	{
 		return !(mapCoord.x < MapData.MapSize[0] && mapCoord.x >= 0
 			 && mapCoord.y < MapData.MapSize[1] && mapCoord.y >= 0);
 	}
 
-	public bool IsOutOfMap(Vector3 coord)
+	public static bool IsOutOfMap(Vector3 coord)
 	{
 		var mapCoord = WorldToMap(new Vector3(coord.x, 0, coord.z));
 		return IsOutOfMap(mapCoord);
@@ -123,16 +110,16 @@ public class Map : MonoBehaviour
 	/// <param name="x"></param>
 	/// <param name="y"></param>
 	/// <returns>World position</returns>
-	public Vector3 MapToWorld(int x, int y)
+	public static Vector3 MapToWorld(int x, int y)
 	{ return data.MapStart + new Vector3(x, 0, y); }
 
-	public Vector3 MapToWorld(Vector2Int map_pos)
+	public static Vector3 MapToWorld(Vector2Int map_pos)
 	{ return data.MapStart + new Vector3(map_pos.x, 0, map_pos.y); }
 
-	public Vector3 GetCellSize()
+	public static Vector3 GetCellSize()
 	{ return data.CellSize; }
 
-	public int[] GetSize()
+	public static int[] GetSize()
 	{ return MapData.MapSize; }
 
 	/// <summary>
@@ -140,7 +127,7 @@ public class Map : MonoBehaviour
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <returns>Map position (indicies)</returns>
-	public MapCoord WorldToMap(Vector3 pos)
+	public static MapCoord WorldToMap(Vector3 pos)
 	{
 		int x = Mathf.FloorToInt(pos.x - data.MapStart.x);
 		int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
@@ -160,7 +147,7 @@ public class Map : MonoBehaviour
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <returns>Map position (indicies)</returns>
-	public MapCoord WorldToMapWithCut(Vector3 pos)
+	public static MapCoord WorldToMapWithCut(Vector3 pos)
 	{
 		int x = Mathf.FloorToInt(pos.x - data.MapStart.x);
 		int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
@@ -173,52 +160,5 @@ public class Map : MonoBehaviour
 		return new MapCoord(x, z);
 	}
 
-
-
-	#region TESTING
-
-	public bool showGrid;
-	public GameObject targetForGizmo;
-	public bool showMap;
-
-	private void OnDrawGizmos()
-	{
-		if (showGrid)
-		{
-			Gizmos.color = new Color(0.8f, 0, 0, 0.3f);
-			for (int x = 0; x < MapData.MapSize[0]; x++)
-				for (int z = 0; z < MapData.MapSize[1]; z++)
-				{
-					Gizmos.DrawCube(MapToWorld(x, z), data.CellSize);
-				}
-		}
-
-		IMyPlaceableOnMap comp;
-
-		if (targetForGizmo && targetForGizmo.TryGetComponent<IMyPlaceableOnMap>(out comp))
-		{
-			Gizmos.color = new Color(1f, 0.4f, 1f, 0.5f);
-			MapCoord worldPos = WorldToMap(comp.GetPos());
-			var sizeOnMap = (comp.GetTakeAreaSize());   // Some objects sizes are initialized during the game
-			var size = new Vector3(sizeOnMap.x, 0, sizeOnMap.y);
-			Gizmos.DrawCube(MapToWorld(worldPos.x, worldPos.y), size);
-		}
-
-		if (showMap) ShowMapGizmo();
-	}
-	void ShowMapGizmo()// will through an error if used not during the game
-	{
-		Gizmos.color = new Color(0.7f, 0, 0.4f, 0.3f);
-
-		for (int x = 0; x < MapData.MapSize[0] / 10; x++)
-			for (int z = 0; z < MapData.MapSize[1] / 10; z++)
-			{
-				if (CellIs(CellType.Empty, x, z)) continue;
-
-				Vector3 world = MapToWorld(x, z);
-				Gizmos.DrawCube(world, data.CellSize);
-			}
-	}
-	#endregion
 }
 

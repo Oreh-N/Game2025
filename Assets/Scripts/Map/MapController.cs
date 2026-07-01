@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
-using UnityEditor;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Color = UnityEngine.Color;
 
+
 public class MapController : MonoBehaviour {
 	public static MapController Instance;
 	MapControllerData data = new MapControllerData();
+
 
 	private void Awake()
 	{
@@ -69,7 +63,7 @@ public class MapController : MonoBehaviour {
 
 	public bool CanBePlaced(Building build)
 	{
-		if (!build || Map.Instance.IsOutOfMap(build.transform.position) || !MainController.Instance.Ready) return false;
+		if (!build || Map.IsOutOfMap(build.transform.position) || !MainController.Instance.Ready) return false;
 		int teamID = build.GetTeamID();
 		Vector3 center = MainController.Instance.GetTeam(teamID).GetCenter();
 		float radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
@@ -83,7 +77,7 @@ public class MapController : MonoBehaviour {
 			for (int y = 0; y < size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
-				if (!Map.Instance.CellIs(Map.CellType.BuildArea, Map.Instance.WorldToMap(currPos)))
+				if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos)))
 				{ return false; }
 			}
 		}
@@ -101,7 +95,7 @@ public class MapController : MonoBehaviour {
 			for (int y = 0; y < size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
-				Map.Instance.ForceSetCell(Map.Instance.WorldToMap(currPos), Map.CellType.Building);
+				Map.ForceSetCell(Map.WorldToMap(currPos), Map.CellType.Building);
 			}
 		}
 	}

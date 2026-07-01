@@ -6,27 +6,27 @@ using UnityEngine;
 public class Chunk
 {
 	ChunkData data;
+	
 
-
-	public Chunk(Vector3 world_pos, Map map)
+	public Chunk(Vector3 world_pos)
 	{
-		data.map_pos = GetChunkMapPos(world_pos, map);
+		data.map_pos = GetChunkMapPos(world_pos);
 		data.trees = new List<GameObject>();
 	}
-	public Chunk(Vector2Int map_pos_, Map map)
+	public Chunk(Vector2Int map_pos_)
 	{
-		data.map_pos = GetMapPos(map_pos_, map);
+		data.map_pos = GetMapPos(map_pos_);
 		data.trees = new List<GameObject>();
 	}
 
-	public static Vector2Int GetChunkMapPos(Vector3 world_pos, Map map)
+	public static Vector2Int GetChunkMapPos(Vector3 world_pos)
 	{
-		var mapPos = map.WorldToMapWithCut(world_pos);
-		return GetMapPos(mapPos, map);
+		var mapPos = Map.WorldToMapWithCut(world_pos);
+		return GetMapPos(mapPos);
 	}
 
-	public static Vector2Int GetChunkMapPos(Vector2Int map_pos, Map map)
-	{ return GetMapPos(map_pos, map); }
+	public static Vector2Int GetChunkMapPos(Vector2Int map_pos)
+	{ return GetMapPos(map_pos); }
 
 	public bool IsEnabled() { return data.is_enabled; }
 
@@ -35,19 +35,19 @@ public class Chunk
 	/// </summary>
 	/// <param name="mapPos"> - Any map position</param>
 	/// <returns></returns>
-	static Vector2Int GetMapPos(Vector2Int mapPos, Map map)
+	static Vector2Int GetMapPos(Vector2Int mapPos)
 	{
 		//Debug.Log($"GetMapPos (mapPos): {mapPos}");
 		var fullX = mapPos.x / ChunkData._size.x;
 		var fullY = mapPos.y / ChunkData._size.y;
 
 		if (mapPos.x < 0) fullX = 0;
-		else if (mapPos.x > map.GetSize()[0])
-			fullX = map.GetSize()[0] / ChunkData._size.x;
+		else if (mapPos.x > Map.GetSize()[0])
+			fullX = Map.GetSize()[0] / ChunkData._size.x;
 
 		if (mapPos.y < 0) fullY = 0;
-		else if (mapPos.y > map.GetSize()[1])
-			fullY = map.GetSize()[1] / ChunkData._size.y;
+		else if (mapPos.y > Map.GetSize()[1])
+			fullY = Map.GetSize()[1] / ChunkData._size.y;
 
 		//Debug.Log($"X: {fullX}    Y: {fullY}");
 		return new Vector2Int(fullX, fullY);
@@ -57,7 +57,7 @@ public class Chunk
 	/// Instanciates trees in chunk by looking where are they on the map
 	/// </summary>
 	/// <param name="map"></param>
-	public void Enable(Map map)		// Chunks gen error is here
+	public void Enable()		// Chunks gen error is here
 	{
 		for (int x = 0; x < ChunkData._size.x; x++)
 			for (int y = 0; y < ChunkData._size.y; y++)
@@ -65,13 +65,12 @@ public class Chunk
 				var cell_pos = new Vector2Int(data.map_pos.x * ChunkData._size.x + x,
 					data.map_pos.y * ChunkData._size.y + y);
 
-				if (map.IsOutOfMap(cell_pos) ||
-					map.GetCellType(cell_pos) != ChunkData.tree_type ||
-					EnvManager.Instance._treePrefab == null)
+				if (Map.IsOutOfMap(cell_pos) ||
+					Map.GetCellType(cell_pos) != ChunkData.tree_type)
 					continue;
 
-				data.trees.Add(GameObject.Instantiate(EnvManager.Instance._treePrefab,
-					map.MapToWorld(cell_pos), Quaternion.identity));
+				var tree = TreeCreator.CreateTree(Map.MapToWorld(cell_pos));
+				data.trees.Add(tree);
 			}
 		data.is_enabled = true;
 		//Debug.Log($"Enabled {data.map_pos} chunk");

@@ -19,7 +19,7 @@ public static class RoadGenerator
 	/// <summary>
 	/// Generates roads from each base to the center of the map.
 	/// </summary>
-	public static void GenRoadsBetweenAllTeams(Map map, Vector2Int map_size)
+	public static void GenRoadsBetweenAllTeams(Vector2Int map_size)
 	{
 		if (!MainController.Instance.Ready) return;
 		var mapCenter = new Vector2Int(map_size.x / 2, map_size.y / 2);
@@ -28,7 +28,7 @@ public static class RoadGenerator
 		{
 			if (ts[i] == null) continue;
 			var baseCenter = new Vector2Int((int)ts[i].GetCenter().x, (int)ts[i].GetCenter().z);
-			SignRoadOnMap(baseCenter, mapCenter, map);
+			SignRoadOnMap(baseCenter, mapCenter);
 		}
 	}
 
@@ -37,9 +37,9 @@ public static class RoadGenerator
 	/// </summary>
 	/// <param name="start"> - start coordinates on map</param>
 	/// <param name="end"> - end coordinates on map</param>
-	static void SignRoadOnMap(Vector2Int start, Vector2Int end, Map map)
+	static void SignRoadOnMap(Vector2Int start, Vector2Int end)
 	{
-		List<Vector2Int> road = GetShortestRoad(start, end, map);
+		List<Vector2Int> road = GetShortestRoad(start, end);
 
 		foreach (var part in road)
 		{
@@ -48,11 +48,11 @@ public static class RoadGenerator
 				Math.Sign(end.y - part.y)
 			);
 			Vector2Int perpDir = new Vector2Int(-dir.y, dir.x);
-			WidenRoad(part, roadWidth, perpDir, map);
+			WidenRoad(part, roadWidth, perpDir);
 		}
 	}
 
-	static Vector2Int GetClosestDir(Map map, Vector2Int curr, Vector2Int goal)
+	static Vector2Int GetClosestDir(Vector2Int curr, Vector2Int goal)
 	{
 		Vector2Int closest_dir = new Vector2Int(0, 0);
 
@@ -68,25 +68,25 @@ public static class RoadGenerator
 		return closest_dir;
 	}
 
-	static List<Vector2Int> GetShortestRoad(Vector2Int start, Vector2Int end, Map map)
+	static List<Vector2Int> GetShortestRoad(Vector2Int start, Vector2Int end)
 	{
 		List<Vector2Int> road = new List<Vector2Int>();
 		var curr = start;
-		while (!is_close(curr, end, roadWidth/2))
+		while (!IsClose(curr, end, roadWidth/2))
 		{
-			Vector2Int dir = GetClosestDir(map, curr, end);
+			Vector2Int dir = GetClosestDir(curr, end);
 			curr = curr + dir;
 			road.Add(curr);
 		}
 		return road;
 	}
 
-	static bool is_close(Vector2Int curr, Vector2Int goal, int goal_radius = 50)
+	static bool IsClose(Vector2Int curr, Vector2Int goal, int goal_radius = 50)
 	{
 		return Vector2Int.Distance(curr, goal) < goal_radius;
 	}
 
-	static void WidenRoad(Vector2Int center, int width, Vector2Int perpDir, Map map)
+	static void WidenRoad(Vector2Int center, int width, Vector2Int perpDir)
 	{
 		int r = width / 2;
 		
@@ -95,14 +95,14 @@ public static class RoadGenerator
 			{
 				if (x * x + y * y > r * r)
 					continue;
-				SetRoadOnPosition(new Vector2Int(center.x + x, center.y + y), map);
+				SetRoadOnPosition(new Vector2Int(center.x + x, center.y + y));
 			}
 	}
 
-	static public void SetRoadOnPosition(Vector2Int coord, Map map)
+	static public void SetRoadOnPosition(Vector2Int coord)
 	{
-		if (map.IsOutOfMap(coord)) return;
+		if (Map.IsOutOfMap(coord)) return;
 
-		map.TrySetCell(coord, CellType.Road);
+		Map.TrySetCell(coord, CellType.Road);
 	}
 }

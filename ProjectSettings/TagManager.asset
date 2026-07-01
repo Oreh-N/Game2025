@@ -21,6 +21,7 @@ TagManager:
   - WarningPanel
   - Managers
   - Marker
+  - TreeFolder
   layers:
   - Default
   - TransparentFX

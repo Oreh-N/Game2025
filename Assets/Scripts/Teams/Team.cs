@@ -19,6 +19,8 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	public void Update()
 	{
+		if (!MainController.Instance.Ready) return;
+
 		if (data.IsDefeated)
 		{ Debug.Log($"Team {data.TeamName} was defeated"); }
 
@@ -130,7 +132,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		data.ID = TeamData.FreeID;
 		TeamData.FreeID++;
 
-		if (Map.Instance.IsOutOfMap(BasePos))
+		if (Map.IsOutOfMap(BasePos))
 		{
 			Destroy(this);
 			Debug.Log("The base is out of map. Setup will be ignored.");

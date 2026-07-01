@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class MainController : MonoBehaviour
 {
+	public bool Ready { get; private set; } = false;
 	public static MainController Instance;
 	GameObject managers;
 	Team[] _teams;
-	public bool Ready { get; private set; } = false;
+
+
 
 	private void Awake()
 	{
@@ -18,7 +20,7 @@ public class MainController : MonoBehaviour
 		{ Instance = this; }
 
 
-		managers = GameObject.FindWithTag("Managers");  // This object needed to control flow of scripts initialization
+		managers = GameObject.Find("___Managers___");  // This object needed to control flow of scripts initialization
 		if (!managers) Debug.Log("Can't find manager holder");
 	}
 
@@ -32,9 +34,6 @@ public class MainController : MonoBehaviour
 	IEnumerator InitializeManagers()
 	{
 		managers.AddComponent<UIManager>();
-		yield return null;
-
-		managers.AddComponent<Map>();
 		yield return null;
 
 		managers.AddComponent<MapController>();
@@ -61,7 +60,6 @@ public class MainController : MonoBehaviour
 		yield return null;
 
 		managers.AddComponent<EnvManager>();
-		EnvManager.Instance._treePrefab = Prefabs.Tree1;
 		yield return null;
 
 		Ready = true;
@@ -96,5 +94,5 @@ public class MainController : MonoBehaviour
 	public int TeamCount() { return _teams.Length; }
 }
 
-// coroutine (nebo vedlejsi vlakno)
-// nemenit verze unity
+// Complete:
+// 1. Tree generates at predefined folder .../TreeFolder

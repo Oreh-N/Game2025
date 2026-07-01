@@ -15,24 +15,24 @@ public static class ForestGenerator
 
 	static float treeGenFrequency = 5;
 
-	public static IEnumerator GenVirtForest(Map map)
+	public static IEnumerator GenVirtForest()
 	{
-		if (!MainController.Instance.Ready) return null;
+		if (!MainController.Instance.Ready) yield return null;
 
 		Dictionary<Vector3, float> areasInfo = EnvManager.Instance.GetBaseAreaInfo();
 
-		for (int x = 0; x < map.GetSize()[0]; x++)
+		for (int x = 0; x < Map.GetSize()[0]; x++)
 		{
-			for (int z = 0; z < map.GetSize()[1]; z++)
+			for (int z = 0; z < Map.GetSize()[1]; z++)
 			{
 				if (Rnd.Range(0, 100) < treeGenFrequency)
-				{ map.TrySetCell(new Vector2Int(x, z), CellType.Tree); }
+				{ Map.TrySetCell(new Vector2Int(x, z), CellType.Tree); }
 			}
 		}
-		return null;
+		yield return null;
 	}
 
-	public static void GenWholeMapForest(GameObject treePrefab, Map map)
+	public static void GenWholeMapForest(GameObject treePrefab)
 	{
 		if (treePrefab == null)
 		{
@@ -40,12 +40,12 @@ public static class ForestGenerator
 			return;
 		}
 
-		for (int x = 0; x < map.GetSize()[0]; x++)
+		for (int x = 0; x < Map.GetSize()[0]; x++)
 		{
-			for (int z = 0; z < map.GetSize()[1]; z++)
+			for (int z = 0; z < Map.GetSize()[1]; z++)
 			{
-				if (map.CellIs(CellType.Tree, x, z))
-				{ GameObject.Instantiate(treePrefab, map.MapToWorld(x, z), Quaternion.identity); }
+				if (Map.CellIs(CellType.Tree, x, z))
+				{ TreeCreator.CreateTree(Map.MapToWorld(x, z)); }
 			}
 		}
 	}
