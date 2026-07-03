@@ -51,3 +51,6 @@ public static class ForestGenerator
 	}
 }
 
+
+// 03.07. Trying to optimize tree spawning.Right now might cause spikes in fps and take ~30 ms
+// 
