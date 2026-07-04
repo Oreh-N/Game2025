@@ -14,7 +14,8 @@ public class MainCameraMovement : MonoBehaviour
 	void Update()
 	{
 		_dir = UpdateDir();
-		if (_dir != Vector3.zero) _last_dir = _dir;
+		if (_dir != Vector3.zero) 
+		{ _last_dir = _dir; }
 		if (_dir != Vector3.zero)
 		{ MakeStep(_dir); }
 	}

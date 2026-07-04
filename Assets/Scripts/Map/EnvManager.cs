@@ -17,6 +17,8 @@ public class EnvManager : MonoBehaviour
 	MainCameraMovement _cam_move;
 	Coroutine _updateCoroutine = null;
 	Cam _cam;
+	float _timer = 0;
+	float _update_time = 0.1f;
 
 
 	private void Awake()
@@ -32,7 +34,7 @@ public class EnvManager : MonoBehaviour
 		_cam = Camera.main.GetComponent<Cam>();
 		_cam_move = Camera.main.GetComponent<MainCameraMovement>();
 
-		
+
 	}
 
 	void Update()
@@ -44,12 +46,14 @@ public class EnvManager : MonoBehaviour
 			Ready = true;
 		}
 
-		if (_cam_move.GetDir() != Vector3.zero)
+		if (_timer < 0)
 		{
-			if (_updateCoroutine == null)
-				_updateCoroutine = StartCoroutine(UpdateForestChunksLoop());
-			TryDisableChunksOutOfView();
+			StartCoroutine(UpdateForestChunksInCameraView(_cam_move.GetPos()));
+			StartCoroutine(TryDisableChunksOutOfView());
+			_timer = _update_time;
 		}
+
+		_timer -= Time.deltaTime;
 	}
 
 	void Initialize()
@@ -93,34 +97,29 @@ public class EnvManager : MonoBehaviour
 		return points;
 	}
 
-	private void TryDisableChunksOutOfView()
+	IEnumerator TryDisableChunksOutOfView()
 	{
 		var out_of_view_points = GetJustLeftPoints();
 		foreach (var out_p in out_of_view_points)
 		{
 			var map_pos = Map.WorldToMapWithCut(out_p);
 			var chunk_pos = Chunk.GetChunkMapPos(map_pos);
-			if (Chunk.GetChunkMapPos(_cam.GetCamProjectionCenter()) == chunk_pos) 
+			if (Chunk.GetChunkMapPos(_cam.GetCamProjectionCenter()) == chunk_pos)
 				continue;
 			if (_chunks.ContainsKey(chunk_pos) && _chunks[chunk_pos].IsEnabled())
-			{ _chunks[chunk_pos].Disable(); }
+			{
+				_chunks[chunk_pos].Disable();
+				yield return null;
+			}
 		}
 	}
 
-	IEnumerator UpdateForestChunksLoop()
-	{
-		while (true)
-		{
-			yield return StartCoroutine(UpdateForestChunksInCameraView(_cam_move.GetPos()));
-			yield return null;
-		}
-	}
 
 	IEnumerator UpdateForestChunksInCameraView(Vector3 cam_pos)
 	{
 		List<Vector3> map_border_points = _cam.GetCamProjBorderPoints();
 
-		float maxTime = 0.002f;
+		float maxTime = 0.02f;
 		float startTime = Time.realtimeSinceStartup;
 
 		foreach (var p in map_border_points)
@@ -129,7 +128,7 @@ public class EnvManager : MonoBehaviour
 			var chunk_pos = Chunk.GetChunkMapPos(world_pos);
 
 			if (_chunks.ContainsKey(chunk_pos) && !_chunks[chunk_pos].IsEnabled())
-			{ _chunks[chunk_pos].Enable();}
+			{ _chunks[chunk_pos].Enable(); }
 
 			else if (!_chunks.ContainsKey(chunk_pos))   // if we see chunk for the first time, add it to _chunks
 			{
@@ -162,7 +161,7 @@ public class EnvManager : MonoBehaviour
 	private void OnDrawGizmos()
 	{
 		if (!Application.isPlaying || _cam == null) return;
-		
+
 		var points = GetJustLeftPoints();
 
 		Gizmos.color = Color.deepPink;
@@ -179,7 +178,7 @@ public class EnvManager : MonoBehaviour
 
 		Gizmos.color = Color.peachPuff;
 		Gizmos.DrawSphere(points[4], 0.5f);
-		
+
 	}
 	/**/
 	#endregion
