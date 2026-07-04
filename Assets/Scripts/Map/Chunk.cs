@@ -6,7 +6,7 @@ using UnityEngine;
 public class Chunk
 {
 	ChunkData data;
-	
+
 
 	public Chunk(Vector3 world_pos)
 	{
@@ -28,7 +28,7 @@ public class Chunk
 	public static Vector2Int GetChunkMapPos(Vector2Int map_pos)
 	{ return GetMapPos(map_pos); }
 
-	public bool IsEnabled() { return data.is_enabled; }
+	public bool IsEnabled() { return data.IsEnabled; }
 
 	/// <summary>
 	/// Takes any map position and returns which chunk does it belong to
@@ -53,11 +53,22 @@ public class Chunk
 		return new Vector2Int(fullX, fullY);
 	}
 
-	/// <summary>
-	/// Instanciates trees in chunk by looking where are they on the map
-	/// </summary>
-	/// <param name="map"></param>
-	public void Enable()		// Chunks gen error is here
+	public void Enable()        // Chunks gen error is here
+	{
+		if (data.IsEnabled) return;
+
+		if (!data.Initialized) Initialize();
+		else
+		{
+			for (int i = 0; i < data.trees.Count; i++)
+			{ data.trees[i].SetActive(true); }
+		}
+		data.IsEnabled = true;
+
+		//Debug.Log($"Enabled {data.map_pos} chunk");
+	}
+
+	void Initialize()
 	{
 		for (int x = 0; x < ChunkData._size.x; x++)
 			for (int y = 0; y < ChunkData._size.y; y++)
@@ -72,18 +83,26 @@ public class Chunk
 				var tree = TreeCreator.CreateTree(Map.MapToWorld(cell_pos));
 				data.trees.Add(tree);
 			}
-		data.is_enabled = true;
-		//Debug.Log($"Enabled {data.map_pos} chunk");
+		data.Initialized = true;
+	}
+
+	public void Disable()
+	{
+		if (!data.IsEnabled) return;
+
+		for (int i = 0; i < data.trees.Count; i++)
+		{ data.trees[i].SetActive(false); }
+		data.IsEnabled = false;
 	}
 
 	/// <summary>
 	/// Destroys all tree prefabs the chunk contains
 	/// </summary>
-	public void Disable()
+	public void DeleteFilling()
 	{
 		for (int i = 0; i < data.trees.Count; i++)
 		{ GameObject.Destroy(data.trees[i]); }
-		data.is_enabled = false;
+		data.IsEnabled = false;
 		//Debug.Log($"Disabled {data.map_pos} chunk");
 	}
 }

@@ -2,7 +2,6 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 
 
-[RequireComponent(typeof(BoxCollider))]
 public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember, IMyPlaceableOnMap
 {
 	protected BuildingData Data = new BuildingData();
@@ -12,10 +11,10 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public void Awake()
 	{
-		BoxCollider box = GetComponent<BoxCollider>();
-		Data.Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x + 1),
-								   Mathf.CeilToInt(box.size.y * transform.localScale.y + 1));
-		box.enabled = false;
+		//BoxCollider box = GetComponent<BoxCollider>();
+		//Data.Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x + 1),
+		//						   Mathf.CeilToInt(box.size.y * transform.localScale.y + 1));
+		//box.enabled = false;
 		HealthSys.SetHealth(100);
 		Data.RendererChildren = GetComponentsInChildren<Renderer>();
 		if (Data.RendererChildren == null) Debug.Log("No renderers in this building");
@@ -36,7 +35,6 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public virtual void Construct()
 	{
-		gameObject.GetComponent<BoxCollider>().enabled = true;
 		Destroy(gameObject.GetComponent<Movable>());
 		ColorBuilding();
 		Data.IsPlaced = true;

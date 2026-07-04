@@ -8,6 +8,7 @@ public struct ChunkData
 	public static readonly Map.CellType tree_type = Map.CellType.Tree;
 	public List<GameObject> trees;
 	public Vector2Int map_pos;
-	public bool is_enabled;
+	public bool Initialized;
+	public bool IsEnabled;
 }
 
