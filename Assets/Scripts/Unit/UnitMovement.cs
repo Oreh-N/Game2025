@@ -1,45 +1,94 @@
-       using System;
+using MapSpace.MapLayers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Map = MapSpace.Map;
+using MNames = MapSpace.MapLayers.Maps.MapNames;
+
 
 [RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
 	[SerializeField] LayerMask _ground;
 	bool _isMoving = false;
+	bool _findNextStepPos = false;
 	float _speed = 20f;
-	Vector3 _nxtPos;
-	List<Vector3> _milestones = new List<Vector3>();
-	//The idea is to split direct way to the next position into several
-	//next position that are closer and if some of them are in the
-	//obstacle we will recalculate the way for them (maybe find shortest one)
-	//then we will go step by step to the final destination
+	Vector2Int _targetPos;
+	Vector2Int _prevPos;
+	Vector2Int _nxtPos;
 
+
+	private void Start()
+	{
+		_prevPos = Map.WorldToMap(transform.position);
+
+		if (!Map.TrySetCell(_prevPos, Map.CellType.Unit, MNames.UnitMap))
+		{
+			_prevPos = Map.FindNearestCell(_prevPos, Map.CellType.Empty, 
+				(nxtCellPos, targetCellT, mapName, _) => { return Map.GetCellType(nxtCellPos, mapName) == targetCellT; },
+				MNames.UnitMap, (dirs) => dirs);
+			transform.position = Map.MapToWorld(_prevPos);
+		}
+
+	}
 
 	private void Update()
 	{
 		if (Input.GetMouseButtonDown(1))
-		{ TryGetNextPosition(); }
+		{ FindTargetPosition(); }
+
+		if (_findNextStepPos)
+		{
+			_nxtPos = FindNextStepPos();
+			_isMoving = true;
+			_findNextStepPos = false;
+			Debug.Log($"Next position is: {_nxtPos}");
+		}
 
 		if (_isMoving)
-		{ Move(); }
+		{ MoveTo(_nxtPos); }
 	}
 
-	private void Move()
+	private Vector2Int FindNextStepPos()    // !!! Careful with map access from multiple units (first - map update, second - move)
 	{
-		transform.LookAt(_nxtPos);
-		_nxtPos.y = transform.position.y;
-		transform.position = Vector3.MoveTowards(transform.position, _nxtPos, _speed * Time.deltaTime);
 
-		if ((int)transform.position.x == (int)_nxtPos.x && (int)transform.position.z == (int)_nxtPos.z)
-		{ 
-			_isMoving = false;
+		// Sorts directions so that directions with better heuristic would be first
+		List<Vector2Int> DirHeuristicSort(List<Vector2Int> dirs) // Assume dirs will be very small (4 items)
+		{
+			List<Vector2Int> sortDirs = new List<Vector2Int>() { dirs[0] };
+
+			for (int j = 1; j < dirs.Count; j++)
+			{
+				for (int i = 0; i < sortDirs.Count; i++)
+				{ 
+					if (Vector2Int.Distance(sortDirs[i], _targetPos) > Vector2Int.Distance(dirs[j], _targetPos))
+					{ sortDirs.Insert(i, dirs[j]); break; }
+					else if (i == sortDirs.Count - 1)
+					{ sortDirs.Add(dirs[j]); break; }
+				}
+			}
+			return sortDirs;
 		}
-		Debug.DrawLine(transform.position, _nxtPos, Color.red);
+		return Map.FindNearestCell(_nxtPos, Map.CellType.Empty, 
+			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Maps.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); }, 
+			MNames.Invalid,	DirHeuristicSort,
+			new List<Map.CellType> {Map.CellType.BuildArea, Map.CellType.Road });
 	}
 
-	private void TryGetNextPosition()
+	private void MoveTo(Vector2Int nxtPos)
+	{
+		transform.position = Vector3.MoveTowards(transform.position, Map.MapToWorld(nxtPos), _speed * Time.deltaTime);
+
+		if (Vector2Int.Distance(new Vector2Int((int)transform.position.x, (int)transform.position.z), _nxtPos) < 1)
+		{
+			_isMoving = false;
+			_findNextStepPos = true;
+		}
+		Debug.DrawLine(transform.position, Map.MapToWorld(_nxtPos), Color.red);
+	}
+
+	private void FindTargetPosition()
 	{
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -47,8 +96,12 @@ public class UnitMovement : MonoBehaviour
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground) &&
 			UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject))
 		{
-			_nxtPos = hit.point;
-			_isMoving = true;
+			_targetPos = Map.WorldToMap(hit.point);
+			_isMoving = false;
+			_findNextStepPos = true;
 		}
 	}
 }
+
+
+// We will implement dynamic pathfinding as we need to avoid other units, when several of them can move in the same time

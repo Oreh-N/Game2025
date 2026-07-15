@@ -51,10 +51,65 @@ namespace MapSpace
 			return Maps.GetCellInMap(mapName, new Vector2Int(x, z)) == type;
 		}
 
-		public static bool OnLayerCellIs(CellType type, MapCoord coord)
+		public static bool CellInAllMapsIs(Map.CellType cellT, Vector2Int pos)
 		{
-			if (IsOutOfMap(coord)) return false;
-			return Maps.IsInMaps(type, coord);
+			if (IsOutOfMap(pos)) return false;
+			return Maps.CellInAllMapsIs(cellT, pos);
+		}
+
+		/// <summary>
+		/// Removes all cells of type cellT from the map with name mapName
+		/// </summary>
+		/// <param name="cellT"></param>
+		/// <param name="mapName"></param>
+		public static void RemoveCellTypeFromMap(CellType cellT, Maps.MapNames mapName)
+		{
+			for (int x = 0; x < MapData.MapSize[1]; x++)
+				for (int y = 0; y < MapData.MapSize[0]; y++)
+				{
+					var cellPos = new MapCoord(x, y);
+					if (Maps.GetCellInMap(mapName, cellPos) == cellT)
+						Maps.ForceSetCell(mapName, cellPos, CellType.Empty);
+				}
+		}
+
+		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,  
+			Maps.MapNames mapName = Maps.MapNames.Invalid, List<CellType> ignoreTypes = null);
+
+		public static Vector2Int FindNearestCell(Vector2Int startCellPos, CellType targetCellT,
+			 CheckIfDesiredCell check, Maps.MapNames mapName, Func<List<Vector2Int>, List<Vector2Int>> DirSortFunc,
+			 List<CellType> ignoreTypes = null)
+		{
+			var dirs = new List<Vector2Int>() {
+				new Vector2Int(1, 0),
+				new Vector2Int(0, 1),
+				new Vector2Int(-1, 0),
+				new Vector2Int(0, -1)
+			};
+			dirs = DirSortFunc(dirs);	// Used for sufficient pathfinding.
+										// Firtly tries dir which clesest to target cell and after this
+										// tries others dirs (for example when obsticle on the way)
+			Queue<Vector2Int> queue = new Queue<Vector2Int>();
+			queue.Enqueue(startCellPos);
+
+			while (queue.Count > 0)
+			{
+				var curCell = queue.Dequeue();
+
+				foreach (var dir in dirs)
+				{
+					var nxtCellPos = curCell + dir;
+
+					if (!IsOutOfMap(nxtCellPos))
+					{
+						if (check(startCellPos, targetCellT, mapName, ignoreTypes)) 
+							return nxtCellPos;
+
+						queue.Enqueue(nxtCellPos);
+					}
+				}
+			}
+			return new Vector2Int(0, 0);
 		}
 
 		public static CellType GetCellType(MapCoord coord, Maps.MapNames mapName)

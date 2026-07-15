@@ -65,6 +65,7 @@ namespace MapSpace
 			RoadGenerator.GenRoadsBetweenAllTeams(new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
 			StartCoroutine(ForestGenerator.GenVirtForest());
 			StartCoroutine(UpdateForestChunksInCameraView(_cam.transform.position));
+			Map.RemoveCellTypeFromMap(Map.CellType.Road, MNames.EnvironmentMap);
 		}
 
 		#region Dynamic Forest Generation

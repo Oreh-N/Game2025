@@ -7,7 +7,7 @@ namespace MapSpace.MapLayers
 {
 	public static class Maps
 	{
-		public enum MapNames { BuildingMap, EnvironmentMap, UnitMap }   // Corresponds to _Maps to access them correctly
+		public enum MapNames { BuildingMap, EnvironmentMap, UnitMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
 		static Map.CellType[][,] _Maps = new Map.CellType[3][,];
 
 
@@ -18,19 +18,25 @@ namespace MapSpace.MapLayers
 		}
 
 		/// <summary>
-		/// Checks if cell on position pos have type cellT on at least one layer
+		/// Checks if cell on position pos have type cellT on all map layers
 		/// </summary>
-		/// <param name="cellT"></param>
+		/// <param name="goalCellT"></param>
 		/// <param name="pos"></param>
-		/// <returns>Returns false if there is no layer with cell type cellT on position pos</returns>
-		public static bool IsInMaps(Map.CellType cellT, Vector2Int pos)
+		/// <returns>Returns false if there any layer have not cell type cellT on position pos</returns>
+		public static bool CellInAllMapsIs(Map.CellType goalCellT, Vector2Int pos, List<Map.CellType> ignoreTypes = null)
 		{
 			if (!Map.IsOutOfMap(pos))
 				for (int i = 0; i < _Maps.Length; i++)
 				{
-					if (_Maps[i][pos.x, pos.y] == cellT) return true;
+					var currMapCellT = _Maps[i][pos.x, pos.y];
+					if (ignoreTypes != null)
+					{
+						foreach (var ignoreT in ignoreTypes)
+						{ if (currMapCellT == ignoreT) continue; }
+					}
+					if (currMapCellT != goalCellT) return false;
 				}
-			return false;
+			return true;
 		}
 
 		public static Map.CellType GetCellInMap(MapNames name, Vector2Int pos)
