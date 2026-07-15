@@ -64,8 +64,8 @@ namespace MapSpace
 		/// <param name="mapName"></param>
 		public static void RemoveCellTypeFromMap(CellType cellT, Maps.MapNames mapName)
 		{
-			for (int x = 0; x < MapData.MapSize[1]; x++)
-				for (int y = 0; y < MapData.MapSize[0]; y++)
+			for (int x = 0; x < MapData.MapSize[0]; x++)
+				for (int y = 0; y < MapData.MapSize[1]; y++)
 				{
 					var cellPos = new MapCoord(x, y);
 					if (Maps.GetCellInMap(mapName, cellPos) == cellT)
@@ -89,6 +89,7 @@ namespace MapSpace
 			dirs = DirSortFunc(dirs);	// Used for sufficient pathfinding.
 										// Firtly tries dir which clesest to target cell and after this
 										// tries others dirs (for example when obsticle on the way)
+			HashSet<Vector2Int> visited = new HashSet<Vector2Int>() { startCellPos };
 			Queue<Vector2Int> queue = new Queue<Vector2Int>();
 			queue.Enqueue(startCellPos);
 
@@ -100,16 +101,15 @@ namespace MapSpace
 				{
 					var nxtCellPos = curCell + dir;
 
-					if (!IsOutOfMap(nxtCellPos))
+					if (!IsOutOfMap(nxtCellPos) && visited.Add(nxtCellPos))
 					{
-						if (check(startCellPos, targetCellT, mapName, ignoreTypes)) 
+						if (check(nxtCellPos, targetCellT, mapName, ignoreTypes)) 
 							return nxtCellPos;
-
 						queue.Enqueue(nxtCellPos);
 					}
 				}
 			}
-			return new Vector2Int(0, 0);
+			return new Vector2Int(MapData.MapSize[0], MapData.MapSize[1]);	// Out of map
 		}
 
 		public static CellType GetCellType(MapCoord coord, Maps.MapNames mapName)
@@ -218,9 +218,9 @@ namespace MapSpace
 			int z = Mathf.FloorToInt(pos.z - data.MapStart.z);
 
 			if (x < 0) { x = 0; }
-			else if (x >= MapData.MapSize[0]) { x = MapData.MapSize[0]; }
+			else if (x >= MapData.MapSize[0]) { x = MapData.MapSize[0] - 1; }
 			if (z < 0) { z = 0; }
-			else if (z >= MapData.MapSize[1]) { z = MapData.MapSize[1]; }
+			else if (z >= MapData.MapSize[1]) { z = MapData.MapSize[1] - 1; }
 
 			return new MapCoord(x, z);
 		}

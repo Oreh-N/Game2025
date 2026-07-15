@@ -10,13 +10,37 @@ using MNames = MapSpace.MapLayers.Maps.MapNames;
 [RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
-	[SerializeField] LayerMask _ground;
+	private static Transform ground;
+
+	public static Transform Ground
+	{
+		get
+		{
+			if (ground == null)
+			{
+				var obj = GameObject.FindWithTag("Ground");
+				if (obj != null)
+					ground = obj.transform;
+			}
+			return ground;
+		}
+	}
+	private static Plane groundPlane;	// move those static fields somewhere (don't keep it in per unit class)
+
+
+
 	bool _isMoving = false;
 	bool _findNextStepPos = false;
 	float _speed = 20f;
 	Vector2Int _targetPos;
 	Vector2Int _prevPos;
 	Vector2Int _nxtPos;
+
+	void Awake()
+	{
+		// Plane defined by the ground's up direction and position
+		groundPlane = new Plane(Ground.up, Ground.position);
+	}
 
 
 	private void Start()
@@ -41,6 +65,12 @@ public class UnitMovement : MonoBehaviour
 		if (_findNextStepPos)
 		{
 			_nxtPos = FindNextStepPos();
+			if (Map.IsOutOfMap(_nxtPos))
+			{ 
+				_isMoving = false;
+				_findNextStepPos = false;
+				return;
+			}
 			_isMoving = true;
 			_findNextStepPos = false;
 			Debug.Log($"Next position is: {_nxtPos}");
@@ -70,6 +100,7 @@ public class UnitMovement : MonoBehaviour
 			}
 			return sortDirs;
 		}
+
 		return Map.FindNearestCell(_nxtPos, Map.CellType.Empty, 
 			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Maps.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); }, 
 			MNames.Invalid,	DirHeuristicSort,
@@ -80,7 +111,8 @@ public class UnitMovement : MonoBehaviour
 	{
 		transform.position = Vector3.MoveTowards(transform.position, Map.MapToWorld(nxtPos), _speed * Time.deltaTime);
 
-		if (Vector2Int.Distance(new Vector2Int((int)transform.position.x, (int)transform.position.z), _nxtPos) < 1)
+		if (Vector2Int.Distance(new Vector2Int(Mathf.RoundToInt(transform.position.x),
+			Mathf.RoundToInt(transform.position.z)), _nxtPos) < 1)
 		{
 			_isMoving = false;
 			_findNextStepPos = true;
@@ -90,13 +122,14 @@ public class UnitMovement : MonoBehaviour
 
 	private void FindTargetPosition()
 	{
-		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground) &&
-			UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject))
+		if (UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject) && 
+			groundPlane.Raycast(ray, out float distance))
 		{
-			_targetPos = Map.WorldToMap(hit.point);
+			var pos = ray.GetPoint(distance);
+			if (Map.IsOutOfMap(pos)) { return; }
+			_targetPos = Map.WorldToMap(pos);
+			_nxtPos = Map.WorldToMap(transform.position);
 			_isMoving = false;
 			_findNextStepPos = true;
 		}
