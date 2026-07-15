@@ -17,6 +17,12 @@ namespace MapSpace.MapLayers
 			{ _Maps[i] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]]; }
 		}
 
+		/// <summary>
+		/// Checks if cell on position pos have type cellT on at least one layer
+		/// </summary>
+		/// <param name="cellT"></param>
+		/// <param name="pos"></param>
+		/// <returns>Returns false if there is no layer with cell type cellT on position pos</returns>
 		public static bool IsInMaps(Map.CellType cellT, Vector2Int pos)
 		{
 			if (!Map.IsOutOfMap(pos))

@@ -28,8 +28,10 @@ namespace MapSpace
 			{
 				for (int z = 0; z < Map.GetSize()[1]; z++)
 				{
-					if (Rnd.Range(0, 100) < treeGenFrequency)
-					{ Map.TrySetCell(new Vector2Int(x, z), Map.CellType.Tree, MNames.EnvironmentMap); }
+					var pos = new Vector2Int(x, z);
+					if (Rnd.Range(0, 100) < treeGenFrequency && 
+						Map.CellIs(Map.CellType.Empty, pos, MNames.BuildingMap))
+					{ Map.TrySetCell(pos, Map.CellType.Tree, MNames.EnvironmentMap); }
 				}
 			}
 			yield return null;

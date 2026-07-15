@@ -51,6 +51,12 @@ namespace MapSpace
 			return Maps.GetCellInMap(mapName, new Vector2Int(x, z)) == type;
 		}
 
+		public static bool OnLayerCellIs(CellType type, MapCoord coord)
+		{
+			if (IsOutOfMap(coord)) return false;
+			return Maps.IsInMaps(type, coord);
+		}
+
 		public static CellType GetCellType(MapCoord coord, Maps.MapNames mapName)
 		{
 			return !IsOutOfMap(coord) ? Maps.GetCellInMap(mapName, coord) : CellType.Error;
