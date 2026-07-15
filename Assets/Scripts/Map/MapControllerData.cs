@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
 public class MapControllerData
 {
 	public Tilemap Tilemap_;

@@ -59,7 +59,7 @@ public class MainController : MonoBehaviour
 		};
 		yield return null;
 
-		managers.AddComponent<EnvManager>();
+		managers.AddComponent<MapSpace.EnvManager>();
 		yield return null;
 
 		Ready = true;

@@ -2,6 +2,9 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Color = UnityEngine.Color;
+using Map = MapSpace.Map;
+using MNames = MapSpace.MapLayers.Maps.MapNames;
+
 
 
 public class MapController : MonoBehaviour {
@@ -77,7 +80,8 @@ public class MapController : MonoBehaviour {
 			for (int y = 0; y < size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
-				if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos)))
+				if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos),
+					MNames.BuildingMap))
 				{ return false; }
 			}
 		}
@@ -95,7 +99,8 @@ public class MapController : MonoBehaviour {
 			for (int y = 0; y < size.y + _areaPadding; y++)
 			{
 				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
-				Map.ForceSetCell(Map.WorldToMap(currPos), Map.CellType.Building);
+				Map.ForceSetCell(Map.WorldToMap(currPos), Map.CellType.Building, 
+					MNames.BuildingMap);
 			}
 		}
 	}

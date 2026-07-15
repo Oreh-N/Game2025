@@ -132,7 +132,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		data.ID = TeamData.FreeID;
 		TeamData.FreeID++;
 
-		if (Map.IsOutOfMap(BasePos))
+		if (MapSpace.Map.IsOutOfMap(BasePos))
 		{
 			Destroy(this);
 			Debug.Log("The base is out of map. Setup will be ignored.");

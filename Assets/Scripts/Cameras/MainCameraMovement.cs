@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class MainCameraMovement : MonoBehaviour
 {
-	float _speed = 3f;
+	float _speed = 0.5f;
 	Vector3 _dir = new Vector3();
 	public Vector3 _last_dir = new Vector3();
 
