@@ -11,12 +11,12 @@ using MNames = MapSpace.MapLayers.Maps.MapNames;
 [RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
-	bool _isMoving = false;
-	bool _findNextStepPos = false;
+	public bool _isMoving = false;
+	public bool _findNextStepPos = false;
 	float _speed = 20f;
-	Vector2Int _targetPos;
-	Vector2Int _stepPos;
-	Vector3 _dir = Vector3.forward;
+	public Vector2Int _targetPos;
+	public Vector2Int _stepPos;
+	public Vector3 _dir = Vector3.forward;
 
 
 	private void Start()
@@ -42,6 +42,8 @@ public class UnitMovement : MonoBehaviour
 		if (_findNextStepPos)
 		{
 			_stepPos = FindNextStepPos();
+			TurnTo(_stepPos);
+
 			if (Map.IsOutOfMap(_stepPos))
 			{
 				_isMoving = false;
@@ -50,8 +52,6 @@ public class UnitMovement : MonoBehaviour
 			}
 			_isMoving = true;
 			_findNextStepPos = false;
-			Maps.TrySetCell(MNames.UnitMap, _stepPos, Map.CellType.Unit);
-			Maps.CleanCell(MNames.UnitMap, Map.WorldToMap(transform.position));
 			Debug.Log($"Next step position is: {_stepPos}");
 		}
 
@@ -64,6 +64,8 @@ public class UnitMovement : MonoBehaviour
 		transform.LookAt(Map.MapToWorld(mapPos));
 		_dir = Map.MapToWorld(_stepPos) - transform.position;
 		_dir.Normalize();
+
+		Debug.Log($"{_dir} = {_stepPos} - {Map.WorldToMap(transform.position)}");
 	}
 
 	private Vector2Int FindNextStepPos()    // !!! Careful with map access from multiple units (first - map update, second - move)
@@ -72,13 +74,15 @@ public class UnitMovement : MonoBehaviour
 		// Sorts directions so that directions with better heuristic would be first
 		List<Vector2Int> DirHeuristicSort(List<Vector2Int> dirs) // Assume dirs will be very small (4 items)
 		{
+			var mapPos = Map.WorldToMap(transform.position);
 			List<Vector2Int> sortDirs = new List<Vector2Int>() { dirs[0] };
 
 			for (int j = 1; j < dirs.Count; j++)
 			{
 				for (int i = 0; i < sortDirs.Count; i++)
 				{
-					if (Vector2Int.Distance(sortDirs[i], _targetPos) > Vector2Int.Distance(dirs[j], _targetPos))
+					if (Vector2Int.Distance(mapPos + sortDirs[i], _targetPos) > 
+						Vector2Int.Distance(mapPos + dirs[j], _targetPos))
 					{ sortDirs.Insert(i, dirs[j]); break; }
 					else if (i == sortDirs.Count - 1)
 					{ sortDirs.Add(dirs[j]); break; }
@@ -95,16 +99,22 @@ public class UnitMovement : MonoBehaviour
 
 	private void MoveTo(Vector2Int nxtPos)
 	{
-		TurnTo(nxtPos);
 		transform.position = Vector3.MoveTowards(transform.position, Map.MapToWorld(nxtPos), _speed * Time.deltaTime);
+		var mapPos = Map.WorldToMap(transform.position);
 
-		if (Vector2Int.Distance(new Vector2Int(Mathf.RoundToInt(transform.position.x),
-			Mathf.RoundToInt(transform.position.z)), _stepPos) < 0.1f)
+		if (Vector2Int.Distance(mapPos, nxtPos) < 0.1f)
 		{
 			_isMoving = false;
-			_findNextStepPos = true;
+
+			if (_targetPos == mapPos)		// Change false/true to fix it back
+				_findNextStepPos = false;
+			else
+				_findNextStepPos = true;
+
+			Maps.TrySetCell(MNames.UnitMap, _stepPos, Map.CellType.Unit);
+			Maps.CleanCell(MNames.UnitMap, Map.WorldToMap(transform.position));
 		}
-		Debug.DrawLine(transform.position, Map.MapToWorld(_stepPos), Color.red);
+		Debug.DrawLine(transform.position, Map.MapToWorld(nxtPos), Color.red);
 	}
 
 	private void FindTargetPosition()
@@ -119,7 +129,6 @@ public class UnitMovement : MonoBehaviour
 			_targetPos = Map.WorldToMap(pos);
 			_isMoving = false;
 			_findNextStepPos = true;
-			//Debug.Log($"Target pos: {_targetPos}");
 		}
 	}
 

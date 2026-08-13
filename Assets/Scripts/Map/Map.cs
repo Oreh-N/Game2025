@@ -84,11 +84,17 @@ namespace MapSpace
 				new Vector2Int(1, 0),
 				new Vector2Int(0, 1),
 				new Vector2Int(-1, 0),
-				new Vector2Int(0, -1)
+				new Vector2Int(0, -1),
+				new Vector2Int(1, 1),
+				new Vector2Int(1, -1),
+				new Vector2Int(-1, 1),
+				new Vector2Int(-1, -1),
+
 			};
-			dirs = DirSortFunc(dirs);	// Used for sufficient pathfinding.
+			dirs = DirSortFunc(dirs);   // Used for sufficient pathfinding.
 										// Firtly tries dir which closest to target cell and after this
 										// tries others dirs (for example when obsticle on the way)
+			//LogList(dirs);
 			HashSet<Vector2Int> visited = new HashSet<Vector2Int>() { startCellPos };
 			Queue<Vector2Int> queue = new Queue<Vector2Int>();
 			queue.Enqueue(startCellPos);
@@ -110,6 +116,17 @@ namespace MapSpace
 				}
 			}
 			return new Vector2Int(MapData.MapSize[0], MapData.MapSize[1]);	// Out of map
+		}
+
+		public static void LogList<T>(List<T> list)
+		{
+			Debug.Log("List______________________");
+			foreach (var i in list)
+			{
+				Debug.Log(i);
+			}
+			Debug.Log("__________________________");
+
 		}
 
 		public static CellType GetCellType(MapCoord coord, Maps.MapNames mapName)
