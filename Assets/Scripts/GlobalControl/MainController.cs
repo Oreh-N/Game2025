@@ -7,6 +7,7 @@ public class MainController : MonoBehaviour
 {
 	public bool Ready { get; private set; } = false;
 	public static MainController Instance;
+	public static Plane groundPlane;
 	GameObject managers;
 	Team[] _teams;
 
@@ -19,7 +20,7 @@ public class MainController : MonoBehaviour
 		else
 		{ Instance = this; }
 
-
+		groundPlane = new Plane(Vector3.up, new Vector3(0, 0, 0));
 		managers = GameObject.Find("___Managers___");  // This object needed to control flow of scripts initialization
 		if (!managers) Debug.Log("Can't find manager holder");
 	}

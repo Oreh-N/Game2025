@@ -2,6 +2,7 @@ using MapSpace.MapLayers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Map = MapSpace.Map;
 using MNames = MapSpace.MapLayers.Maps.MapNames;
@@ -10,74 +11,59 @@ using MNames = MapSpace.MapLayers.Maps.MapNames;
 [RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
-	private static Transform ground;
-
-	public static Transform Ground
-	{
-		get
-		{
-			if (ground == null)
-			{
-				var obj = GameObject.FindWithTag("Ground");
-				if (obj != null)
-					ground = obj.transform;
-			}
-			return ground;
-		}
-	}
-	private static Plane groundPlane;	// move those static fields somewhere (don't keep it in per unit class)
-
-
-
 	bool _isMoving = false;
 	bool _findNextStepPos = false;
 	float _speed = 20f;
 	Vector2Int _targetPos;
-	Vector2Int _prevPos;
-	Vector2Int _nxtPos;
-
-	void Awake()
-	{
-		// Plane defined by the ground's up direction and position
-		groundPlane = new Plane(Ground.up, Ground.position);
-	}
+	Vector2Int _stepPos;
+	Vector3 _dir = Vector3.forward;
 
 
 	private void Start()
 	{
-		_prevPos = Map.WorldToMap(transform.position);
+		var pos = Map.WorldToMap(transform.position);
 
-		if (!Map.TrySetCell(_prevPos, Map.CellType.Unit, MNames.UnitMap))
+		if (!Map.TrySetCell(pos, Map.CellType.Unit, MNames.UnitMap))
 		{
-			_prevPos = Map.FindNearestCell(_prevPos, Map.CellType.Empty, 
+			pos = Map.FindNearestCell(pos, Map.CellType.Empty,
 				(nxtCellPos, targetCellT, mapName, _) => { return Map.GetCellType(nxtCellPos, mapName) == targetCellT; },
 				MNames.UnitMap, (dirs) => dirs);
-			transform.position = Map.MapToWorld(_prevPos);
+			transform.position = Map.MapToWorld(pos);
 		}
-
 	}
 
 	private void Update()
 	{
+		if (!MainController.Instance.Ready) return;
+
 		if (Input.GetMouseButtonDown(1))
 		{ FindTargetPosition(); }
 
 		if (_findNextStepPos)
 		{
-			_nxtPos = FindNextStepPos();
-			if (Map.IsOutOfMap(_nxtPos))
-			{ 
+			_stepPos = FindNextStepPos();
+			if (Map.IsOutOfMap(_stepPos))
+			{
 				_isMoving = false;
 				_findNextStepPos = false;
 				return;
 			}
 			_isMoving = true;
 			_findNextStepPos = false;
-			Debug.Log($"Next position is: {_nxtPos}");
+			Maps.TrySetCell(MNames.UnitMap, _stepPos, Map.CellType.Unit);
+			Maps.CleanCell(MNames.UnitMap, Map.WorldToMap(transform.position));
+			Debug.Log($"Next step position is: {_stepPos}");
 		}
 
 		if (_isMoving)
-		{ MoveTo(_nxtPos); }
+		{ MoveTo(_stepPos); }
+	}
+
+	private void TurnTo(Vector2Int mapPos)
+	{
+		transform.LookAt(Map.MapToWorld(mapPos));
+		_dir = Map.MapToWorld(_stepPos) - transform.position;
+		_dir.Normalize();
 	}
 
 	private Vector2Int FindNextStepPos()    // !!! Careful with map access from multiple units (first - map update, second - move)
@@ -91,7 +77,7 @@ public class UnitMovement : MonoBehaviour
 			for (int j = 1; j < dirs.Count; j++)
 			{
 				for (int i = 0; i < sortDirs.Count; i++)
-				{ 
+				{
 					if (Vector2Int.Distance(sortDirs[i], _targetPos) > Vector2Int.Distance(dirs[j], _targetPos))
 					{ sortDirs.Insert(i, dirs[j]); break; }
 					else if (i == sortDirs.Count - 1)
@@ -101,39 +87,50 @@ public class UnitMovement : MonoBehaviour
 			return sortDirs;
 		}
 
-		return Map.FindNearestCell(_nxtPos, Map.CellType.Empty, 
-			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Maps.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); }, 
-			MNames.Invalid,	DirHeuristicSort,
-			new List<Map.CellType> {Map.CellType.BuildArea, Map.CellType.Road });
+		return Map.FindNearestCell(Map.WorldToMap(transform.position), Map.CellType.Empty,
+			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Maps.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); },
+			MNames.Invalid, DirHeuristicSort,
+			new List<Map.CellType> { Map.CellType.BuildArea, Map.CellType.Road });
 	}
 
 	private void MoveTo(Vector2Int nxtPos)
 	{
+		TurnTo(nxtPos);
 		transform.position = Vector3.MoveTowards(transform.position, Map.MapToWorld(nxtPos), _speed * Time.deltaTime);
 
 		if (Vector2Int.Distance(new Vector2Int(Mathf.RoundToInt(transform.position.x),
-			Mathf.RoundToInt(transform.position.z)), _nxtPos) < 1)
+			Mathf.RoundToInt(transform.position.z)), _stepPos) < 0.1f)
 		{
 			_isMoving = false;
 			_findNextStepPos = true;
 		}
-		Debug.DrawLine(transform.position, Map.MapToWorld(_nxtPos), Color.red);
+		Debug.DrawLine(transform.position, Map.MapToWorld(_stepPos), Color.red);
 	}
 
 	private void FindTargetPosition()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		if (UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject) && 
-			groundPlane.Raycast(ray, out float distance))
+		if (UnitSelectionManager.Instance.UnitsSelected.Count > 0 &&
+			UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject) &&
+			MainController.groundPlane.Raycast(ray, out float distance))
 		{
 			var pos = ray.GetPoint(distance);
 			if (Map.IsOutOfMap(pos)) { return; }
 			_targetPos = Map.WorldToMap(pos);
-			_nxtPos = Map.WorldToMap(transform.position);
 			_isMoving = false;
 			_findNextStepPos = true;
+			//Debug.Log($"Target pos: {_targetPos}");
 		}
 	}
+
+
+	//private void OnDrawGizmos()
+	//{
+	//	var color = Color.indianRed;
+	//	Gizmos.color = color;
+	//	Gizmos.DrawCube(Map.MapToWorld(new Vector2Int(5, 10)), new Vector3(1,1,1));
+	// Factual position is _targetPoos +1 both to x and z
+	//}
 }
 
 

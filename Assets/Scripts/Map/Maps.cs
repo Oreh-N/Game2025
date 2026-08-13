@@ -17,6 +17,9 @@ namespace MapSpace.MapLayers
 			{ _Maps[i] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]]; }
 		}
 
+		public static void CleanCell(MapNames mapName, Vector2Int pos)
+		{ _Maps[(int)mapName][pos.x, pos.y] = Map.CellType.Empty; }
+
 		/// <summary>
 		/// Checks if cell on position pos have type cellT on all map layers
 		/// </summary>
@@ -25,16 +28,25 @@ namespace MapSpace.MapLayers
 		/// <returns>Returns false if there any layer have not cell type cellT on position pos</returns>
 		public static bool CellInAllMapsIs(Map.CellType goalCellT, Vector2Int pos, List<Map.CellType> ignoreTypes = null)
 		{
+			bool Ignore(Map.CellType cellT)
+			{
+				foreach (var ignoreT in ignoreTypes)
+				{ if (cellT == ignoreT) return true; }
+				return false;
+			}
+			// TO FIX
 			if (!Map.IsOutOfMap(pos))
 				for (int i = 0; i < _Maps.Length; i++)
 				{
 					var currMapCellT = _Maps[i][pos.x, pos.y];
-					if (ignoreTypes != null)
+
+					if (currMapCellT != goalCellT)
 					{
-						foreach (var ignoreT in ignoreTypes)
-						{ if (currMapCellT == ignoreT) continue; }
+						if (ignoreTypes != null && Ignore(currMapCellT))
+						{ continue; }
+						Debug.Log($"Returned because map {i} has {currMapCellT} cell");
+						return false;
 					}
-					if (currMapCellT != goalCellT) return false;
 				}
 			return true;
 		}

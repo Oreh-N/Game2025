@@ -87,7 +87,7 @@ namespace MapSpace
 				new Vector2Int(0, -1)
 			};
 			dirs = DirSortFunc(dirs);	// Used for sufficient pathfinding.
-										// Firtly tries dir which clesest to target cell and after this
+										// Firtly tries dir which closest to target cell and after this
 										// tries others dirs (for example when obsticle on the way)
 			HashSet<Vector2Int> visited = new HashSet<Vector2Int>() { startCellPos };
 			Queue<Vector2Int> queue = new Queue<Vector2Int>();
