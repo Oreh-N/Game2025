@@ -29,7 +29,7 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	{
 		if (IsOutOfMap(transform.position) || data.Health <= 0)
 		{
-			Destroy(GetComponent<UnitMovement>());
+			Destroy(GetComponent<Unit>());
 			Destroy(gameObject);
 		}
 		if (data.Panel != null && !data.Panel.activeSelf)

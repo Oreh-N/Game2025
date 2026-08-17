@@ -11,12 +11,12 @@ using MNames = MapSpace.MapLayers.Maps.MapNames;
 [RequireComponent(typeof(Unit))]
 public class UnitMovement : MonoBehaviour
 {
-	public bool _isMoving = false;
-	public bool _findNextStepPos = false;
+	bool _isMoving = false;
+	bool _findNextStepPos = false;
 	float _speed = 20f;
-	public Vector2Int _targetPos;
-	public Vector2Int _stepPos;
-	public Vector3 _dir = Vector3.forward;
+	Vector2Int _targetPos;
+	Vector2Int _stepPos;
+	Vector3 _dir = Vector3.forward;
 
 
 	private void Start()
@@ -52,7 +52,6 @@ public class UnitMovement : MonoBehaviour
 			}
 			_isMoving = true;
 			_findNextStepPos = false;
-			Debug.Log($"Next step position is: {_stepPos}");
 		}
 
 		if (_isMoving)
@@ -64,8 +63,6 @@ public class UnitMovement : MonoBehaviour
 		transform.LookAt(Map.MapToWorld(mapPos));
 		_dir = Map.MapToWorld(_stepPos) - transform.position;
 		_dir.Normalize();
-
-		Debug.Log($"{_dir} = {_stepPos} - {Map.WorldToMap(transform.position)}");
 	}
 
 	private Vector2Int FindNextStepPos()    // !!! Careful with map access from multiple units (first - map update, second - move)
@@ -117,6 +114,13 @@ public class UnitMovement : MonoBehaviour
 		Debug.DrawLine(transform.position, Map.MapToWorld(nxtPos), Color.red);
 	}
 
+	private void SetTargetPos(Vector3 pos)
+	{
+		_targetPos = Map.WorldToMap(pos);
+		_isMoving = false;
+		_findNextStepPos = true;
+	}
+
 	private void FindTargetPosition()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -126,10 +130,16 @@ public class UnitMovement : MonoBehaviour
 		{
 			var pos = ray.GetPoint(distance);
 			if (Map.IsOutOfMap(pos)) { return; }
-			_targetPos = Map.WorldToMap(pos);
-			_isMoving = false;
-			_findNextStepPos = true;
+
+			if (UnitSelectionManager.Instance.UnitsSelected.Count > 1)
+			{ UnitGroupMovement.MoveMe(this); }
+			else SetTargetPos(pos);
 		}
+	}
+
+	public void SetTargetPositionInGroup(Vector3 targetPos)
+	{
+		SetTargetPos(targetPos);
 	}
 
 
