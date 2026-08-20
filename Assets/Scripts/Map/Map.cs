@@ -169,8 +169,6 @@ namespace MapSpace
 			var halfSize = size / 2;
 			var startCellPos = center - halfSize; // min corner
 			var endCellPos = center + halfSize;   // max corner
-			var dir = endCellPos - startCellPos;
-			var normDir = new Vector2(dir.x, dir.y).normalized;
 
 			for (int x = startCellPos.x; x < endCellPos.x; x++)
 				for (int z = startCellPos.y; z < endCellPos.y; z++)

@@ -183,6 +183,9 @@ public class MapController : MonoBehaviour {
 		data.AllowBuilding = false;
 	}
 
+	// NEXT STEP: fix representation on map
+
+
 	private void CheckPlace(Building b)
 	{
 		if (!CanBePlaced(b))
