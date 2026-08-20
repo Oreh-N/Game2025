@@ -5,6 +5,7 @@ using UnityEngine;
 using MapSpace.MapLayers;
 using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
+using Unity.VisualScripting;
 
 
 namespace MapSpace
@@ -140,7 +141,7 @@ namespace MapSpace
 		/// <param name="centerCoords"> - coordinates of the center of the area that need to be filled</param>
 		/// <param name="radius"> - translate world radius (radius, 0, 0) to map map radius (mapRadius, 0) with WorldToMap method</param>
 		/// <param name="filling"> - cell type which will fill the area</param>
-		public static void FillMapArea(MapCoord centerCoords, int radius, CellType filling, Maps.MapNames mapName)
+		public static void FillMapAreaCircle(MapCoord centerCoords, int radius, CellType filling, Maps.MapNames mapName)
 		{
 			ForceSetCell(centerCoords, filling, mapName);
 			Queue<MapCoord> toFill = new Queue<MapCoord>();
@@ -158,6 +159,29 @@ namespace MapSpace
 				AddNearbyCellsToQueue(ref toFill, currCell);
 			}
 		}
+
+
+
+
+		public static void FillMapAreaSquare(MapCoord center, Vector2Int size, CellType filling, Maps.MapNames mapName)
+		{	// all coordinates starts at (0,0), endCellPos can't be negative
+			// as the positioning correctness should be checked beforehand
+			var halfSize = size / 2;
+			var startCellPos = center - halfSize; // min corner
+			var endCellPos = center + halfSize;   // max corner
+			var dir = endCellPos - startCellPos;
+			var normDir = new Vector2(dir.x, dir.y).normalized;
+
+			for (int x = startCellPos.x; x < endCellPos.x; x++)
+				for (int z = startCellPos.y; z < endCellPos.y; z++)
+				{
+					var mapPos = new Vector2Int(x, z);
+					Maps.ForceSetCell(mapName, mapPos, filling);
+				}
+		}
+
+
+
 
 		private static void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords)
 		{

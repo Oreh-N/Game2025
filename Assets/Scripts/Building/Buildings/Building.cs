@@ -1,5 +1,7 @@
-using UnityEngine.EventSystems;
+using MapSpace;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 
 
 public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember, IMyPlaceableOnMap
@@ -35,28 +37,25 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public virtual void Construct()
 	{
+		Team t = MainController.Instance.GetTeam(Data.TeamID);
+		if (!t) { Debug.Log($"Team {Data.TeamID} doesn't exist!"); return; }
 		Destroy(gameObject.GetComponent<Movable>());
-		ColorBuilding();
+		ColorBuilding(t.GetColor());
 		Data.IsPlaced = true;
-		BuildingManager.AddBuilding(this, Data.TeamID);
 
+		BuildingManager.AddBuilding(this, Data.TeamID);
 	}
 
-	public virtual void ColorBuilding()
+
+	public void ColorBuilding(Color color)
 	{
-		Color teamColor = BuildingManager.GetTeam(Data.TeamID).GetColor();
+		if (Data.RendererChildren == null) return;
 		foreach (Renderer rend in Data.RendererChildren)
-		{
-			foreach (Material mat in rend.materials)
-			{
-				if (mat.HasProperty("_Color"))
-				{ mat.color = teamColor; }
-			}
-		}
+		{ rend.material.color = color; }
 	}
 
 	private void OnDestroy()
-	{ 
+	{
 		BuildingManager.RemoveBuilding(this, Data.TeamID);
 	}
 

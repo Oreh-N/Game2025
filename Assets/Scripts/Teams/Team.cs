@@ -1,7 +1,9 @@
+using MapSpace;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 
 
 // Visuals should be separated from logic
@@ -106,8 +108,9 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	public Team CreateBase()
 	{
 		var mb = Prefabs.MainBuildPref;
-		var b = Instantiate(mb).GetComponent<Building>(); // b.SetTeam(data.ID);
+		var b = Instantiate(mb, data.BaseCenter, Quaternion.identity).GetComponent<Building>();
 		MapController.Instance.PlaceBuilding(b, this);
+
 		if (Prefabs.WorkerPref == null) Debug.Log("Didn't find unit");
 		int init_unit_count = 3;
 		for (int i = 0; i < init_unit_count; i++)
@@ -132,24 +135,18 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		data.ID = TeamData.FreeID;
 		TeamData.FreeID++;
 
-		if (MapSpace.Map.IsOutOfMap(BasePos))
+		if (Map.IsOutOfMap(BasePos))
 		{
 			Destroy(this);
 			Debug.Log("The base is out of map. Setup will be ignored.");
 			return null;
 		}
-		data.BaseCenter = new Vector3(BasePos.x, 0, BasePos.y);
+		data.BaseCenter = Map.MapToWorld(BasePos);
 		data.TeamColor = teamColor;
 		data.TeamName = teamName;
 		return this;
 	}
 
-	public void SetTeam(Color teamColor, string teamName, int id)
-	{
-		data.TeamColor = teamColor;
-		data.TeamName = teamName;
-		data.ID = id;
-	}
 
 	public void ChangeInteractableObject(IInteractable obj) { data.CurrInteractObject = obj; }
 

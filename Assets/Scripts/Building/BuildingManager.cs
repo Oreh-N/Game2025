@@ -69,9 +69,8 @@ public class BuildingManager : MonoBehaviour
 
 	public static void ColorCurrBuilding(Building b, Color color)
 	{
-		if (!b || b.GetRendererChildren() == null) return;
-		foreach (Renderer rend in b.GetRendererChildren())
-		{ rend.material.color = color; }
+		if (!b) return;
+		b.ColorBuilding(color);
 	}
 
 	
@@ -90,7 +89,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static void RemoveBuilding(Building b, int teamID)
 	{
-		Debug.Log("The building has been removed from team list");
+		Debug.Log($"The {b.GetType()} building from team {b.GetTeamID()} on position {b.GetPos()} has been removed from team list");
 		GetTeam(teamID).RemoveBuilding(b);
 	}
 

@@ -81,7 +81,7 @@ public class MapController : MonoBehaviour {
 			{
 				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
 				if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos),
-					MNames.BuildingMap))
+					MNames.BuildingAreaMap))
 				{ return false; }
 			}
 		}
@@ -100,7 +100,7 @@ public class MapController : MonoBehaviour {
 			{
 				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
 				Map.ForceSetCell(Map.WorldToMap(currPos), Map.CellType.Building, 
-					MNames.BuildingMap);
+					MNames.BuildingAreaMap);
 			}
 		}
 	}
@@ -172,11 +172,13 @@ public class MapController : MonoBehaviour {
 
 	public void PlaceBuilding(Building b, Team t)
 	{
-		if (!t) return;
-		Color c = t.GetColor();
-		BuildingManager.ColorCurrBuilding(b, c);
+		if (!t || !b) return;
+		b.SetTeam(t.GetID());
 		b.Construct();
-		TakeAreaForCurrBuild();
+		//TakeAreaForCurrBuild();
+		Debug.Log($"TakeAreaSize: {b.GetTakeAreaSize()},    Size: {b.GetSize()}");	// SIZES ARE ZEROES
+		Map.FillMapAreaSquare(Map.WorldToMap(b.GetPos()),
+			new Vector2Int(10,10), Map.CellType.Building, MNames.EnvironmentMap);
 		data.CurrBuilding = null;
 		data.AllowBuilding = false;
 	}

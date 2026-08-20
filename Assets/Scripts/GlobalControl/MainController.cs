@@ -1,7 +1,9 @@
+using MapSpace;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLayers = MapSpace.MapLayers.Maps;
 
 public class MainController : MonoBehaviour
 {
@@ -54,10 +56,11 @@ public class MainController : MonoBehaviour
 		yield return null;
 
 		_teams = new Team[3] {
-			Player.Instance.Setup(new Vector2Int(50, 50), new Color(0.7f, 0.4f, 0.9f), "Nuts").CreateBase(),
-			CreateEnemy(new Vector2Int(700,800), Color.red, ":3").CreateBase(),
-			CreateEnemy(new Vector2Int(100, 300), Color.green, "Alice").CreateBase()
+			Player.Instance.Setup(new Vector2Int(50, 50), new Color(0.7f, 0.4f, 0.9f), "Nuts"),
+			CreateEnemy(new Vector2Int(700,800), Color.red, ":3"),
+			CreateEnemy(new Vector2Int(100, 300), Color.cadetBlue, "Alice")
 		};
+		foreach (var t in _teams) t.CreateBase();
 		yield return null;
 
 		managers.AddComponent<MapSpace.EnvManager>();
@@ -85,15 +88,29 @@ public class MainController : MonoBehaviour
 
 	private Team CreateEnemy(Vector2Int pos, Color c, string name)
 	{
-		var enemyObj = new GameObject();
-		var enemy = enemyObj.AddComponent<EnemyController>();
+		var enemy = new GameObject().AddComponent<EnemyController>();
 		enemy.Setup(pos, c, name);
 		
-		return enemyObj.GetComponent<Team>();
+		return enemy;
 	}
 
 	public int TeamCount() { return _teams.Length; }
+
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.darkRed;
+
+		var mapName = MLayers.MapNames.EnvironmentMap;
+		
+		for (int i = 0; i < Map.GetSize()[0]; i++)
+			for (int j = 0; j < Map.GetSize()[1]; j++)
+			{
+				Vector2Int mpos = new Vector2Int(i, j);
+				if (MLayers.GetCellInMap(mapName, mpos) != Map.CellType.Empty)
+				{ Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());}
+			}
+	}
+
 }
 
-// Complete:
-// 1. Tree generates at predefined folder .../TreeFolder

@@ -20,7 +20,6 @@ public class MainBuilding : Building, ILootContainer
 	{
 		base.Start();
 		HealthSys.SetHealth(1000);
-		ColorBuilding();
 	}
 
 	private new void Update()
@@ -28,14 +27,6 @@ public class MainBuilding : Building, ILootContainer
 		base.Update();
 	}
 
-	public override void ColorBuilding()
-	{
-		Team t = BuildingManager.GetTeam(Data.TeamID);
-		if (!t) return;
-		Color buildColor = t.GetColor();
-		buildColor.a = 0.5f;
-		GetComponentInChildren<Renderer>().material.color = buildColor;
-	}
 
 	private void OnCollisionEnter(Collision collision)
 	{

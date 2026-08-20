@@ -67,7 +67,6 @@ public class UnitMovement : MonoBehaviour
 
 	private Vector2Int FindNextStepPos()    // !!! Careful with map access from multiple units (first - map update, second - move)
 	{
-
 		// Sorts directions so that directions with better heuristic would be first
 		List<Vector2Int> DirHeuristicSort(List<Vector2Int> dirs) // Assume dirs will be very small (4 items)
 		{
@@ -103,8 +102,10 @@ public class UnitMovement : MonoBehaviour
 		{
 			_isMoving = false;
 
-			if (_targetPos == mapPos)		// Change false/true to fix it back
+			if (_targetPos == mapPos)
+			{			
 				_findNextStepPos = false;
+			}
 			else
 				_findNextStepPos = true;
 

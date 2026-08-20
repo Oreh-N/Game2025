@@ -215,7 +215,7 @@ namespace MapSpace
 				if (t == null) { Debug.Log("Team is NULL"); continue; }
 				Vector2Int coord = Map.WorldToMap(t.GetCenter());
 				int mapRadius = Mathf.RoundToInt(t.GetBuildingRadius() / Map.GetCellSize().x);
-				Map.FillMapArea(coord, mapRadius, Map.CellType.BuildArea, MNames.BuildingMap);
+				Map.FillMapAreaCircle(coord, mapRadius, Map.CellType.BuildArea, MNames.BuildingAreaMap);
 			}
 		}
 
