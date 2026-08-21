@@ -108,13 +108,13 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	public Team CreateBase()
 	{
 		var mb = Prefabs.MainBuildPref;
-		var b = Instantiate(mb, data.BaseCenter, Quaternion.identity).GetComponent<Building>();
+		var b = Creator.CreateBuilding(mb, data.BaseCenter).GetComponent<Building>();
 		MapController.Instance.PlaceBuilding(b, this);
 
 		if (Prefabs.WorkerPref == null) Debug.Log("Didn't find unit");
 		int init_unit_count = 3;
 		for (int i = 0; i < init_unit_count; i++)
-		{ Instantiate(Prefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i), Quaternion.identity); }
+		{ Creator.CreateBuilding(Prefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i)); }
 		return this;
 		//BuildingManager.ColorCurrBuilding(b.GetComponent<MainBuilding>(), data.TeamColor);
 	}

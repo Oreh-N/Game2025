@@ -68,7 +68,7 @@ public class UnitMovement : MonoBehaviour
 	private Vector2Int FindNextStepPos()    // !!! Careful with map access from multiple units (first - map update, second - move)
 	{
 		// Sorts directions so that directions with better heuristic would be first
-		List<Vector2Int> DirHeuristicSort(List<Vector2Int> dirs) // Assume dirs will be very small (4 items)
+		List<Vector2Int> DirHeuristicSort(List<Vector2Int> dirs) // Assume dirs will be very small (8 items)
 		{
 			var mapPos = Map.WorldToMap(transform.position);
 			List<Vector2Int> sortDirs = new List<Vector2Int>() { dirs[0] };
@@ -109,8 +109,9 @@ public class UnitMovement : MonoBehaviour
 			else
 				_findNextStepPos = true;
 
-			Maps.TrySetCell(MNames.UnitMap, _stepPos, Map.CellType.Unit);
-			Maps.CleanCell(MNames.UnitMap, Map.WorldToMap(transform.position));
+			Maps.TrySetCell(MNames.UnitMap, nxtPos, Map.CellType.Unit);
+			Maps.CleanCell(MNames.UnitMap, 
+				Map.WorldToMap(transform.position) - Map.WorldToMap(_dir));
 		}
 		Debug.DrawLine(transform.position, Map.MapToWorld(nxtPos), Color.red);
 	}

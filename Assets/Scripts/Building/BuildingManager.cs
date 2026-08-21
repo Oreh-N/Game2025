@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine.Tilemaps;
 using System.Collections;
 using UnityEngine;
+using MapSpace;
 using System;
 
 
@@ -58,7 +59,7 @@ public class BuildingManager : MonoBehaviour
 
 	public GameObject SpawnObjOnPos(GameObject obj_, Team t, Vector3 pos)
 	{
-		var obj = Instantiate(obj_, pos, Quaternion.identity);
+		var obj = Creator.CreateBuilding(obj_, pos);
 		if (obj.GetComponent<ITeamMember>() != null)
 		{ obj.GetComponent<ITeamMember>().SetTeam(t.GetID()); }
 		return obj;
@@ -89,7 +90,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static void RemoveBuilding(Building b, int teamID)
 	{
-		Debug.Log($"The {b.GetType()} building from team {b.GetTeamID()} on position {b.GetPos()} has been removed from team list");
+		//Debug.Log($"The {b.GetType()} building from team {b.GetTeamID()} on position {b.GetPos()} has been removed from team list");
 		GetTeam(teamID).RemoveBuilding(b);
 	}
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MapSpace;
 
 public class Spawner : Building
 {
@@ -14,6 +15,8 @@ public class Spawner : Building
 		base.Start();
         // data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 		Data.Name = "Spawner0";
+		Data.Size = new Vector2Int(6, 6);
+
 	}
 	private new void Update()
 	{ }
@@ -24,7 +27,7 @@ public class Spawner : Building
     {
         var spawn_pos = new Vector3(transform.localPosition.x, transform.position.y,
 									transform.localPosition.z - 4);
-        var unit_obj = Instantiate(unit, spawn_pos, Quaternion.identity);
+        var unit_obj = Creator.CreateUnit(unit, spawn_pos);
 		((ITeamMember)unit_obj.GetComponent<Unit>()).SetTeam(Data.TeamID);
     }
 

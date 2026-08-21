@@ -20,6 +20,8 @@ public class BasicTower : Building
 		Data.Name = "Tower0";
 		GetComponent<SphereCollider>().radius = _attackRadius;
 		_damage = 30;
+		Data.Size = new Vector2Int(3, 3);
+
 	}
 
 	new void Start()

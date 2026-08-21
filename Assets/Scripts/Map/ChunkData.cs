@@ -6,10 +6,10 @@ namespace MapSpace
 {
 	public struct ChunkData
 	{
-		public static readonly Vector2Int _size = new Vector2Int(64, 64);
-		public static readonly Map.CellType tree_type = Map.CellType.Tree;
-		public List<GameObject> trees;
-		public Vector2Int map_pos;
+		public static readonly Vector2Int Size = new Vector2Int(64, 64);
+		public static readonly Map.CellType TreeType = Map.CellType.Tree;
+		public List<GameObject> Trees;
+		public Vector2Int MapPos;
 		public bool Initialized;
 		public bool IsEnabled;
 	}

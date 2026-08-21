@@ -2,6 +2,6 @@
 
 public interface IMyPlaceableOnMap
 {
-	public Vector2Int GetTakeAreaSize();
+	public Vector2Int GetSize();
 	public Vector3 GetPos();
 }

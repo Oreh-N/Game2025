@@ -14,14 +14,16 @@ namespace MapSpace
 
 		public Chunk(Vector3 world_pos)
 		{
-			data.map_pos = GetChunkMapPos(world_pos);
-			data.trees = new List<GameObject>();
+			data.MapPos = GetChunkMapPos(world_pos);
+			data.Trees = new List<GameObject>();
 		}
 		public Chunk(Vector2Int map_pos_)
 		{
-			data.map_pos = GetMapPos(map_pos_);
-			data.trees = new List<GameObject>();
+			data.MapPos = GetMapPos(map_pos_);
+			data.Trees = new List<GameObject>();
 		}
+
+		public static Vector2Int GetSize() { return ChunkData.Size; }
 
 		public static Vector2Int GetChunkMapPos(Vector3 world_pos)
 		{
@@ -42,30 +44,30 @@ namespace MapSpace
 		static Vector2Int GetMapPos(Vector2Int mapPos)
 		{
 			//Debug.Log($"GetMapPos (mapPos): {mapPos}");
-			var fullX = mapPos.x / ChunkData._size.x;
-			var fullY = mapPos.y / ChunkData._size.y;
+			var fullX = mapPos.x / ChunkData.Size.x;
+			var fullY = mapPos.y / ChunkData.Size.y;
 
 			if (mapPos.x < 0) fullX = 0;
 			else if (mapPos.x > Map.GetSize()[0])
-				fullX = Map.GetSize()[0] / ChunkData._size.x;
+				fullX = Map.GetSize()[0] / ChunkData.Size.x;
 
 			if (mapPos.y < 0) fullY = 0;
 			else if (mapPos.y > Map.GetSize()[1])
-				fullY = Map.GetSize()[1] / ChunkData._size.y;
+				fullY = Map.GetSize()[1] / ChunkData.Size.y;
 
 			//Debug.Log($"X: {fullX}    Y: {fullY}");
 			return new Vector2Int(fullX, fullY);
 		}
 
-		public void Enable()        // Chunks gen error is here
+		public void Enable()       
 		{
 			if (data.IsEnabled) return;
 
 			if (!data.Initialized) Initialize();
 			else
 			{
-				for (int i = 0; i < data.trees.Count; i++)
-				{ data.trees[i].SetActive(true); }
+				for (int i = 0; i < data.Trees.Count; i++)
+				{ data.Trees[i].SetActive(true); }
 			}
 			data.IsEnabled = true;
 
@@ -74,18 +76,18 @@ namespace MapSpace
 
 		void Initialize()
 		{
-			for (int x = 0; x < ChunkData._size.x; x++)
-				for (int y = 0; y < ChunkData._size.y; y++)
+			for (int x = 0; x < ChunkData.Size.x; x++)
+				for (int y = 0; y < ChunkData.Size.y; y++)
 				{
-					var cell_pos = new Vector2Int(data.map_pos.x * ChunkData._size.x + x,
-						data.map_pos.y * ChunkData._size.y + y);
+					var cell_pos = new Vector2Int(data.MapPos.x * ChunkData.Size.x + x,
+						data.MapPos.y * ChunkData.Size.y + y);
 
 					if (Map.IsOutOfMap(cell_pos) ||
-						Map.GetCellType(cell_pos, MNames.ForestMap) != ChunkData.tree_type)
+						Map.GetCellType(cell_pos, MNames.ForestMap) != ChunkData.TreeType)
 						continue;
 
-					var tree = TreeCreator.CreateTree(Map.MapToWorld(cell_pos));
-					data.trees.Add(tree);
+					var tree = Creator.CreateTree(Map.MapToWorld(cell_pos));
+					data.Trees.Add(tree);
 				}
 			data.Initialized = true;
 		}
@@ -95,8 +97,8 @@ namespace MapSpace
 			if (!data.IsEnabled)
 				return;
 
-			for (int i = 0; i < data.trees.Count; i++)
-			{ data.trees[i].SetActive(false); }
+			for (int i = 0; i < data.Trees.Count; i++)
+			{ data.Trees[i].SetActive(false); }
 			data.IsEnabled = false;
 			// Debug.Log("RemChunk");
 		}
@@ -106,8 +108,8 @@ namespace MapSpace
 		/// </summary>
 		public void DeleteFilling()
 		{
-			for (int i = 0; i < data.trees.Count; i++)
-			{ GameObject.Destroy(data.trees[i]); }
+			for (int i = 0; i < data.Trees.Count; i++)
+			{ GameObject.Destroy(data.Trees[i]); }
 			data.IsEnabled = false;
 			//Debug.Log($"Disabled {data.map_pos} chunk");
 		}

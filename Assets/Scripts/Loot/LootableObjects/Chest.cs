@@ -11,7 +11,7 @@ public class Chest : LootHolder, IMyPlaceableOnMap
 		return transform.position;
 	}
 
-	public Vector2Int GetTakeAreaSize()
+	public Vector2Int GetSize()
 	{
 		var box = transform.GetComponent<BoxCollider>();
 		Vector2Int takeAreaSize = new Vector2Int((int)box.size.x, (int)box.size.z+1);

@@ -35,6 +35,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		//{ Data.NowInteracting = false; }
 	}
 
+
 	public virtual void Construct()
 	{
 		Team t = MainController.Instance.GetTeam(Data.TeamID);
@@ -86,11 +87,9 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public string GetName() { return Data.Name; }
 
-	public Vector2 GetSize() { return Data.Size; }
+	public Vector2Int GetSize() { return Data.Size; }
 
 	public void SetTeam(int teamID) { Data.TeamID = teamID; }
-
-	public Vector2Int GetTakeAreaSize() { return Data.Size; }
 
 	public Vector3 GetPos() { return transform.position; }
 

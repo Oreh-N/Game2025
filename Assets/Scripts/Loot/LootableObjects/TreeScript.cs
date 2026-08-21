@@ -11,7 +11,7 @@ public class TreeScript : LootHolder, IMyPlaceableOnMap
 		return transform.position;
 	}
 
-	public Vector2Int GetTakeAreaSize()
+	public Vector2Int GetSize()
 	{
 		return new Vector2Int(1, 1);
 	}

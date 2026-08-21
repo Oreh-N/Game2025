@@ -14,6 +14,7 @@ public class MainBuilding : Building, ILootContainer
 		base.Awake();
 		Data.IsPlaced = true;
 		Data.Name = "MainBuilding";
+		Data.Size = new Vector2Int(11, 11);
 	}
 
 	private new void Start()

@@ -44,7 +44,6 @@ namespace MapSpace.MapLayers
 					{
 						if (ignoreTypes != null && Ignore(currMapCellT))
 						{ continue; }
-						Debug.Log($"Returned because map {i} has {currMapCellT} cell");
 						return false;
 					}
 				}

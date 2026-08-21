@@ -88,22 +88,6 @@ public class MapController : MonoBehaviour {
 		return true;
 	}
 
-	private void TakeAreaForCurrBuild()
-	{
-		if (!data.CurrBuilding) return;
-		Vector3Int start = GetAreaStartPos(data.CurrBuilding);
-		Vector2 size = data.CurrBuilding.GetSize();
-
-		for (int x = 0; x < size.x + _areaPadding; x++)
-		{
-			for (int y = 0; y < size.y + _areaPadding; y++)
-			{
-				var currPos = new Vector3Int(start.x + x, y: 0, start.z + y);
-				Map.ForceSetCell(Map.WorldToMap(currPos), Map.CellType.Building, 
-					MNames.BuildingAreaMap);
-			}
-		}
-	}
 
 	private Vector3Int GetAreaStartPos(Building build)
 	{
@@ -175,10 +159,8 @@ public class MapController : MonoBehaviour {
 		if (!t || !b) return;
 		b.SetTeam(t.GetID());
 		b.Construct();
-		//TakeAreaForCurrBuild();
-		Debug.Log($"TakeAreaSize: {b.GetTakeAreaSize()},    Size: {b.GetSize()}");	// SIZES ARE ZEROES
 		Map.FillMapAreaSquare(Map.WorldToMap(b.GetPos()),
-			new Vector2Int(10,10), Map.CellType.Building, MNames.EnvironmentMap);
+			b.GetSize(), Map.CellType.Building, MNames.EnvironmentMap);
 		data.CurrBuilding = null;
 		data.AllowBuilding = false;
 	}

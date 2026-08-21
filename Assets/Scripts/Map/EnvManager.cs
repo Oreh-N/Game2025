@@ -86,7 +86,7 @@ namespace MapSpace
 			Vector3 right = Vector3.Cross(Vector3.up, dir).normalized;
 			Vector3 left = -right;
 
-			float dist = ChunkData._size.x * 2.5f;
+			float dist = ChunkData.Size.x * 2.5f;
 
 			Vector3 basePoint = cam_proj_center - dir * dist;
 

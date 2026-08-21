@@ -96,21 +96,21 @@ public class MainController : MonoBehaviour
 
 	public int TeamCount() { return _teams.Length; }
 
-
+	/**/
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.darkRed;
 
-		var mapName = MLayers.MapNames.EnvironmentMap;
+		var mapName = MLayers.MapNames.UnitMap;
 		
-		for (int i = 0; i < Map.GetSize()[0]; i++)
-			for (int j = 0; j < Map.GetSize()[1]; j++)
+		for (int i = 0; i < Chunk.GetSize().x; i++)
+			for (int j = 0; j < Chunk.GetSize().y; j++)
 			{
 				Vector2Int mpos = new Vector2Int(i, j);
 				if (MLayers.GetCellInMap(mapName, mpos) != Map.CellType.Empty)
 				{ Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());}
 			}
 	}
-
+	/**/
 }
 
