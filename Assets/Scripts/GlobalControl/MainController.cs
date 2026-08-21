@@ -97,7 +97,7 @@ public class MainController : MonoBehaviour
 
 	public int TeamCount() { return _teams.Length; }
 
-	/**/
+	/*/
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.darkRed;

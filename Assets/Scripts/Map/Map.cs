@@ -77,27 +77,27 @@ namespace MapSpace
 		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,  
 			Maps.MapNames mapName = Maps.MapNames.Invalid, List<CellType> ignoreTypes = null);
 
-		public static Vector2Int FindNearestCell(Vector2Int startCellPos, CellType targetCellT,
-			 CheckIfDesiredCell check, Maps.MapNames mapName, Func<List<Vector2Int>, List<Vector2Int>> DirSortFunc,
+		public static MapCoord FindNearestCell(MapCoord startCellPos, CellType targetCellT,
+			 CheckIfDesiredCell check, Maps.MapNames mapName, Func<List<MapCoord>, List<MapCoord>> DirSortFunc,
 			 List<CellType> ignoreTypes = null)
 		{
-			var dirs = new List<Vector2Int>() {
-				new Vector2Int(1, 0),
-				new Vector2Int(0, 1),
-				new Vector2Int(-1, 0),
-				new Vector2Int(0, -1),
-				new Vector2Int(1, 1),
-				new Vector2Int(1, -1),
-				new Vector2Int(-1, 1),
-				new Vector2Int(-1, -1),
+			var dirs = new List<MapCoord>() {
+				new MapCoord(1, 0),
+				new MapCoord(0, 1),
+				new MapCoord(-1, 0),
+				new MapCoord(0, -1),
+				new MapCoord(1, 1),
+				new MapCoord(1, -1),
+				new MapCoord(-1, 1),
+				new MapCoord(-1, -1),
 
 			};
 			dirs = DirSortFunc(dirs);   // Used for sufficient pathfinding.
 										// Firtly tries dir which closest to target cell and after this
 										// tries others dirs (for example when obsticle on the way)
 			//LogList(dirs);
-			HashSet<Vector2Int> visited = new HashSet<Vector2Int>() { startCellPos };
-			Queue<Vector2Int> queue = new Queue<Vector2Int>();
+			HashSet<MapCoord> visited = new HashSet<MapCoord>() { startCellPos };
+			Queue<MapCoord> queue = new Queue<MapCoord>();
 			queue.Enqueue(startCellPos);
 
 			while (queue.Count > 0)
@@ -116,7 +116,7 @@ namespace MapSpace
 					}
 				}
 			}
-			return new Vector2Int(MapData.MapSize[0], MapData.MapSize[1]);	// Out of map
+			return new MapCoord(MapData.MapSize[0], MapData.MapSize[1]);	// Out of map
 		}
 
 		public static void LogList<T>(List<T> list)
@@ -173,7 +173,7 @@ namespace MapSpace
 			for (int x = startCellPos.x; x < endCellPos.x; x++)
 				for (int z = startCellPos.y; z < endCellPos.y; z++)
 				{
-					var mapPos = new Vector2Int(x, z);
+					var mapPos = new MapCoord(x, z);
 					Maps.ForceSetCell(mapName, mapPos, filling);
 				}
 		}
@@ -217,7 +217,7 @@ namespace MapSpace
 		public static Vector3 MapToWorld(int x, int y)
 		{ return data.MapStart + new Vector3(x, 0, y); }
 
-		public static Vector3 MapToWorld(Vector2Int map_pos)
+		public static Vector3 MapToWorld(MapCoord map_pos)
 		{ return data.MapStart + new Vector3(map_pos.x, 0, map_pos.y); }
 
 		public static Vector3 GetCellSize()

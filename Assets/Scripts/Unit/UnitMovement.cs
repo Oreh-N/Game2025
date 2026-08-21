@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 using Map = MapSpace.Map;
 using MNames = MapSpace.MapLayers.Maps.MapNames;
 
@@ -121,6 +122,12 @@ public class UnitMovement : MonoBehaviour
 		_findNextStepPos = true;
 	}
 
+	private bool CellIsEmpty(Vector2Int pos)
+	{
+		return Maps.CellInAllMapsIs(Map.CellType.Empty, pos,
+			new List<Map.CellType> { Map.CellType.BuildArea, Map.CellType.Road });
+	}
+
 	private void FindTargetPosition()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -129,7 +136,9 @@ public class UnitMovement : MonoBehaviour
 			MainController.groundPlane.Raycast(ray, out float distance))
 		{
 			var pos = ray.GetPoint(distance);
-			if (Map.IsOutOfMap(pos)) { return; }
+			if (Map.IsOutOfMap(pos) || 
+				!CellIsEmpty(Map.WorldToMap(pos)))
+			{ return; }
 
 			if (UnitSelectionManager.Instance.UnitsSelected.Count > 1)
 			{ UnitGroupMovement.MoveMe(this); }
