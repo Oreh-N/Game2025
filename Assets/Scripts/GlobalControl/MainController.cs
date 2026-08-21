@@ -88,7 +88,7 @@ public class MainController : MonoBehaviour
 
 	private Team CreateEnemy(Vector2Int pos, Color c, string name)
 	{
-		var enemy = new GameObject().AddComponent<EnemyController>();
+		var enemy = new GameObject($"{name}_EnemyController").AddComponent<EnemyController>();
 		enemy.Setup(pos, c, name);
 		
 		return enemy;
