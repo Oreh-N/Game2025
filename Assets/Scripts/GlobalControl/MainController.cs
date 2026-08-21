@@ -55,6 +55,7 @@ public class MainController : MonoBehaviour
 		UnitSelectionManager.Instance.GroundMarker.SetActive(false);
 		yield return null;
 
+		// NAMES MUST BE DIFFERENT!!! (otherwise rewrites existed controller)
 		_teams = new Team[3] {
 			Player.Instance.Setup(new Vector2Int(50, 50), new Color(0.7f, 0.4f, 0.9f), "Nuts"),
 			CreateEnemy(new Vector2Int(700,800), Color.red, ":3"),

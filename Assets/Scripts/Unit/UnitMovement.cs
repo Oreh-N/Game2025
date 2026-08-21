@@ -43,6 +43,8 @@ public class UnitMovement : MonoBehaviour
 		{
 			_stepPos = FindNextStepPos();
 			TurnTo(_stepPos);
+			Maps.TrySetCell(MNames.UnitMap, _stepPos, Map.CellType.Unit);
+			Maps.CleanCell(MNames.UnitMap, Map.WorldToMap(transform.position));
 
 			if (Map.IsOutOfMap(_stepPos))
 			{
@@ -108,10 +110,6 @@ public class UnitMovement : MonoBehaviour
 			}
 			else
 				_findNextStepPos = true;
-
-			Maps.TrySetCell(MNames.UnitMap, nxtPos, Map.CellType.Unit);
-			Maps.CleanCell(MNames.UnitMap, 
-				Map.WorldToMap(transform.position) - Map.WorldToMap(_dir));
 		}
 		Debug.DrawLine(transform.position, Map.MapToWorld(nxtPos), Color.red);
 	}
