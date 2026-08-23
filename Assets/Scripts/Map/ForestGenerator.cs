@@ -24,9 +24,9 @@ namespace MapSpace
 
 			Dictionary<Vector3, float> areasInfo = EnvManager.Instance.GetBaseAreaInfo();
 
-			for (int x = 0; x < Map.GetSize()[0]; x++)
+			for (int x = 0; x < Map.GetSize().x; x++)
 			{
-				for (int z = 0; z < Map.GetSize()[1]; z++)
+				for (int z = 0; z < Map.GetSize().y; z++)
 				{
 					var pos = new Vector2Int(x, z);
 					if (Rnd.Range(0, 100) < treeGenFrequency && 
@@ -45,9 +45,9 @@ namespace MapSpace
 				return;
 			}
 
-			for (int x = 0; x < Map.GetSize()[0]; x++)
+			for (int x = 0; x < Map.GetSize().x; x++)
 			{
-				for (int z = 0; z < Map.GetSize()[1]; z++)
+				for (int z = 0; z < Map.GetSize().y; z++)
 				{
 					if (Map.CellIs(Map.CellType.Tree, x, z, MNames.ForestMap))
 					{ Creator.CreateTree(Map.MapToWorld(x, z)); }

@@ -225,7 +225,7 @@ namespace MapSpace
 		public static Vector3 GetCellSize()
 		{ return data.CellSize; }
 
-		public static int[] GetSize()
+		public static Vector2Int GetSize()
 		{ return MapData.MapSize; }
 
 		/// <summary>

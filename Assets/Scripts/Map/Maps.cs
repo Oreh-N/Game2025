@@ -7,8 +7,8 @@ namespace MapSpace.MapLayers
 {
 	public static class Maps
 	{
-		public enum MapNames { EnvMap, UnitMap, ForestMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
-		static Map.CellType[][,] _Maps = new Map.CellType[3][,];
+		public enum MapNames { EnvMap, ForestMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
+		static Map.CellType[][,] _Maps = new Map.CellType[2][,];
 
 
 		static Maps()

@@ -48,12 +48,12 @@ namespace MapSpace
 			var fullY = mapPos.y / ChunkData.Size.y;
 
 			if (mapPos.x < 0) fullX = 0;
-			else if (mapPos.x > Map.GetSize()[0])
-				fullX = Map.GetSize()[0] / ChunkData.Size.x;
+			else if (mapPos.x > Map.GetSize().x)
+				fullX = Map.GetSize().x / ChunkData.Size.x;
 
 			if (mapPos.y < 0) fullY = 0;
-			else if (mapPos.y > Map.GetSize()[1])
-				fullY = Map.GetSize()[1] / ChunkData.Size.y;
+			else if (mapPos.y > Map.GetSize().y)
+				fullY = Map.GetSize().y / ChunkData.Size.y;
 
 			//Debug.Log($"X: {fullX}    Y: {fullY}");
 			return new Vector2Int(fullX, fullY);
