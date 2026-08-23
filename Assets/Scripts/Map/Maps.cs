@@ -7,8 +7,8 @@ namespace MapSpace.MapLayers
 {
 	public static class Maps
 	{
-		public enum MapNames { BuildingAreaMap, EnvironmentMap, UnitMap, ForestMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
-		static Map.CellType[][,] _Maps = new Map.CellType[4][,];
+		public enum MapNames { EnvMap, UnitMap, ForestMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
+		static Map.CellType[][,] _Maps = new Map.CellType[3][,];
 
 
 		static Maps()
@@ -16,6 +16,9 @@ namespace MapSpace.MapLayers
 			for (int i = 0; i < _Maps.Length; i++)
 			{ _Maps[i] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]]; }
 		}
+
+		public static void ResetMap(MapNames mapName)
+		{ _Maps[(int)mapName] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]]; }
 
 		public static void CleanCell(MapNames mapName, Vector2Int pos)
 		{ _Maps[(int)mapName][pos.x, pos.y] = Map.CellType.Empty; }

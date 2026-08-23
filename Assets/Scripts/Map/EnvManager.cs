@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 
@@ -15,13 +13,15 @@ namespace MapSpace
 	public class EnvManager : MonoBehaviour
 	{
 		public bool Ready { get; private set; } = false;
+
+		bool ChunkUpdateReady = true;
+		bool ChunkRemReady = true;
+
 		public static EnvManager Instance;
 
 		static Dictionary<Vector2Int, Chunk> _chunks = new Dictionary<Vector2Int, Chunk>();
 		MainCameraMovement _cam_move;
 		Cam _cam;
-		float _timer = 0;
-		float _update_time = 1f;
 
 
 		private void Awake()
@@ -37,89 +37,36 @@ namespace MapSpace
 			_cam = Camera.main.GetComponent<Cam>();
 			_cam_move = Camera.main.GetComponent<MainCameraMovement>();
 
-
+			StartCoroutine(Initialize());
 		}
 
 		void Update()
 		{
 			if (!MainController.Instance.Ready) return;
-			if (!Ready)
-			{
-				Initialize();
-				Ready = true;
-			}
 
-			if (_timer < 0)
+			if (ChunkUpdateReady)
 			{
-				StartCoroutine(UpdateForestChunksInCameraView(_cam_move.GetPos()));
-				StartCoroutine(TryDisableChunksOutOfView());
-				_timer = _update_time;
+				ChunkUpdateReady = false;
+				StartCoroutine(UpdateForestChunks(_cam_move.GetPos()));
 			}
-
-			_timer -= Time.deltaTime;
 		}
 
-		void Initialize()
+		void OnDestroy()
+		{ _chunks.Clear(); }
+
+		IEnumerator Initialize()
 		{
 			SignBuildingArea();
 			RoadGenerator.GenRoadsBetweenAllTeams(new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
-			StartCoroutine(ForestGenerator.GenVirtForest());
-			StartCoroutine(UpdateForestChunksInCameraView(_cam.transform.position));
-			Map.RemoveCellTypeFromMap(Map.CellType.Road, MNames.EnvironmentMap);
+			yield return StartCoroutine(ForestGenerator.GenVirtForest());
+			MapSpace.MapLayers.Maps.ResetMap(MNames.EnvMap);
+			Ready = true;
 		}
 
 		#region Dynamic Forest Generation
 
-		/// <summary>
-		/// Get 3 points from the position camera just left
-		/// </summary>
-		/// <param name="cam_dir"></param>
-		/// <returns></returns>
-		private Vector3[] GetJustLeftPoints()
-		{
-			var cam_proj_center = _cam.GetCamProjectionCenter();
 
-			Vector3 dir = _cam_move._last_dir.normalized;
-			dir.y = 0;
-			dir.Normalize();
-
-			Vector3 right = Vector3.Cross(Vector3.up, dir).normalized;
-			Vector3 left = -right;
-
-			float dist = ChunkData.Size.x * 2.5f;
-
-			Vector3 basePoint = cam_proj_center - dir * dist;
-
-			Vector3[] points = new Vector3[5] {
-		basePoint,
-		basePoint + right * dist/2,
-		basePoint - right * dist/2,
-		basePoint + right * dist,
-		basePoint - right * dist,
-	};
-
-			return points;
-		}
-
-		IEnumerator TryDisableChunksOutOfView()
-		{
-			var out_of_view_points = GetJustLeftPoints();
-			foreach (var out_p in out_of_view_points)
-			{
-				var map_pos = Map.WorldToMapWithCut(out_p);
-				var chunk_pos = Chunk.GetChunkMapPos(map_pos);
-				if (Chunk.GetChunkMapPos(_cam.GetCamProjectionCenter()) == chunk_pos)
-					continue;
-				if (_chunks.ContainsKey(chunk_pos) && _chunks[chunk_pos].IsEnabled())
-				{
-					_chunks[chunk_pos].Disable();
-					yield return null;
-				}
-			}
-		}
-
-
-		IEnumerator UpdateForestChunksInCameraView(Vector3 cam_pos)
+		IEnumerator UpdateForestChunks(Vector3 cam_pos)
 		{
 			List<Vector3> map_border_points = _cam.GetCamProjBorderPoints();
 
@@ -146,6 +93,28 @@ namespace MapSpace
 					startTime = Time.realtimeSinceStartup;
 				}
 			}
+			DisableOutOfViewChunks(map_border_points);
+
+			ChunkUpdateReady = true;
+		}
+
+		void DisableOutOfViewChunks(List<Vector3> pointsInView)
+		{
+			foreach (var pair in _chunks)
+			{
+				if (pair.Value.IsEnabled())
+				{
+					bool inView = false;
+					foreach (var p in pointsInView)
+					{
+						var chunkMapPos = Map.WorldToMapWithCut(p);
+						var chunkInViewPos = Chunk.GetChunkMapPos(chunkMapPos);
+						if (pair.Key == chunkInViewPos)
+						{ inView = true; break; }
+					}
+					if (!inView) pair.Value.Disable();
+				}
+			}
 		}
 
 		/*/
@@ -161,7 +130,7 @@ namespace MapSpace
 		}
 		/**/
 
-		/**/
+		/*/
 		private void OnDrawGizmos()
 		{
 			if (!Application.isPlaying || _cam == null) return;
@@ -215,7 +184,7 @@ namespace MapSpace
 				if (t == null) { Debug.Log("Team is NULL"); continue; }
 				Vector2Int coord = Map.WorldToMap(t.GetCenter());
 				int mapRadius = Mathf.RoundToInt(t.GetBuildingRadius() / Map.GetCellSize().x);
-				Map.FillMapAreaCircle(coord, mapRadius, Map.CellType.BuildArea, MNames.BuildingAreaMap);
+				Map.FillMapAreaCircle(coord, mapRadius, Map.CellType.BuildArea, MNames.EnvMap);
 			}
 		}
 

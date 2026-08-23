@@ -73,18 +73,18 @@ public class MapController : MonoBehaviour {
 		if (Vector3.Distance(build.transform.position, center) > radius)
 		{ return false; }
 
-		Vector3Int startInt = GetAreaStartPos(build);
-		Vector2 size = build.GetSize();
-		for (int x = 0; x < size.x + _areaPadding; x++)
-		{
-			for (int y = 0; y < size.y + _areaPadding; y++)
-			{
-				var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
-				if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos),
-					MNames.BuildingAreaMap))
-				{ return false; }
-			}
-		}
+		//Vector3Int startInt = GetAreaStartPos(build);
+		//Vector2 size = build.GetSize();
+		//for (int x = 0; x < size.x + _areaPadding; x++)
+		//{
+		//	for (int y = 0; y < size.y + _areaPadding; y++)
+		//	{
+		//		var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
+		//		if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos),
+		//			MNames.BusyTerritory))
+		//		{ return false; }
+		//	}
+		//}
 		return true;
 	}
 
@@ -160,7 +160,7 @@ public class MapController : MonoBehaviour {
 		b.SetTeam(t.GetID());
 		b.Construct();
 		Map.FillMapAreaSquare(Map.WorldToMap(b.GetPos()),
-			b.GetSize(), Map.CellType.Building, MNames.EnvironmentMap);
+			b.GetSize(), Map.CellType.Building, MNames.EnvMap);
 		data.CurrBuilding = null;
 		data.AllowBuilding = false;
 	}

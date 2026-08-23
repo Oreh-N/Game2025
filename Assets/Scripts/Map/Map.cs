@@ -119,6 +119,7 @@ namespace MapSpace
 			return new MapCoord(MapData.MapSize[0], MapData.MapSize[1]);	// Out of map
 		}
 
+		#region Debug
 		public static void LogList<T>(List<T> list)
 		{
 			Debug.Log("List______________________");
@@ -129,6 +130,7 @@ namespace MapSpace
 			Debug.Log("__________________________");
 
 		}
+		#endregion
 
 		public static CellType GetCellType(MapCoord coord, Maps.MapNames mapName)
 		{

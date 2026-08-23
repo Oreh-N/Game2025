@@ -2,12 +2,15 @@ using MapSpace;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using MLayers = MapSpace.MapLayers.Maps;
 
 public class MainController : MonoBehaviour
 {
 	public bool Ready { get; private set; } = false;
+
 	public static MainController Instance;
 	public static Plane groundPlane;
 	GameObject managers;
@@ -33,6 +36,11 @@ public class MainController : MonoBehaviour
 
 	}
 
+	private void Update()
+	{
+
+
+	}
 
 	IEnumerator InitializeManagers()
 	{
@@ -50,7 +58,7 @@ public class MainController : MonoBehaviour
 
 		managers.AddComponent<UnitSelectionManager>();
 		UnitSelectionManager.Instance.GroundMarker = GameObject.FindWithTag("Marker");
-		if (!UnitSelectionManager.Instance.GroundMarker) 
+		if (!UnitSelectionManager.Instance.GroundMarker)
 			Debug.Log("Didn't find ground marker for UnitSelectionManager");
 		UnitSelectionManager.Instance.GroundMarker.SetActive(false);
 		yield return null;
@@ -61,12 +69,13 @@ public class MainController : MonoBehaviour
 			CreateEnemy(new Vector2Int(700,800), Color.red, ":3"),
 			CreateEnemy(new Vector2Int(100, 300), Color.cadetBlue, "Alice")
 		};
+		yield return null;
+
+		managers.AddComponent<MapSpace.EnvManager>();   // TEAMS HAVE TO BE CREATED FIRST!
+		yield return new WaitUntil(() => EnvManager.Instance.Ready);
+
 		foreach (var t in _teams) t.CreateBase();
 		yield return null;
-
-		managers.AddComponent<MapSpace.EnvManager>();
-		yield return null;
-
 		Ready = true;
 	}
 
@@ -79,7 +88,7 @@ public class MainController : MonoBehaviour
 	/// <returns>Returns team if exists, else returns null</returns>
 	public Team GetTeam(int teamID)
 	{
-		if (teamID < 0) 
+		if (teamID < 0)
 			return null;
 		if (_teams != null && teamID < _teams.Length)
 			return _teams[teamID];
@@ -91,7 +100,7 @@ public class MainController : MonoBehaviour
 	{
 		var enemy = new GameObject($"{name}_EnemyController").AddComponent<EnemyController>();
 		enemy.Setup(pos, c, name);
-		
+
 		return enemy;
 	}
 

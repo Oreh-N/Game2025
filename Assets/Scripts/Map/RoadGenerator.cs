@@ -25,7 +25,6 @@ namespace MapSpace
 		/// </summary>
 		public static void GenRoadsBetweenAllTeams(Vector2Int map_size)
 		{
-			if (!MainController.Instance.Ready) return;
 			var mapCenter = new Vector2Int(map_size.x / 2, map_size.y / 2);
 			Team[] ts = MainController.Instance.GetAllTeams();
 			for (int i = 0; i < ts.Length; i++)
@@ -107,7 +106,7 @@ namespace MapSpace
 		{
 			if (Map.IsOutOfMap(coord)) return;
 
-			Map.TrySetCell(coord, Map.CellType.Road, MNames.EnvironmentMap);
+			Map.TrySetCell(coord, Map.CellType.Road, MNames.EnvMap);
 		}
 	}
 }

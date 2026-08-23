@@ -92,8 +92,7 @@ public class UnitMovement : MonoBehaviour
 
 		return Map.FindNearestCell(Map.WorldToMap(transform.position), Map.CellType.Empty,
 			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Maps.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); },
-			MNames.Invalid, DirHeuristicSort,
-			new List<Map.CellType> { Map.CellType.BuildArea, Map.CellType.Road });
+			MNames.Invalid, DirHeuristicSort);
 	}
 
 	private void MoveTo(Vector2Int nxtPos)
@@ -124,8 +123,7 @@ public class UnitMovement : MonoBehaviour
 
 	private bool CellIsEmpty(Vector2Int pos)
 	{
-		return Maps.CellInAllMapsIs(Map.CellType.Empty, pos,
-			new List<Map.CellType> { Map.CellType.BuildArea, Map.CellType.Road });
+		return Maps.CellInAllMapsIs(Map.CellType.Empty, pos);
 	}
 
 	private void FindTargetPosition()
