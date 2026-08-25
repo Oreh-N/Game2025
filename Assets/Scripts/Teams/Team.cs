@@ -118,7 +118,11 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		int init_unit_count = 3;
 
 		for (int i = 0; i < init_unit_count; i++)
-		{ Creator.CreateUnit(Prefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i)); }
+		{ 
+			var unit = Creator.CreateUnit(Prefabs.WorkerPref, 
+				data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i)).GetComponent<Unit>();
+			if (unit) unit.SetTeam(data.ID);
+		}
 		return this;
 		// FIX UNIT SPAWN
 	}

@@ -56,7 +56,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		ColorBuilding(t.GetColor());
 
 		Map.FillMapAreaSquare(Map.WorldToMap(GetPos()),
-			GetSize(), GetCellID(), Maps.MapNames.EnvMap);
+			GetSize(), Maps.CombineTeamCell(GetCellID(), GetTeamID()) , Maps.MapNames.EnvMap);
 		Data.IsPlaced = true;
 
 		BuildingManager.AddBuilding(this, Data.TeamID);

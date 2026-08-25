@@ -68,6 +68,9 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		UnitSelectionManager.Instance.UnitsSelected.Remove(gameObject);
 	}
 
+	public int GetTeamID()
+	{ return data.TeamID; }
+
 	public MapSpace.Map.CellType GetCellType()
 	{ return data.CellType; }
 

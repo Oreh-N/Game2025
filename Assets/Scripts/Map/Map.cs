@@ -54,18 +54,6 @@ namespace MapSpace
 			return true;
 		}
 
-		public static void ForceSetCell(MapCoord coord, CellType type, Maps.MapNames mapName)
-		{
-			if (IsOutOfMap(coord)) return;
-			Maps.ForceSetCell(mapName, coord, type);
-		}
-
-		public static bool CellIs(CellType type, MapCoord coord, Maps.MapNames mapName)
-		{
-			if (IsOutOfMap(coord)) return false;
-			return Maps.GetCellInMap(mapName, coord) == type;
-		}
-
 		public static bool CellIs(CellType type, int x, int z, Maps.MapNames mapName)
 		{
 			if (IsOutOfMap(new MapCoord(x, z))) return false;
@@ -176,7 +164,7 @@ namespace MapSpace
 		/// <param name="filling"> - cell type which will fill the area</param>
 		public static void FillMapAreaCircle(MapCoord centerCoords, int radius, CellType filling, Maps.MapNames mapName)
 		{
-			ForceSetCell(centerCoords, filling, mapName);
+			Maps.ForceSetCell(mapName, centerCoords, filling);
 			Queue<MapCoord> toFill = new Queue<MapCoord>();
 			AddNearbyCellsToQueue(ref toFill, centerCoords);
 

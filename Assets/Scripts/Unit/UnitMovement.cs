@@ -24,7 +24,7 @@ public class UnitMovement : MonoBehaviour
 	{
 		var pos = Map.WorldToMap(transform.position);
 
-		if (!Map.TrySetCell(pos, GetComponent<Unit>().GetUnitCellID(), MNames.EnvMap))
+		if (!TrySetUnitOnMap(pos))
 		{
 			pos = Map.FindNearestCell(pos, Map.CellType.Empty,
 				(nxtCellPos, targetCellT, mapName, _) => { return Map.GetCellType(nxtCellPos, mapName) == targetCellT; },
@@ -45,7 +45,7 @@ public class UnitMovement : MonoBehaviour
 		{
 			_stepPos = FindNextStepPos();
 			TurnTo(_stepPos);
-			Maps.TrySetCell(MNames.EnvMap, _stepPos, GetComponent<Unit>().GetUnitCellID());
+			TrySetUnitOnMap(_stepPos);
 			Maps.CleanCell(MNames.EnvMap, Map.WorldToMap(transform.position));
 
 			if (Map.IsOutOfMap(_stepPos))
@@ -60,6 +60,14 @@ public class UnitMovement : MonoBehaviour
 
 		if (_isMoving)
 		{ MoveTo(_stepPos); }
+	}
+
+	private bool TrySetUnitOnMap(Vector2Int mapPos)
+	{
+		var unit = GetComponent<Unit>();
+		if (Maps.TrySetTeamCell(MNames.EnvMap, mapPos, unit.GetUnitCellID(), unit.GetTeamID())) 
+			return true;
+		return false;
 	}
 
 	private void TurnTo(Vector2Int mapPos)

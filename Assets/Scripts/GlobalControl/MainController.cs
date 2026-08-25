@@ -66,9 +66,9 @@ public class MainController : MonoBehaviour
 
 		// NAMES MUST BE DIFFERENT!!! (otherwise rewrites existed controller)
 		_teams = new Team[3] {
-			Player.Instance.Setup(new Vector2Int(50, 50), new Color(0.7f, 0.4f, 0.9f), "Nuts"),
-			CreateEnemy(new Vector2Int(700,800), Color.red, ":3"),
-			CreateEnemy(new Vector2Int(100, 300), Color.cadetBlue, "Alice")
+			Player.Instance.Setup(new Vector2Int(50, 50), Color.violetRed, "Nuts"),
+			CreateEnemy(new Vector2Int(700,800), Color.lightSeaGreen, ":3"),
+			CreateEnemy(new Vector2Int(100, 300), Color.darkBlue, "Alice")
 		};
 
 		managers.AddComponent<MapSpace.EnvManager>();   // TEAMS HAVE TO BE CREATED FIRST!
@@ -105,56 +105,59 @@ public class MainController : MonoBehaviour
 
 	public int TeamCount() { return _teams.Length; }
 
-	/**/
-	private void OnDrawGizmos()
-	{
-		if (!Application.isPlaying || !Ready) return;
+	///**/
+	//private void OnDrawGizmos()
+	//{
+	//	if (!Application.isPlaying || !Ready) return;
 
-		var mapName = MLayers.MapNames.EnvMap;
-		//var size = Chunk.GetSize();
-		var size = Map.GetSize();
+	//	var mapName = MLayers.MapNames.EnvMap;
+	//	//var size = Chunk.GetSize();
+	//	var size = Map.GetSize();
 
-		for (int i = 0; i < size.x; i++)
-			for (int j = 0; j < size.y; j++)
-			{
-				Vector2Int mpos = new Vector2Int(i, j);
-				/*/if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.WorkerUnit)
-				{
-					Gizmos.color = Color.blanchedAlmond;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize()); 
-				}
-				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.MainBuild)
-				{
-					Gizmos.color = Color.darkRed;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.Spawner)
-				{
-					Gizmos.color = Color.blueViolet;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.Warehouse)
-				{
-					Gizmos.color = Color.deepPink;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.BasicTower)
-				{
-					Gizmos.color = Color.greenYellow;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}/*/
+	//	for (int i = 0; i < size.x; i++)
+	//		for (int j = 0; j < size.y; j++)
+	//		{
+	//			Vector2Int mpos = new Vector2Int(i, j);
+	//			/**/if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.WorkerUnit)
+	//			{
+	//				Gizmos.color = Color.blanchedAlmond;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize()); 
+	//			}
+	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.MainBuild)
+	//			{
+	//				Gizmos.color = Color.darkRed;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.Spawner)
+	//			{
+	//				Gizmos.color = Color.blueViolet;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.Warehouse)
+	//			{
+	//				Gizmos.color = Color.deepPink;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.BasicTower)
+	//			{
+	//				Gizmos.color = Color.greenYellow;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}/*/
 
-				// DOESNT WORK
-				int teamId = MLayers.GetCellTeamID(mapName, mpos);
-				if (TeamCount() > teamId)
-				{
-					Team t = GetTeam(teamId);
-					Gizmos.color = t.GetColor();
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				/**/
-			}
-	}
-	/**/
+	//			// DOESNT WORK
+	//			if (MLayers.GetCellInMap(mapName, mpos) != Map.CellType.Empty)
+	//			{
+	//				int teamId = MLayers.GetCellTeamID(mapName, mpos);
+	//				if (TeamCount() > teamId)
+	//				{
+	//					Team t = GetTeam(teamId);
+	//					Gizmos.color = t.GetColor();
+	//					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//				}
+	//			}
+	//			/**/
+	//		}
+	//}
+	///**/
 }
 
