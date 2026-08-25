@@ -83,7 +83,7 @@ namespace MapSpace
 						data.MapPos.y * ChunkData.Size.y + y);
 
 					if (Map.IsOutOfMap(cell_pos) ||
-						Map.GetCellType(cell_pos, MNames.ForestMap) != ChunkData.TreeType)
+						Map.GetCellType(cell_pos, MNames.EnvMap) != ChunkData.TreeType)
 						continue;
 
 					var tree = Creator.CreateTree(Map.MapToWorld(cell_pos));

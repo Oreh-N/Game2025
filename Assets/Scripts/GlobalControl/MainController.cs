@@ -74,6 +74,7 @@ public class MainController : MonoBehaviour
 		managers.AddComponent<MapSpace.EnvManager>();   // TEAMS HAVE TO BE CREATED FIRST!
 		yield return new WaitUntil(() => EnvManager.Instance.Ready);
 
+		managers.AddComponent<MouseController>();
 		foreach (var t in _teams) t.CreateBase();
 		Ready = true;
 	}

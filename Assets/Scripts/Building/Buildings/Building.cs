@@ -38,11 +38,6 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		//{ Data.NowInteracting = false; }
 	}
 
-	private bool IsOverBuilding()
-	{
-		var mapPos = Map.WorldToMap(MapController.GetMouseWorldPos());
-		return true;
-	}
 
 
 	public MapSpace.Map.CellType GetCellID()	// Maybe its better to make it interface method (for placeable on map objects like units and buildings)???
@@ -76,7 +71,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	}
 
 
-	public void OnMouseDown()
+	public void MouseDownAct()
 	{
 		if (EventSystem.current.IsPointerOverGameObject())
 			return;

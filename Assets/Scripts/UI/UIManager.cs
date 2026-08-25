@@ -47,7 +47,7 @@ public class UIManager : MonoBehaviour
 
 	public void HideAllPanels()
 	{
-		foreach (GameObject panel in data._allPanels)
+		foreach (GameObject panel in data.AllPanels)
 		{ panel.SetActive(false); }
 	}
 
@@ -81,7 +81,7 @@ public class UIManager : MonoBehaviour
 		if (panel == null)
 		{ Debug.Log($"{panel.tag} panel is null!"); return; }
 
-		foreach (var p in data._allPanels)
+		foreach (var p in data.AllPanels)
 		{ p.SetActive(false); }
 
 		if (panel.activeSelf)
@@ -104,7 +104,7 @@ public class UIManager : MonoBehaviour
 	// Database________________________________________
 	public GameObject GetPanelWithTag(string tag)
 	{
-		foreach (var panel in data._allPanels)
+		foreach (var panel in data.AllPanels)
 		{
 			if (panel.tag == tag)
 			{ return panel; }
@@ -114,7 +114,8 @@ public class UIManager : MonoBehaviour
 
 	public GameObject GetPanel(int panelID)
 	{
-		return data._allPanels[panelID];
+		if (data.AllPanels.Count == 0) return null;
+		return data.AllPanels[panelID];
 	}
 
 

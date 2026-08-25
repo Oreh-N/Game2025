@@ -31,7 +31,7 @@ namespace MapSpace
 					var pos = new Vector2Int(x, z);
 					if (Rnd.Range(0, 100) < treeGenFrequency && 
 						Map.CellInAllMapsIs(Map.CellType.Empty, pos))
-					{ Map.TrySetCell(pos, Map.CellType.Tree, MNames.ForestMap); }
+					{ Map.TrySetCell(pos, Map.CellType.Tree, MNames.EnvMap); }
 				}
 			}
 			yield return null;
@@ -49,7 +49,7 @@ namespace MapSpace
 			{
 				for (int z = 0; z < Map.GetSize().y; z++)
 				{
-					if (Map.CellIs(Map.CellType.Tree, x, z, MNames.ForestMap))
+					if (Map.CellIs(Map.CellType.Tree, x, z, MNames.EnvMap))
 					{ Creator.CreateTree(Map.MapToWorld(x, z)); }
 				}
 			}

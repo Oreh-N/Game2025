@@ -77,21 +77,7 @@ namespace MapSpace
 			return true;
 		}
 
-		/// <summary>
-		/// Removes all cells of type cellT from the map with name mapName
-		/// </summary>
-		/// <param name="cellT"></param>
-		/// <param name="mapName"></param>
-		public static void RemoveCellTypeFromMap(CellType cellT, Maps.MapNames mapName)
-		{
-			for (int x = 0; x < MapData.MapSize[0]; x++)
-				for (int y = 0; y < MapData.MapSize[1]; y++)
-				{
-					var cellPos = new MapCoord(x, y);
-					if (Maps.GetCellInMap(mapName, cellPos) == cellT)
-						Maps.ForceSetCell(mapName, cellPos, CellType.Empty);
-				}
-		}
+		
 
 		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,
 			Maps.MapNames mapName = Maps.MapNames.Invalid, List<CellType> ignoreTypes = null);

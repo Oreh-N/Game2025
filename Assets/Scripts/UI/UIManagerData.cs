@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class UIManagerData
 {
-	public List<GameObject> _allPanels = new List<GameObject>();
+	public List<GameObject> AllPanels = new List<GameObject>();
 	public GameObject MoneyPanel;
 	public GameObject WarningPanel;
 	public GameObject WoodPanel;

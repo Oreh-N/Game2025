@@ -9,7 +9,7 @@ public class Movable : MonoBehaviour
 	{
 		if (!MapController.Instance)
 		{ Debug.Log("No map controller instance exist"); return; }
-		Vector3 new_pos = MapController.GetMouseWorldPos();
+		Vector3 new_pos = MouseController.GetMouseWorldPos();
 		transform.position = Map.MapToWorld(Map.WorldToMap(new_pos));
 	}
 }

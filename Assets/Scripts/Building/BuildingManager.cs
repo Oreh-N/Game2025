@@ -119,7 +119,6 @@ public class BuildingManager : MonoBehaviour
 
 	public static void RemoveBuilding(Building b, int teamID)
 	{
-		//Debug.Log($"The {b.GetType()} building from team {b.GetTeamID()} on position {b.GetPos()} has been removed from team list");
 		GetTeam(teamID).RemoveBuilding(b);
 	}
 

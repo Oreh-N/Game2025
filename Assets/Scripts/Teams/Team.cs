@@ -155,6 +155,26 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		return this;
 	}
 
+	private T GetClosestTeamObj<T>(Vector3 pos, List<T> objList) where T : Component
+	{
+		if (objList.Count < 1) return null; 
+
+		T obj = objList[0];
+
+		foreach (var o in objList)
+		{
+			if (Vector3.Distance(obj.transform.position, pos) >
+				Vector3.Distance(o.transform.position, pos))
+			{ obj = o; }
+		}
+		return obj;
+	}
+
+	public Building GetClosestTeamBuild(Vector3 pos)
+	{ return GetClosestTeamObj<Building>(pos, data.Buildings); }
+
+	public Unit GetClosestTeamUnit(Vector3 pos)
+	{ return GetClosestTeamObj<Unit>(pos, data.Members); }
 
 	public void ChangeInteractableObject(IInteractable obj) { data.CurrInteractObject = obj; }
 

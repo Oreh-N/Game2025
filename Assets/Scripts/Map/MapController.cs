@@ -75,7 +75,7 @@ public class MapController : MonoBehaviour {
 		//{ return; }
 		if (data.CurrBuilding != null) 
 			RemoveCurrBuild();
-		var b = SpawnBuilding(build, teamID, GetMouseWorldPos());
+		var b = SpawnBuilding(build, teamID, MouseController.GetMouseWorldPos());
 		b.AddComponent<Movable>();
 		Building building = b.GetComponent<Building>();
 		if (building != null)
@@ -101,18 +101,6 @@ public class MapController : MonoBehaviour {
 		return obj;
 	}
 
-	/// <summary>
-	/// Get position of the mouse cursor on the world landscape
-	/// </summary>
-	/// <returns></returns>
-	public static Vector3 GetMouseWorldPos()
-	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-		if (MainController.groundPlane.Raycast(ray, out float distance))
-		{ return ray.GetPoint(distance); }
-		return Vector3.zero;
-	}
 
 	public void PlaceBuilding(Building b, Team t)
 	{

@@ -40,7 +40,7 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 
 
 
-	public void OnMouseDown()
+	public virtual void MouseDownAct()
 	{
 		UnitManager.GetTeam(data.TeamID).ChangeInteractableObject(this);
 		((IHavePanel)this).ShowPanel(data.Panel);
