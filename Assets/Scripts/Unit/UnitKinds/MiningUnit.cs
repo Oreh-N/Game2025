@@ -17,6 +17,7 @@ public class MiningUnit : UnitSelf<MiningUnit>
 		data.HolderCapacity = 100;
 		_abilities[0] = "Mine wood";
 		_abilities[1] = "Collect gold";
+		data.CellType = MapSpace.Map.CellType.MiningUnit;
 	}
 
 	private new void Start()

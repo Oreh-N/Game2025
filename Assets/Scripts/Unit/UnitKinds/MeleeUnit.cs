@@ -13,8 +13,9 @@ public class MeleeUnit : UnitSelf<MeleeUnit>
 
 	private new void Awake()
 	{
-		data.Name = "MeleeUnit";
 		base.Awake();
+		data.Name = "MeleeUnit";
+		data.CellType = MapSpace.Map.CellType.MeleeUnit;
 	}
 
 	new void Start()

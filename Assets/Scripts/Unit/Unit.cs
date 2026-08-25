@@ -56,6 +56,9 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		return false;
 	}
 
+	public MapSpace.Map.CellType GetUnitCellID()
+	{ return (MapSpace.Map.CellType)(data.TeamID * 100 + (int)data.CellType); }
+
 	public abstract void Interact();
 
 	// Fight____________________________________________________________
@@ -65,25 +68,22 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		UnitSelectionManager.Instance.UnitsSelected.Remove(gameObject);
 	}
 
+	public MapSpace.Map.CellType GetCellType()
+	{ return data.CellType; }
+
 	public virtual void TakeDamage(float damage)
 	{ data.Health -= damage; }
 
 	public abstract void UpdatePanelInfo();
 
 	public Inventory GetInventory()
-	{
-		return data.LootCounter;
-	}
+	{ return data.LootCounter; }
 
 	public void SetTeam(int teamID)
-	{
-		data.TeamID = teamID;
-	}
+	{ data.TeamID = teamID; }
 
 	public string GetTeamName()
-	{
-		return UnitManager.GetTeamName(data.TeamID);
-	}
+	{ return UnitManager.GetTeamName(data.TeamID); }
 
 	// _________________________________________________________________
 }

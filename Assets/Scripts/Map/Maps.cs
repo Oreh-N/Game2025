@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace MapSpace.MapLayers
@@ -9,16 +10,38 @@ namespace MapSpace.MapLayers
 	{
 		public enum MapNames { EnvMap, ForestMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
 		static Map.CellType[][,] _Maps = new Map.CellType[2][,];
+		public static bool Ready { get; private set; } = false;
 
 
 		static Maps()
 		{
 			for (int i = 0; i < _Maps.Length; i++)
-			{ _Maps[i] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]]; }
+			{ 
+				_Maps[i] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]];
+				ResetMap((MapNames)i);
+			}
+			Ready = true;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mapName"></param>
+		/// <param name="pos"></param>
+		/// <returns>Returns team's ID or higher number for basic cells (starting from 4)</returns>
+		public static int GetCellTeamID(MapNames mapName, Vector2Int pos)
+		{
+			var cellT = (int)(_Maps[(int)mapName][pos.x, pos.y]);
+			int teamID = cellT / 100;
+			return teamID;
 		}
 
 		public static void ResetMap(MapNames mapName)
-		{ _Maps[(int)mapName] = new Map.CellType[MapData.MapSize[0], MapData.MapSize[1]]; }
+		{
+			for (int x = 0; x < MapData.MapSize[0]; x++)
+				for (int y = 0; y < MapData.MapSize[1]; y++)
+				{ _Maps[(int)mapName][x, y] = Map.CellType.Empty; }
+		}
 
 		public static void CleanCell(MapNames mapName, Vector2Int pos)
 		{ _Maps[(int)mapName][pos.x, pos.y] = Map.CellType.Empty; }
@@ -56,6 +79,12 @@ namespace MapSpace.MapLayers
 		public static Map.CellType GetCellInMap(MapNames name, Vector2Int pos)
 		{
 			return _Maps[(int)name][pos.x, pos.y];
+		}
+
+		public static Map.CellType GetTeamlessCellInMap(MapNames name, Vector2Int pos)
+		{
+			int teamlessCell = ((int)_Maps[(int)name][pos.x, pos.y]) % 100 + 500; // basic cells use 5 hundreds
+			return (Map.CellType)teamlessCell;
 		}
 
 		public static bool TrySetCell(MapNames name, Vector2Int pos, Map.CellType newCellT)

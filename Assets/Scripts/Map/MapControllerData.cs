@@ -9,8 +9,6 @@ using UnityEngine.Tilemaps;
 
 public class MapControllerData
 {
-	public Tilemap Tilemap_;
-
 	public bool AllowBuilding = false;
 	public Building CurrBuilding;
 	public TileBase BusyTile;

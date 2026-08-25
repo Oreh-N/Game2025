@@ -44,6 +44,10 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		return true;
 	}
 
+
+	public MapSpace.Map.CellType GetCellID()	// Maybe its better to make it interface method (for placeable on map objects like units and buildings)???
+	{ return (MapSpace.Map.CellType)(Data.TeamID * 100 + (int)Data.CellType); }
+
 	public virtual void Construct()
 	{
 		Team t = MainController.Instance.GetTeam(Data.TeamID);
@@ -52,7 +56,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		ColorBuilding(t.GetColor());
 
 		Map.FillMapAreaSquare(Map.WorldToMap(GetPos()),
-			GetSize(), Map.CellType.Building, Maps.MapNames.EnvMap);
+			GetSize(), GetCellID(), Maps.MapNames.EnvMap);
 		Data.IsPlaced = true;
 
 		BuildingManager.AddBuilding(this, Data.TeamID);
@@ -92,6 +96,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	#region Data transfering
 
+	public Map.CellType GetCellType() {  return Data.CellType; }
 	public bool IsPlaced() { return Data.IsPlaced; }
 
 	public int GetTeamID() { return Data.TeamID; }

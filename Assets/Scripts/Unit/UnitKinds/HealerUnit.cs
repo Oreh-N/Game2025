@@ -6,8 +6,9 @@ public class HealerUnit : UnitSelf<HealerUnit>
 {
 	private new void Awake()
 	{
-		data.Name = "HealerUnit";
 		base.Awake();
+		data.Name = "HealerUnit";
+		data.CellType = MapSpace.Map.CellType.HealerUnit;
 	}
 
 	new void Start()

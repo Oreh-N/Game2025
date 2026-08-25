@@ -16,6 +16,7 @@ public class Spawner : Building
         // data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 		Data.Name = "Spawner0";
 		Data.Size = new Vector2Int(7, 7);
+		Data.CellType = MapSpace.Map.CellType.Spawner;
 
 	}
 	private new void Update()

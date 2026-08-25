@@ -15,6 +15,7 @@ public class MainBuilding : Building, ILootContainer
 		Data.IsPlaced = true;
 		Data.Name = "MainBuilding";
 		Data.Size = new Vector2Int(13, 13);
+		Data.CellType = MapSpace.Map.CellType.MainBuild;
 	}
 
 	private new void Start()

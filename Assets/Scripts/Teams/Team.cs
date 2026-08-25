@@ -29,6 +29,9 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		RecalculateLoot();
 	}
 
+	public bool Ready()
+	{ return data.Ready; }
+
 	public void InteractWithObject()
 	{ data.CurrInteractObject.Interact(); }
 
@@ -113,10 +116,11 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 		if (Prefabs.WorkerPref == null) Debug.Log("Didn't find unit");
 		int init_unit_count = 3;
+
 		for (int i = 0; i < init_unit_count; i++)
 		{ Creator.CreateUnit(Prefabs.WorkerPref, data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i)); }
 		return this;
-		//BuildingManager.ColorCurrBuilding(b.GetComponent<MainBuilding>(), data.TeamColor);
+		// FIX UNIT SPAWN
 	}
 
 	// _______________________________________________________________

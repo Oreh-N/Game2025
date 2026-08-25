@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class UnitData
 {
+	public MapSpace.Map.CellType CellType = MapSpace.Map.CellType.Unit;
 	public Inventory LootCounter = new Inventory();
 	public GameObject Panel;
 	public int TeamID;

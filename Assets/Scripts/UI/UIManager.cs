@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
 {
 	public static UIManager Instance;
 	UIManagerData data = new UIManagerData();
+	public bool Ready { get; private set; } = false;
 
 	private void Awake()
 	{
@@ -33,6 +34,7 @@ public class UIManager : MonoBehaviour
 		{ data.WarningPanel.SetActive(false); }
 		else
 		{ Debug.Log("Warning panel not found!"); }
+		Ready = true;
 	}
 
 

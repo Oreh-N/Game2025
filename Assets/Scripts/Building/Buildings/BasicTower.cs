@@ -18,8 +18,9 @@ public class BasicTower : Building
 	{
 		base.Awake();
 		Data.Name = "Tower0";
-		//_damage = 30;
+		Data.CellType = MapSpace.Map.CellType.BasicTower;
 		Data.Size = new Vector2Int(5, 5);
+		//_damage = 30;
 
 	}
 

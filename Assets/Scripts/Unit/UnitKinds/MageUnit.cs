@@ -6,8 +6,9 @@ public class MageUnit : UnitSelf<MageUnit>
 {
 	private new void Awake()
 	{
-		data.Name = "MageUnit";
 		base.Awake();
+		data.Name = "MageUnit";
+		data.CellType = MapSpace.Map.CellType.MageUnit;
 	}
 
 	new void Start()

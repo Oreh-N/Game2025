@@ -21,7 +21,6 @@ public class MapController : MonoBehaviour {
 		{ Instance = this; }
 
 		data.CurrBuilding = null;
-		data.Tilemap_ = FindFirstObjectByType<Tilemap>();
 	}
 
 

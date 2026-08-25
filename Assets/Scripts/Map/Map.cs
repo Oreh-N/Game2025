@@ -13,15 +13,34 @@ namespace MapSpace
 {
 	public static class Map
 	{
+		/* There might be MAXIMUM 99 types of cells!!! Hundreds used for certain team assignment!!! There are maximum 4 teams
+		 ..0 - .29 Building types, .30 - .59 Unit types
+		 Team assignment: Player (ID 0) cells start with 0 hundreds (15, 33, 5, etc.),
+		 team with ID 1 cells start with 1 hundreds (115, 133, 105, etc.) and so on.
+		 Everything that starts from 5 hundreds is basic cells
+		*/
 		public enum CellType
 		{
-			Empty = 0,
-			Building = 1,
-			Unit = 2,
-			Tree = 3,
-			BuildArea = 100,
-			Road = 101,
-			Error = 505
+			MainBuild = 500,
+			Spawner = 501,
+			Warehouse = 502,
+			BasicTower = 503,
+
+			GuardUnit = 530,
+			HealerUnit = 531,
+			MageUnit = 532,
+			MeleeUnit = 533,
+			MiningUnit = 534,
+			SpyUnit = 535,
+			WorkerUnit = 536,
+
+			Empty = 560,
+			Building = 561,
+			Unit = 562,
+			Tree = 563,
+			Road = 564,
+			BuildArea = 565,
+			Error = 600
 		}
 		static MapData data = new MapData();
 

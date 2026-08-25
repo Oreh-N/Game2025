@@ -25,4 +25,5 @@ public class TeamData
 	public int ID;
 	//___________________
 	public bool IsDefeated;
+	public bool Ready;
 }

@@ -12,6 +12,7 @@ public class EnemyController : Team
 	private new void Update()
 	{
 		base.Update();
+		data.Ready = true;
 	}
 
 }

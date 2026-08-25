@@ -20,6 +20,7 @@ public class Player : Team
 	private new void Start()
 	{
 		base.Start();
+		data.Ready = true;
 	}
 
 	new void Update()

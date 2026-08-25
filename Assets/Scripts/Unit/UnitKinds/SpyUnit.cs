@@ -6,8 +6,9 @@ public class SpyUnit : UnitSelf<SpyUnit>
 {
 	private new void Awake()
 	{
-		data.Name = "SpyUnit";
 		base.Awake();
+		data.Name = "SpyUnit";
+		data.CellType = MapSpace.Map.CellType.SpyUnit;
 	}
 
 	new void Start()

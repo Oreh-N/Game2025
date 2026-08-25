@@ -1,4 +1,5 @@
 using MapSpace;
+using Palmmedia.ReportGenerator.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,23 +46,23 @@ public class MainController : MonoBehaviour
 	IEnumerator InitializeManagers()
 	{
 		managers.AddComponent<UIManager>();
-		yield return null;
+		yield return new WaitUntil(() => UIManager.Instance.Ready);
 
 		managers.AddComponent<MapController>();
-		yield return null;
+		yield return new WaitUntil(() => MLayers.Ready);
 
 		managers.AddComponent<Player>();
-		yield return null;
+		yield return new WaitUntil(() => Player.Instance.Ready());
 
 		managers.AddComponent<BuildingManager>();
-		yield return null;
+		yield return new WaitUntil(() => BuildingManager.Instance.Ready());
 
 		managers.AddComponent<UnitSelectionManager>();
 		UnitSelectionManager.Instance.GroundMarker = GameObject.FindWithTag("Marker");
 		if (!UnitSelectionManager.Instance.GroundMarker)
 			Debug.Log("Didn't find ground marker for UnitSelectionManager");
 		UnitSelectionManager.Instance.GroundMarker.SetActive(false);
-		yield return null;
+		yield return new WaitUntil(() => UnitSelectionManager.Instance.Ready);
 
 		// NAMES MUST BE DIFFERENT!!! (otherwise rewrites existed controller)
 		_teams = new Team[3] {
@@ -69,13 +70,11 @@ public class MainController : MonoBehaviour
 			CreateEnemy(new Vector2Int(700,800), Color.red, ":3"),
 			CreateEnemy(new Vector2Int(100, 300), Color.cadetBlue, "Alice")
 		};
-		yield return null;
 
 		managers.AddComponent<MapSpace.EnvManager>();   // TEAMS HAVE TO BE CREATED FIRST!
 		yield return new WaitUntil(() => EnvManager.Instance.Ready);
 
 		foreach (var t in _teams) t.CreateBase();
-		yield return null;
 		Ready = true;
 	}
 
@@ -106,11 +105,10 @@ public class MainController : MonoBehaviour
 
 	public int TeamCount() { return _teams.Length; }
 
-	/*/
+	/**/
 	private void OnDrawGizmos()
 	{
-		if (!Instance.Ready) return;
-		Gizmos.color = Color.darkRed;
+		if (!Application.isPlaying || !Ready) return;
 
 		var mapName = MLayers.MapNames.EnvMap;
 		//var size = Chunk.GetSize();
@@ -120,8 +118,41 @@ public class MainController : MonoBehaviour
 			for (int j = 0; j < size.y; j++)
 			{
 				Vector2Int mpos = new Vector2Int(i, j);
-				if (MLayers.GetCellInMap(mapName, mpos) != Map.CellType.Empty)
-				{ Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());}
+				/*/if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.WorkerUnit)
+				{
+					Gizmos.color = Color.blanchedAlmond;
+					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize()); 
+				}
+				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.MainBuild)
+				{
+					Gizmos.color = Color.darkRed;
+					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+				}
+				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.Spawner)
+				{
+					Gizmos.color = Color.blueViolet;
+					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+				}
+				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.Warehouse)
+				{
+					Gizmos.color = Color.deepPink;
+					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+				}
+				if (MLayers.GetTeamlessCellInMap(mapName, mpos) == Map.CellType.BasicTower)
+				{
+					Gizmos.color = Color.greenYellow;
+					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+				}/*/
+
+				// DOESNT WORK
+				int teamId = MLayers.GetCellTeamID(mapName, mpos);
+				if (TeamCount() > teamId)
+				{
+					Team t = GetTeam(teamId);
+					Gizmos.color = t.GetColor();
+					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+				}
+				/**/
 			}
 	}
 	/**/

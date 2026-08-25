@@ -17,6 +17,7 @@ public class UnitSelectionManager : MonoBehaviour
 
 	LayerMask _ground;
 	LayerMask _units;
+	public bool Ready { get; private set; } = false;
 
 
 	private void Awake()
@@ -28,6 +29,7 @@ public class UnitSelectionManager : MonoBehaviour
 
 		_ground = LayerMask.GetMask(PubNames.GroundLayer);
 		_units = LayerMask.GetMask(PubNames.UnitsLayer);
+		Ready = true;
 	}
 
 	private void Update()

@@ -24,12 +24,13 @@ public class UnitMovement : MonoBehaviour
 	{
 		var pos = Map.WorldToMap(transform.position);
 
-		if (!Map.TrySetCell(pos, Map.CellType.Unit, MNames.EnvMap))
+		if (!Map.TrySetCell(pos, GetComponent<Unit>().GetUnitCellID(), MNames.EnvMap))
 		{
 			pos = Map.FindNearestCell(pos, Map.CellType.Empty,
 				(nxtCellPos, targetCellT, mapName, _) => { return Map.GetCellType(nxtCellPos, mapName) == targetCellT; },
 				MNames.EnvMap, (dirs) => dirs);
 			transform.position = Map.MapToWorld(pos);
+			Debug.Log(pos);
 		}
 	}
 
@@ -44,7 +45,7 @@ public class UnitMovement : MonoBehaviour
 		{
 			_stepPos = FindNextStepPos();
 			TurnTo(_stepPos);
-			Maps.TrySetCell(MNames.EnvMap, _stepPos, Map.CellType.Unit);
+			Maps.TrySetCell(MNames.EnvMap, _stepPos, GetComponent<Unit>().GetUnitCellID());
 			Maps.CleanCell(MNames.EnvMap, Map.WorldToMap(transform.position));
 
 			if (Map.IsOutOfMap(_stepPos))

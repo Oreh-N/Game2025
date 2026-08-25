@@ -28,7 +28,10 @@ public class BuildingManager : MonoBehaviour
 	{
 		FindBuildingButtons(data.Buttons);
 		AssignButtons();
+		data.Ready = true;
 	}
+
+	public bool Ready() { return data.Ready; }
 
 	void AssignButtons()
 	{

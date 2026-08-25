@@ -6,8 +6,9 @@ public class WorkerUnit : UnitSelf<WorkerUnit>
 {
 	private new void Awake()
 	{
-		data.Name = "WorkerUnit";
 		base.Awake();
+		data.Name = "WorkerUnit";
+		data.CellType = MapSpace.Map.CellType.WorkerUnit;
 	}
 
 	new void Start()
