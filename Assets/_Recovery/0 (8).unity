@@ -2632,7 +2632,7 @@ GameObject:
   - component: {fileID: 1053805694}
   - component: {fileID: 1053805693}
   m_Layer: 5
-  m_Name: WarehouseButt
+  m_Name: Warehouse0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4725,7 +4725,7 @@ GameObject:
   - component: {fileID: 1723013998}
   - component: {fileID: 1723013997}
   m_Layer: 5
-  m_Name: DefBuildButt
+  m_Name: DefBuild1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5782,7 +5782,7 @@ GameObject:
   - component: {fileID: 2090926028}
   - component: {fileID: 2090926027}
   m_Layer: 5
-  m_Name: SpawnerButt
+  m_Name: Spawner1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -27,14 +27,14 @@ namespace MapSpace
 		public static GameObject CreateUnit(GameObject unitPrefab, Vector3 pos)
 		{
 			return GameObject.Instantiate(unitPrefab, pos,
-			Quaternion.identity, _unitFolder.transform);
+			unitPrefab.transform.rotation, _unitFolder.transform);
 		}
 
 
-		public static GameObject CreateBuilding(GameObject buildingPrefab, Vector3 pos)
+		public static GameObject CreateBuilding(GameObject buildPrefab, Vector3 pos)
 		{
-			return GameObject.Instantiate(buildingPrefab, pos,
-			Quaternion.identity, _buildingFolder.transform);
+			return GameObject.Instantiate(buildPrefab, pos,
+			buildPrefab.transform.rotation, _buildingFolder.transform);
 		}
 	}
 }

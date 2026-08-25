@@ -15,7 +15,7 @@ public class Warehouse : Building, ILootContainer
 		base.Start();
 		//data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.WarehousePanelTag);
 		Data.Name = "Warehouse0";
-		Data.Size = new Vector2Int(6, 6);
+		Data.Size = new Vector2Int(7, 7);
 	}
 
 	private new void Update()

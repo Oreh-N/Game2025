@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MapSpace.MapLayers;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
-using MapSpace.MapLayers;
+using static MapSpace.MapLayers.Maps;
 using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
-using Unity.VisualScripting;
 
 
 namespace MapSpace
@@ -58,6 +59,17 @@ namespace MapSpace
 			return Maps.CellInAllMapsIs(cellT, pos);
 		}
 
+		public static bool SquareAreaInAllMapsIs(Map.CellType cellT, Vector2Int pos, Vector2Int size)
+		{
+			var points = GetSquareAreaPoints(pos, size);
+			foreach (var p in points)
+			{
+				if (IsOutOfMap(p) || !Maps.CellInAllMapsIs(cellT, p)) 
+					return false;
+			}
+			return true;
+		}
+
 		/// <summary>
 		/// Removes all cells of type cellT from the map with name mapName
 		/// </summary>
@@ -74,7 +86,7 @@ namespace MapSpace
 				}
 		}
 
-		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,  
+		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,
 			Maps.MapNames mapName = Maps.MapNames.Invalid, List<CellType> ignoreTypes = null);
 
 		public static MapCoord FindNearestCell(MapCoord startCellPos, CellType targetCellT,
@@ -95,7 +107,7 @@ namespace MapSpace
 			dirs = DirSortFunc(dirs);   // Used for sufficient pathfinding.
 										// Firtly tries dir which closest to target cell and after this
 										// tries others dirs (for example when obsticle on the way)
-			//LogList(dirs);
+										//LogList(dirs);
 			HashSet<MapCoord> visited = new HashSet<MapCoord>() { startCellPos };
 			Queue<MapCoord> queue = new Queue<MapCoord>();
 			queue.Enqueue(startCellPos);
@@ -110,13 +122,13 @@ namespace MapSpace
 
 					if (!IsOutOfMap(nxtCellPos) && visited.Add(nxtCellPos))
 					{
-						if (check(nxtCellPos, targetCellT, mapName, ignoreTypes)) 
+						if (check(nxtCellPos, targetCellT, mapName, ignoreTypes))
 							return nxtCellPos;
 						queue.Enqueue(nxtCellPos);
 					}
 				}
 			}
-			return new MapCoord(MapData.MapSize[0], MapData.MapSize[1]);	// Out of map
+			return new MapCoord(MapData.MapSize[0], MapData.MapSize[1]);    // Out of map
 		}
 
 		#region Debug
@@ -162,22 +174,27 @@ namespace MapSpace
 			}
 		}
 
-
-
-
-		public static void FillMapAreaSquare(MapCoord center, Vector2Int size, CellType filling, Maps.MapNames mapName)
-		{	// all coordinates starts at (0,0), endCellPos can't be negative
+		public static List<MapCoord> GetSquareAreaPoints(MapCoord center, Vector2Int size)
+		{   // all coordinates starts at (0,0), endCellPos can't be negative
 			// as the positioning correctness should be checked beforehand
+			List<MapCoord> points = new List<MapCoord>();
 			var halfSize = size / 2;
 			var startCellPos = center - halfSize; // min corner
 			var endCellPos = center + halfSize;   // max corner
 
 			for (int x = startCellPos.x; x < endCellPos.x; x++)
 				for (int z = startCellPos.y; z < endCellPos.y; z++)
-				{
-					var mapPos = new MapCoord(x, z);
-					Maps.ForceSetCell(mapName, mapPos, filling);
-				}
+				{ points.Add(new MapCoord(x, z)); }
+			return points;
+		}
+
+
+		public static void FillMapAreaSquare(MapCoord center, Vector2Int size, CellType filling, Maps.MapNames mapName)
+		{
+			var points = GetSquareAreaPoints(center, size);
+
+			foreach (var p in points)
+			{ Maps.ForceSetCell(mapName, p, filling); }
 		}
 
 

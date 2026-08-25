@@ -7,6 +7,7 @@ using System.Collections;
 using UnityEngine;
 using MapSpace;
 using System;
+using UnityEngine.UI;
 
 
 public class BuildingManager : MonoBehaviour
@@ -23,10 +24,35 @@ public class BuildingManager : MonoBehaviour
 		{ Instance = this; }
 	}
 
+	private void Start()
+	{
+		FindBuildingButtons(data.Buttons);
+		AssignButtons();
+	}
+
+	void AssignButtons()
+	{
+		foreach (var button in data.Buttons)
+		{
+			var prefab = Prefabs.NameToPrefab(button.name);
+			button.GetComponent<Button>().onClick.AddListener(() => MapController.Instance.SpawnMovableBuild	
+			(prefab, Player.Instance.GetID()));
+		}
+	}
+
+	void FindBuildingButtons(List<GameObject> buttons)
+	{
+		var buttsFolder = GameObject.Find("BuildingButts");
+		var count = buttsFolder.transform.childCount;
+		for (int i = 0; i < count; i++)
+		{
+			var button = buttsFolder.transform.GetChild(i);
+			data.Buttons.Add(button.gameObject);
+		}
+	}
 
 
-
-	# region Interaction with player
+	#region Interaction with player
 	public static void ShowMessage(string m)
 	{
 		if (m == null) return;
@@ -53,7 +79,7 @@ public class BuildingManager : MonoBehaviour
 		else { UIManager.Instance.UpdateWarningPanel("Try to access a null panel"); }
 	}
 
-	# endregion 
+	#endregion
 
 
 
@@ -65,7 +91,7 @@ public class BuildingManager : MonoBehaviour
 		return obj;
 	}
 
-	
+
 
 
 	public static void ColorCurrBuilding(Building b, Color color)
@@ -74,9 +100,9 @@ public class BuildingManager : MonoBehaviour
 		b.ColorBuilding(color);
 	}
 
-	
 
-	# region Data transfering
+
+	#region Data transfering
 	public static void AddBuilding(Building b, int teamID)
 	{
 		if (!MainController.Instance.Ready)
@@ -85,7 +111,7 @@ public class BuildingManager : MonoBehaviour
 		Team t = MainController.Instance.GetTeam(teamID);
 		if (t) t.RegisterBuilding(b);
 		else Debug.Log("Couldn't register the building");
-			
+
 	}
 
 	public static void RemoveBuilding(Building b, int teamID)

@@ -15,7 +15,6 @@ namespace MapSpace
 		public bool Ready { get; private set; } = false;
 
 		bool ChunkUpdateReady = true;
-		bool ChunkRemReady = true;
 
 		public static EnvManager Instance;
 

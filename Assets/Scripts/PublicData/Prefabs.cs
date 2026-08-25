@@ -24,5 +24,15 @@ public class Prefabs
 
 	public static GameObject Tree1 { get; private set; } = Resources.Load<GameObject>($"Prefabs/Environment/Tree1");
 
+
+	public static GameObject NameToPrefab(string name)
+	{
+		if ("DefBuild1" == name) return DefBuildPref;
+		if ("MainBuild" == name) return MainBuildPref;
+		if ("Spawner1" == name) return SpawnPref;
+		if ("Warehouse0" == name) return WareHousePref;
+
+		return null;
+	}
 }
 

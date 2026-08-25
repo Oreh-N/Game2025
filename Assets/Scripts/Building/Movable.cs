@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MapSpace;
 
 public class Movable : MonoBehaviour
 {
@@ -9,6 +10,6 @@ public class Movable : MonoBehaviour
 		if (!MapController.Instance)
 		{ Debug.Log("No map controller instance exist"); return; }
 		Vector3 new_pos = MapController.GetMouseWorldPos();
-		transform.position = MapController.Instance.MapCoordToGrid(new_pos);
+		transform.position = Map.MapToWorld(Map.WorldToMap(new_pos));
 	}
 }

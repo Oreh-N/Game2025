@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class BasicTower : Building
 {
-    float _attackRadius = 10f;
-	Unit _currTarget;
-	float _attackCooldown = 2f;
-	float _cooldown;
-	bool _allowAttack;
-	Projectile _currProjectile;
-	int _damage;
+	//float _attackRadius = 10f;
+	//Unit _currTarget;
+	//float _attackCooldown = 2f;
+	//float _cooldown;
+	//bool _allowAttack;
+	//Projectile _currProjectile;
+	//int _damage;
 
 
 
@@ -18,9 +18,8 @@ public class BasicTower : Building
 	{
 		base.Awake();
 		Data.Name = "Tower0";
-		GetComponent<SphereCollider>().radius = _attackRadius;
-		_damage = 30;
-		Data.Size = new Vector2Int(3, 3);
+		//_damage = 30;
+		Data.Size = new Vector2Int(5, 5);
 
 	}
 
@@ -32,9 +31,9 @@ public class BasicTower : Building
 	// Fill panel part
 	private new void Update()
 	{
-		_cooldown += Time.deltaTime;
-		if (!_allowAttack && _cooldown >= _attackCooldown)
-		{ _allowAttack = true; }
+		//_cooldown += Time.deltaTime;
+		//if (!_allowAttack && _cooldown >= _attackCooldown)
+		//{ _allowAttack = true; }
 
 		//if (_currProjectile._startPos != _currProjectile._endPos)
 		//{ _currProjectile.Move(); }
@@ -45,17 +44,4 @@ public class BasicTower : Building
 		//}
 	}
 
-
-	private void OnTriggerStay(Collider other)
-	{
-		if (other.tag == PubNames.UnitTag && _allowAttack)
-		{
-			_currTarget = other.gameObject.GetComponent<Unit>();
-			Vector3 startPos = transform.position;
-			startPos.y = 7;
-			Vector3 endPos = other.transform.position;
-			_currProjectile = new Projectile(startPos, endPos, _damage);
-			_allowAttack = false;
-		}
-	}
 }

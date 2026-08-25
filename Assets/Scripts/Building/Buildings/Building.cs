@@ -1,4 +1,6 @@
 using MapSpace;
+using MapSpace.MapLayers;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -30,11 +32,17 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	{
 		if (HealthSys.GetHealth() <= 0)
 		{ Destroy(gameObject); }
+		//if (IsOverBuilding()) { }
 		//UpdatePanelInfo();
 		//if (!BuildingManager.TeamIsInteracting(Data.TeamID))
 		//{ Data.NowInteracting = false; }
 	}
 
+	private bool IsOverBuilding()
+	{
+		var mapPos = Map.WorldToMap(MapController.GetMouseWorldPos());
+		return true;
+	}
 
 	public virtual void Construct()
 	{
@@ -42,6 +50,9 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		if (!t) { Debug.Log($"Team {Data.TeamID} doesn't exist!"); return; }
 		Destroy(gameObject.GetComponent<Movable>());
 		ColorBuilding(t.GetColor());
+
+		Map.FillMapAreaSquare(Map.WorldToMap(GetPos()),
+			GetSize(), Map.CellType.Building, Maps.MapNames.EnvMap);
 		Data.IsPlaced = true;
 
 		BuildingManager.AddBuilding(this, Data.TeamID);

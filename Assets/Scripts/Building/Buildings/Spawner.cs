@@ -15,7 +15,7 @@ public class Spawner : Building
 		base.Start();
         // data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.SpawnerPanelTag);
 		Data.Name = "Spawner0";
-		Data.Size = new Vector2Int(6, 6);
+		Data.Size = new Vector2Int(7, 7);
 
 	}
 	private new void Update()

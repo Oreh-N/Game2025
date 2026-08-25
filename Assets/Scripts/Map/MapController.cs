@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using MapSpace;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Color = UnityEngine.Color;
@@ -20,7 +21,6 @@ public class MapController : MonoBehaviour {
 		{ Instance = this; }
 
 		data.CurrBuilding = null;
-		data.MapGrid = FindFirstObjectByType<Grid>();
 		data.Tilemap_ = FindFirstObjectByType<Tilemap>();
 	}
 
@@ -47,19 +47,6 @@ public class MapController : MonoBehaviour {
 	}
 
 
-	/// <summary>
-	/// Maps coordinates to the grid
-	/// </summary>
-	/// <param name="worldPos">Real coordinates (will be transformed to the grid coordinates)</param>
-	/// <returns></returns>
-	public Vector3 MapCoordToGrid(Vector3 worldPos)
-	{
-		Vector3Int cellPos = data.MapGrid.WorldToCell(worldPos);
-		worldPos = data.MapGrid.GetCellCenterWorld(cellPos);
-		return worldPos;
-	}
-
-
 	# region Grid
 	const int _areaPadding = 3;
 	const int _startPadding = 1;
@@ -70,45 +57,17 @@ public class MapController : MonoBehaviour {
 		int teamID = build.GetTeamID();
 		Vector3 center = MainController.Instance.GetTeam(teamID).GetCenter();
 		float radius = MainController.Instance.GetTeam(teamID).GetBuildingRadius();
-		if (Vector3.Distance(build.transform.position, center) > radius)
+		var mapPos = Map.WorldToMap(build.transform.position);
+		if (Vector3.Distance(build.transform.position, center) > radius ||
+			!Map.SquareAreaInAllMapsIs(Map.CellType.Empty, mapPos, build.GetSize()))
 		{ return false; }
 
-		//Vector3Int startInt = GetAreaStartPos(build);
-		//Vector2 size = build.GetSize();
-		//for (int x = 0; x < size.x + _areaPadding; x++)
-		//{
-		//	for (int y = 0; y < size.y + _areaPadding; y++)
-		//	{
-		//		var currPos = new Vector3Int(startInt.x + x, y: 0, startInt.z + y);
-		//		if (!Map.CellIs(Map.CellType.BuildArea, Map.WorldToMap(currPos),
-		//			MNames.BusyTerritory))
-		//		{ return false; }
-		//	}
-		//}
 		return true;
 	}
 
 
-	private Vector3Int GetAreaStartPos(Building build)
-	{
-		Vector2 size = build.GetSize();
-		Vector2Int sizeInt = new Vector2Int((int)size.x, (int)size.y);
-		var size3 = new Vector3Int(sizeInt.x, 0, sizeInt.y);
-		var center = build.transform.position;
-		var start = new Vector3(center.x - (size3.x / 2) - _startPadding, center.y,
-								center.z - (size3.z / 2) - _startPadding);
-		return new Vector3Int(Mathf.RoundToInt(start.x),
-							Mathf.RoundToInt(start.y),
-							Mathf.RoundToInt(start.z));
-	}
 
-	public void SpawnPlayerMovableBuild(Building build)
-	{
-		SpawnMovableBuild(build, Player.Instance.GetID());
-		Debug.Log($"Recieve: {build.GetSize()}");
-	}
-
-	public void SpawnMovableBuild(Building build, int teamID)
+	public void SpawnMovableBuild(GameObject build, int teamID)
 	{
 		if (data.CurrBuilding && !data.CurrBuilding.IsPlaced())
 		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
@@ -117,9 +76,11 @@ public class MapController : MonoBehaviour {
 		//{ return; }
 		if (data.CurrBuilding != null) 
 			RemoveCurrBuild();
-		var b = SpawnBuilding(build, teamID, MapCoordToGrid(GetMouseWorldPos()));
+		var b = SpawnBuilding(build, teamID, GetMouseWorldPos());
 		b.AddComponent<Movable>();
-		data.CurrBuilding = b;
+		Building building = b.GetComponent<Building>();
+		if (building != null)
+			data.CurrBuilding = building;
 		data.AllowBuilding = true;
 	}
 
@@ -132,9 +93,9 @@ public class MapController : MonoBehaviour {
 		}
 	}
 
-	private Building SpawnBuilding(Building build, int teamID, Vector3 pos)
+	private GameObject SpawnBuilding(GameObject buildPrefab, int teamID, Vector3 pos)
 	{
-		var obj = Instantiate(build, pos, build.transform.rotation);
+		var obj = Creator.CreateBuilding(buildPrefab, pos);
 		data.CurrBuilding = obj.GetComponent<Building>();
 		((ITeamMember)data.CurrBuilding).SetTeam(teamID);
 
@@ -149,8 +110,8 @@ public class MapController : MonoBehaviour {
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-		if (Physics.Raycast(ray, out RaycastHit hit))
-			return hit.point;
+		if (MainController.groundPlane.Raycast(ray, out float distance))
+		{ return ray.GetPoint(distance); }
 		return Vector3.zero;
 	}
 
@@ -159,13 +120,10 @@ public class MapController : MonoBehaviour {
 		if (!t || !b) return;
 		b.SetTeam(t.GetID());
 		b.Construct();
-		Map.FillMapAreaSquare(Map.WorldToMap(b.GetPos()),
-			b.GetSize(), Map.CellType.Building, MNames.EnvMap);
 		data.CurrBuilding = null;
 		data.AllowBuilding = false;
 	}
 
-	// NEXT STEP: fix representation on map
 
 
 	private void CheckPlace(Building b)

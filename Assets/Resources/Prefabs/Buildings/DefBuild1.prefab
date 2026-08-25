@@ -66,14 +66,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 58a559ce7a847c8439403bcf54f475ac, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5752852630985952830}
+      addedObject: {fileID: -7757188903580701682}
   m_SourcePrefab: {fileID: 100100000, guid: 58a559ce7a847c8439403bcf54f475ac, type: 3}
 --- !u!1 &3739106358085561623 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 58a559ce7a847c8439403bcf54f475ac, type: 3}
   m_PrefabInstance: {fileID: 4549357719031976006}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-5752852630985952830
+--- !u!114 &-7757188903580701682
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,6 +82,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3739106358085561623}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f30e4c67e9fa09f42bbce252f0065a43, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dceaa8e24e02b042a1d0e78356e5012, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Movable
+  m_EditorClassIdentifier: Assembly-CSharp::BasicTower
