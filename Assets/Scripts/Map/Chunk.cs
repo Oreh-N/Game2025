@@ -1,11 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace MapSpace
 {
-	using MNames = MapLayers.Maps.MapNames;
+	using MNames = Map.MapNames;
 
 	public class Chunk
 	{
@@ -83,7 +81,7 @@ namespace MapSpace
 						data.MapPos.y * ChunkData.Size.y + y);
 
 					if (Map.IsOutOfMap(cell_pos) ||
-						Map.GetCellType(cell_pos, MNames.EnvMap) != ChunkData.TreeType)
+						Map.GetCellType(MNames.EnvMap, cell_pos) != ChunkData.TreeType)
 						continue;
 
 					var tree = Creator.CreateTree(Map.MapToWorld(cell_pos));

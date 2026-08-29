@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using Rnd = UnityEngine.Random;
 
 
 namespace MapSpace
 {
-	using MNames = MapLayers.Maps.MapNames;
+	using MNames = Map.MapNames;
 
 	public static class ForestGenerator
 	{
@@ -31,7 +26,7 @@ namespace MapSpace
 					var pos = new Vector2Int(x, z);
 					if (Rnd.Range(0, 100) < treeGenFrequency && 
 						Map.CellInAllMapsIs(Map.CellType.Empty, pos))
-					{ Map.TrySetCell(pos, Map.CellType.Tree, MNames.EnvMap); }
+					{ Map.TrySetCell(MNames.EnvMap, pos, Map.CellType.Tree); }
 				}
 			}
 			yield return null;

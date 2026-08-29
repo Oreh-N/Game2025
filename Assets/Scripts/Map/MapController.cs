@@ -1,10 +1,8 @@
 ﻿using MapSpace;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using Color = UnityEngine.Color;
 using Map = MapSpace.Map;
-using MNames = MapSpace.MapLayers.Maps.MapNames;
 
 
 

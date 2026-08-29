@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 
 
 public class Prefabs
@@ -24,6 +23,9 @@ public class Prefabs
 
 	public static GameObject Tree1 { get; private set; } = Resources.Load<GameObject>($"Prefabs/Environment/Tree1");
 
+	public static Texture2D DefaultCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/DefaultCursor0.png");
+	public static Texture2D InteractCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/InteractCursor0.png");
+	public static Texture2D DeclineCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/DeclineCursor.png");
 
 	public static GameObject NameToPrefab(string name)
 	{

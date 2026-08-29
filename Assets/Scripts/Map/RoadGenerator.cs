@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 namespace MapSpace
 {
-	using MNames = MapLayers.Maps.MapNames;
+	using MNames = Map.MapNames;
 
 
 	/// <summary>
@@ -106,7 +102,7 @@ namespace MapSpace
 		{
 			if (Map.IsOutOfMap(coord)) return;
 
-			Map.TrySetCell(coord, Map.CellType.Road, MNames.EnvMap);
+			Map.TrySetCell(MNames.EnvMap, coord, Map.CellType.Road);
 		}
 	}
 }

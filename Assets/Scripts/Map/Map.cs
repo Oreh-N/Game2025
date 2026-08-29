@@ -1,10 +1,8 @@
-﻿using MapSpace.MapLayers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Unity.VisualScripting;
 using UnityEngine;
-using static MapSpace.MapLayers.Maps;
+using static MapSpace.Map;
 using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
 
@@ -42,48 +40,203 @@ namespace MapSpace
 			BuildArea = 565,
 			Error = 600
 		}
+		public enum MapNames { EnvMap, Invalid = 505 }   // Corresponds to _Maps to access them correctly
+
 		static MapData data = new MapData();
 
 
-		public static bool TrySetCell(MapCoord coord, CellType type, Maps.MapNames mapName)
+		static Map()
 		{
-			if (IsOutOfMap(coord) || Maps.GetCellInMap(mapName, coord) != CellType.Empty)
-				return false;
+			for (int i = 0; i < MapData.Layers.Length; i++)
+			{
+				MapData.Layers[i] = new CellType[MapData.MapSize[0], MapData.MapSize[1]];
+				ResetMap((MapNames)i);
+			}
+			MapData.Ready = true;
+		}
 
-			Maps.TrySetCell(mapName, coord, type);
+
+		/// <summary>
+		/// Removes all cells of type cellT from the map with name mapName
+		/// </summary>
+		/// <param name="cells"></param>
+		/// <param name="mapName"></param>
+		public static void RemoveCellTypeFromMap(MapNames mapName, List<CellType> cells)
+		{
+			for (int x = 0; x < MapData.MapSize[0]; x++)
+				for (int y = 0; y < MapData.MapSize[1]; y++)
+				{
+					var cellPos = new MapCoord(x, y);
+					if (cells.Contains(GetCellType(mapName, cellPos)))
+						ForceSetCell(mapName, cellPos, CellType.Empty);
+				}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mapName"></param>
+		/// <param name="pos"></param>
+		/// <returns>Returns team's ID or higher number for basic cells (starting from 4)</returns>
+		public static int GetCellTeamID(MapNames mapName, MapCoord pos)
+		{
+			//Debug.Log($"Type: {_Maps[(int)mapName][pos.x, pos.y]}\tTypeNum: {(int)(_Maps[(int)mapName][pos.x, pos.y])}\tTID: {GetCellTeamNum(_Maps[(int)mapName][pos.x, pos.y])}");
+			return GetCellTeamNum(MapData.Layers[(int)mapName][pos.x, pos.y]);
+		}
+
+		public static bool IsBuilding(MapCoord pos)
+		{
+			int num = (int)GetBasicCellInMap(MapNames.EnvMap, pos);
+			Debug.Log($"Cell num (building check): {num}");
+			if (500 <= num && num < 530) return true;
+			return false;
+		}
+		public static bool IsUnit(MapCoord pos)
+		{
+			int num = (int)GetBasicCellInMap(MapNames.EnvMap, pos);
+			Debug.Log($"Cell num (unit check): {num}");
+
+			if (530 <= num && num < 560) return true;
+			return false;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cellT"></param>
+		/// <returns>Return only number without hundreds (team ID)</returns>
+		static int GetTeamlessCellNum(CellType cellT) { return (int)(cellT) % 100; }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cellT"></param>
+		/// <returns>Returns only hundreds (team ID)</returns>
+		static int GetCellTeamNum(CellType cellT) { return (int)(cellT) / 100; }
+		/// <summary>
+		/// Takes Already existing basic cell type and replaces its hundreds with correcponding teamID
+		/// </summary>
+		/// <param name="objT"></param>
+		/// <param name="teamID"></param>
+		/// <returns></returns>
+		public static CellType CombineTeamCell(CellType objT, int teamID)
+		{ return (CellType)(GetTeamlessCellNum(objT) + teamID * 100); }
+
+		public static void ResetMap(MapNames mapName)
+		{
+			for (int x = 0; x < MapData.MapSize[0]; x++)
+				for (int y = 0; y < MapData.MapSize[1]; y++)
+				{ MapData.Layers[(int)mapName][x, y] = Map.CellType.Empty; }
+		}
+
+		public static void CleanCell(MapNames mapName, MapCoord pos)
+		{ MapData.Layers[(int)mapName][pos.x, pos.y] = CellType.Empty; }
+
+		/// <summary>
+		/// Checks if cell on position pos have type cellT on all map layers
+		/// </summary>
+		/// <param name="goalCellT"></param>
+		/// <param name="pos"></param>
+		/// <returns>Returns false if there any layer have not cell type cellT on position pos</returns>
+		public static bool CellInAllMapsIs(CellType goalCellT, MapCoord pos, List<CellType> ignoreTypes = null)
+		{
+			bool Ignore(CellType cellT)
+			{
+				foreach (var ignoreT in ignoreTypes)
+				{ if (cellT == ignoreT) return true; }
+				return false;
+			}
+			if (!IsOutOfMap(pos))
+				for (int i = 0; i < MapData.Layers.Length; i++)
+				{
+					var currMapCellT = MapData.Layers[i][pos.x, pos.y];
+
+					if (currMapCellT != goalCellT)
+					{
+						if (ignoreTypes != null && Ignore(currMapCellT))
+						{ continue; }
+						return false;
+					}
+				}
 			return true;
 		}
 
-		public static bool CellIs(CellType type, int x, int z, Maps.MapNames mapName)
+
+
+		public static CellType GetCellType(MapNames name, MapCoord pos)
+		{ return !IsOutOfMap(pos) ? MapData.Layers[(int)name][pos.x, pos.y] : CellType.Error; }
+
+		/// <summary>
+		/// No matter in what team current cell are the method will return original 
+		/// number of corresponding object (basic cells start from 500)
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		public static CellType GetBasicCellInMap(MapNames name, MapCoord pos)
+		{
+			int teamlessCell = ((int)MapData.Layers[(int)name][pos.x, pos.y]) % 100 + 500; // basic cells use 5 hundreds
+			return (CellType)teamlessCell;
+		}
+
+		public static bool TrySetCell(MapNames name, MapCoord pos, CellType newCellT)
+		{
+			if (IsOutOfMap(pos) || GetCellType(name, pos) != CellType.Empty)
+				return false;
+			if (MapData.Layers[(int)name][pos.x, pos.y] == CellType.Empty)
+			{
+				MapData.Layers[(int)name][pos.x, pos.y] = newCellT;
+				return true;
+			}
+			return false;
+		}
+
+		public static bool TrySetTeamCell(MapNames name, MapCoord pos, CellType newCellT, int teamID)
+		{
+			if (MapData.Layers[(int)name][pos.x, pos.y] == CellType.Empty)
+			{
+				MapData.Layers[(int)name][pos.x, pos.y] = CombineTeamCell(newCellT, teamID);
+				return true;
+			}
+			return false;
+		}
+
+		public static void ForceSetCell(MapNames name, MapCoord pos, CellType newCellT)
+		{ MapData.Layers[(int)name][pos.x, pos.y] = newCellT; }
+
+		public static void ForceSetTeamCell(MapNames name, MapCoord pos, CellType newCellT, int teamID)
+		{ MapData.Layers[(int)name][pos.x, pos.y] = CombineTeamCell(newCellT, teamID); }
+
+		public static bool Ready() { return MapData.Ready; }
+
+
+
+
+
+
+
+
+		public static bool CellIs(CellType type, int x, int z, MapNames mapName)
 		{
 			if (IsOutOfMap(new MapCoord(x, z))) return false;
-			return Maps.GetCellInMap(mapName, new Vector2Int(x, z)) == type;
+			return GetCellType(mapName, new MapCoord(x, z)) == type;
 		}
 
-		public static bool CellInAllMapsIs(Map.CellType cellT, Vector2Int pos)
-		{
-			if (IsOutOfMap(pos)) return false;
-			return Maps.CellInAllMapsIs(cellT, pos);
-		}
-
-		public static bool SquareAreaInAllMapsIs(Map.CellType cellT, Vector2Int pos, Vector2Int size)
+		public static bool SquareAreaInAllMapsIs(CellType cellT, MapCoord pos, MapCoord size)
 		{
 			var points = GetSquareAreaPoints(pos, size);
 			foreach (var p in points)
 			{
-				if (IsOutOfMap(p) || !Maps.CellInAllMapsIs(cellT, p))
+				if (IsOutOfMap(p) || !CellInAllMapsIs(cellT, p))
 					return false;
 			}
 			return true;
 		}
 
-
-
 		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,
-			Maps.MapNames mapName = Maps.MapNames.Invalid, List<CellType> ignoreTypes = null);
+			MapNames mapName = MapNames.Invalid, List<CellType> ignoreTypes = null);
 
 		public static MapCoord FindNearestCell(MapCoord startCellPos, CellType targetCellT,
-			 CheckIfDesiredCell check, Maps.MapNames mapName, Func<List<MapCoord>, List<MapCoord>> DirSortFunc,
+			 CheckIfDesiredCell check, MapNames mapName, Func<List<MapCoord>, List<MapCoord>> DirSortFunc,
 			 List<CellType> ignoreTypes = null)
 		{
 			var dirs = new List<MapCoord>() {
@@ -144,7 +297,7 @@ namespace MapSpace
 				int dy = currCell.y - centerCoords.y;
 				if (dx * dx + dy * dy > radius * radius) continue;
 
-				if (GetCellInMap(mapName, currCell) != CellType.Empty) 
+				if (GetCellType(mapName, currCell) != CellType.Empty)
 					return currCell;
 
 				AddNearbyCellsToQueue(ref queue, currCell, visited);
@@ -165,10 +318,6 @@ namespace MapSpace
 		}
 		#endregion
 
-		public static CellType GetCellType(MapCoord coord, Maps.MapNames mapName)
-		{
-			return !IsOutOfMap(coord) ? Maps.GetCellInMap(mapName, coord) : CellType.Error;
-		}
 
 		/// <summary>
 		/// Fill the area on map (circular filling)
@@ -176,9 +325,9 @@ namespace MapSpace
 		/// <param name="centerCoords"> - coordinates of the center of the area that need to be filled</param>
 		/// <param name="radius"> - translate world radius (radius, 0, 0) to map map radius (mapRadius, 0) with WorldToMap method</param>
 		/// <param name="filling"> - cell type which will fill the area</param>
-		public static void FillMapAreaCircle(MapCoord centerCoords, int radius, CellType filling, Maps.MapNames mapName)
+		public static void FillMapAreaCircle(MapCoord centerCoords, int radius, CellType filling, MapNames mapName)
 		{
-			Maps.ForceSetCell(mapName, centerCoords, filling);
+			ForceSetCell(mapName, centerCoords, filling);
 			Queue<MapCoord> toFill = new Queue<MapCoord>();
 			AddNearbyCellsToQueue(ref toFill, centerCoords);
 
@@ -189,7 +338,7 @@ namespace MapSpace
 				int dy = currCell.y - centerCoords.y;
 				if (dx * dx + dy * dy > radius * radius) continue;
 
-				if (!TrySetCell(currCell, filling, mapName))
+				if (!TrySetCell(mapName, currCell, filling))
 					continue;
 				AddNearbyCellsToQueue(ref toFill, currCell);
 			}
@@ -210,15 +359,13 @@ namespace MapSpace
 		}
 
 
-		public static void FillMapAreaSquare(MapCoord center, Vector2Int size, CellType filling, Maps.MapNames mapName)
+		public static void FillMapAreaSquare(MapCoord center, Vector2Int size, CellType filling, MapNames mapName)
 		{
 			var points = GetSquareAreaPoints(center, size);
 
 			foreach (var p in points)
-			{ Maps.ForceSetCell(mapName, p, filling); }
+			{ ForceSetCell(mapName, p, filling); }
 		}
-
-
 
 
 		private static void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords, List<MapCoord> visited = null)

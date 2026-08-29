@@ -1,6 +1,4 @@
 using MapSpace;
-using MapSpace.MapLayers;
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -51,7 +49,7 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		ColorBuilding(t.GetColor());
 
 		Map.FillMapAreaSquare(Map.WorldToMap(GetPos()),
-			GetSize(), Maps.CombineTeamCell(GetCellID(), GetTeamID()) , Maps.MapNames.EnvMap);
+			GetSize(), Map.CombineTeamCell(GetCellID(), GetTeamID()) , Map.MapNames.EnvMap);
 		Data.IsPlaced = true;
 
 		BuildingManager.AddBuilding(this, Data.TeamID);

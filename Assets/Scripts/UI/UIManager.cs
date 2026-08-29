@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 /// <summary>
@@ -20,12 +18,22 @@ public class UIManager : MonoBehaviour
 		else
 		{ Instance = this; }
 
+		FindAllPanels();
+		data.DefaultCursor = Prefabs.DefaultCursor;
+		data.DeclineCursor = Prefabs.DeclineCursor;
+	}
 
-		data.MoneyPanel = GameObject.FindGameObjectWithTag(PubNames.MoneyPanelTag);
-		data.WarningPanel = GameObject.FindGameObjectWithTag(PubNames.WarningPanelTag);
-		data.WoodPanel = GameObject.FindGameObjectWithTag(PubNames.WoodPanelTag);
-		data.DefaultCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/DefaultCursor0.png");
-		data.DeclineCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/DeclineCursor.png");
+	void FindAllPanels()
+	{
+		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.MoneyPanelTag));
+		data.MoneyPanel = data.AllPanels[0];
+		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.WarningPanelTag));
+		data.WarningPanel = data.AllPanels[1];
+		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.WoodPanelTag));
+		data.WoodPanel = data.AllPanels[2];
+		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.UnitPanelTag));
+		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.MainBuildingPanelTag));
+		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.WarehousePanelTag));
 	}
 
 	private void Start()
@@ -35,6 +43,15 @@ public class UIManager : MonoBehaviour
 		else
 		{ Debug.Log("Warning panel not found!"); }
 		Ready = true;
+	}
+
+	private void Update()
+	{
+		if (!MainController.Instance.Ready) return;
+		if (!data.FollowedTeam) data.FollowedTeam = Player.Instance;
+		
+
+
 	}
 
 
@@ -49,6 +66,15 @@ public class UIManager : MonoBehaviour
 	{
 		foreach (GameObject panel in data.AllPanels)
 		{ panel.SetActive(false); }
+	}
+
+	public void UpdatePanel(int panelID, string newText)
+	{
+		var panel = GetPanel(panelID);
+		if (panel == null)
+		{ Debug.Log("Warning panel is null"); return; }
+		panel.SetActive(true);
+		panel.GetComponent<Text>().text = newText;
 	}
 
 	public void UpdateWarningPanel(string warning)
@@ -106,7 +132,7 @@ public class UIManager : MonoBehaviour
 	{
 		foreach (var panel in data.AllPanels)
 		{
-			if (panel.tag == tag)
+			if (panel && panel.tag == tag)
 			{ return panel; }
 		}
 		return null;

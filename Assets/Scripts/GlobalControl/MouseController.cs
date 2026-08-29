@@ -1,7 +1,5 @@
 ﻿using MapSpace;
-using System;
 using UnityEngine;
-using Ms = MapSpace.MapLayers.Maps;
 
 public class MouseController : MonoBehaviour
 {
@@ -56,19 +54,19 @@ public class MouseController : MonoBehaviour
 	private Component GetObjOnPos(Vector3 pos)
 	{
 		var mapPos = Map.WorldToMap(pos);
-		if (Map.GetCellType(mapPos, Ms.MapNames.EnvMap) == Map.CellType.Empty)
+		if (Map.GetCellType(Map.MapNames.EnvMap, mapPos) == Map.CellType.Empty)
 		{
-			mapPos = Map.FindNearestCell(mapPos, 4, Ms.MapNames.EnvMap);
-			if (Map.GetCellType(mapPos, Ms.MapNames.EnvMap) == Map.CellType.Empty)
+			mapPos = Map.FindNearestCell(mapPos, 4, Map.MapNames.EnvMap);
+			if (Map.GetCellType(Map.MapNames.EnvMap, mapPos) == Map.CellType.Empty)
 			{ return null; }
 		}
-		var cellT = Ms.GetBasicCellInMap(Ms.MapNames.EnvMap, mapPos);
-		int teamID = Ms.GetCellTeamID(Ms.MapNames.EnvMap, mapPos);
+		var cellT = Map.GetBasicCellInMap(Map.MapNames.EnvMap, mapPos);
+		int teamID = Map.GetCellTeamID(Map.MapNames.EnvMap, mapPos);
 		Debug.Log($"We are in the {teamID} team");
 		var team = MainController.Instance.GetTeam(teamID);
-		if (Ms.IsBuilding(mapPos)) 
+		if (Map.IsBuilding(mapPos)) 
 			return team.GetClosestTeamBuild(pos);
-		if (Ms.IsUnit(mapPos))
+		if (Map.IsUnit(mapPos))
 			return team.GetClosestTeamUnit(pos);
 		Debug.Log("Didn't find anything");
 		return null;

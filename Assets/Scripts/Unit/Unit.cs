@@ -22,11 +22,13 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		data.Health = 100;
 		//GetComponent<Renderer>().material.color = Team_.TeamColor;
 		UnitSelectionManager.Instance.AllUnits.Add(gameObject);
-		data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
 	}
 
 	public void Update()
 	{
+		if (!MainController.Instance.Ready) return;
+		if (!data.Panel) data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
+
 		if (IsOutOfMap(transform.position) || data.Health <= 0)
 		{
 			Destroy(GetComponent<Unit>());

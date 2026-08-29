@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MapSpace
 {
-	using MNames = MapLayers.Maps.MapNames;
+	using MNames = Map.MapNames;
 
 
 	// Environment manager
@@ -58,7 +58,7 @@ namespace MapSpace
 			SignBuildingArea();
 			RoadGenerator.GenRoadsBetweenAllTeams(new Vector2Int(MapData.MapSize[1], MapData.MapSize[0]));
 			yield return StartCoroutine(ForestGenerator.GenVirtForest());
-			MapSpace.MapLayers.Maps.RemoveCellTypeFromMap(MNames.EnvMap, 
+			Map.RemoveCellTypeFromMap(MNames.EnvMap, 
 				new List<Map.CellType>() { Map.CellType.Road, Map.CellType.BuildArea });
 			Ready = true;
 		}

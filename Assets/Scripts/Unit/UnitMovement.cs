@@ -1,12 +1,7 @@
-using MapSpace.MapLayers;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 using Map = MapSpace.Map;
-using MNames = MapSpace.MapLayers.Maps.MapNames;
+using MNames = MapSpace.Map.MapNames;
 
 
 [RequireComponent(typeof(Unit))]
@@ -27,7 +22,7 @@ public class UnitMovement : MonoBehaviour
 		if (!TrySetUnitOnMap(pos))
 		{
 			pos = Map.FindNearestCell(pos, Map.CellType.Empty,
-				(nxtCellPos, targetCellT, mapName, _) => { return Map.GetCellType(nxtCellPos, mapName) == targetCellT; },
+				(nxtCellPos, targetCellT, mapName, _) => { return Map.GetCellType(mapName, nxtCellPos) == targetCellT; },
 				MNames.EnvMap, (dirs) => dirs);
 			transform.position = Map.MapToWorld(pos);
 			Debug.Log(pos);
@@ -46,7 +41,7 @@ public class UnitMovement : MonoBehaviour
 			_stepPos = FindNextStepPos();
 			TurnTo(_stepPos);
 			TrySetUnitOnMap(_stepPos);
-			Maps.CleanCell(MNames.EnvMap, Map.WorldToMap(transform.position));
+			Map.CleanCell(MNames.EnvMap, Map.WorldToMap(transform.position));
 
 			if (Map.IsOutOfMap(_stepPos))
 			{
@@ -65,7 +60,7 @@ public class UnitMovement : MonoBehaviour
 	private bool TrySetUnitOnMap(Vector2Int mapPos)
 	{
 		var unit = GetComponent<Unit>();
-		if (Maps.TrySetTeamCell(MNames.EnvMap, mapPos, unit.GetUnitCellID(), unit.GetTeamID())) 
+		if (Map.TrySetTeamCell(MNames.EnvMap, mapPos, unit.GetUnitCellID(), unit.GetTeamID())) 
 			return true;
 		return false;
 	}
@@ -100,7 +95,7 @@ public class UnitMovement : MonoBehaviour
 		}
 
 		return Map.FindNearestCell(Map.WorldToMap(transform.position), Map.CellType.Empty,
-			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Maps.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); },
+			(nxtCellPos, targetCellT, _, ignoreTypes) => { return Map.CellInAllMapsIs(targetCellT, nxtCellPos, ignoreTypes); },
 			MNames.Invalid, DirHeuristicSort);
 	}
 
@@ -132,7 +127,7 @@ public class UnitMovement : MonoBehaviour
 
 	private bool CellIsEmpty(Vector2Int pos)
 	{
-		return Maps.CellInAllMapsIs(Map.CellType.Empty, pos);
+		return Map.CellInAllMapsIs(Map.CellType.Empty, pos);
 	}
 
 	private void FindTargetPosition()
