@@ -56,24 +56,21 @@ public class MouseController : MonoBehaviour
 	private Component GetObjOnPos(Vector3 pos)
 	{
 		var mapPos = Map.WorldToMap(pos);
+		if (Map.GetCellType(mapPos, Ms.MapNames.EnvMap) == Map.CellType.Empty)
+		{
+			mapPos = Map.FindNearestCell(mapPos, 4, Ms.MapNames.EnvMap);
+			if (Map.GetCellType(mapPos, Ms.MapNames.EnvMap) == Map.CellType.Empty)
+			{ return null; }
+		}
 		var cellT = Ms.GetBasicCellInMap(Ms.MapNames.EnvMap, mapPos);
 		int teamID = Ms.GetCellTeamID(Ms.MapNames.EnvMap, mapPos);
 		Debug.Log($"We are in the {teamID} team");
-		if (MainController.Instance.TeamCount() < teamID) return GetBasicObj(cellT);
 		var team = MainController.Instance.GetTeam(teamID);
 		if (Ms.IsBuilding(mapPos)) 
 			return team.GetClosestTeamBuild(pos);
 		if (Ms.IsUnit(mapPos))
 			return team.GetClosestTeamUnit(pos);
 		Debug.Log("Didn't find anything");
-		return null;
-	}
-
-	//It doesn't add Main building at spawn to the team lists
-
-	private Component GetBasicObj(Map.CellType cellT)
-	{
-		Debug.Log($"Basic {cellT}");
 		return null;
 	}
 }

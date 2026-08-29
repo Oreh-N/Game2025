@@ -71,13 +71,13 @@ namespace MapSpace
 			var points = GetSquareAreaPoints(pos, size);
 			foreach (var p in points)
 			{
-				if (IsOutOfMap(p) || !Maps.CellInAllMapsIs(cellT, p)) 
+				if (IsOutOfMap(p) || !Maps.CellInAllMapsIs(cellT, p))
 					return false;
 			}
 			return true;
 		}
 
-		
+
 
 		public delegate bool CheckIfDesiredCell(MapCoord nxtCellPos, CellType targetCellT,
 			Maps.MapNames mapName = Maps.MapNames.Invalid, List<CellType> ignoreTypes = null);
@@ -122,6 +122,34 @@ namespace MapSpace
 				}
 			}
 			return new MapCoord(MapData.MapSize[0], MapData.MapSize[1]);    // Out of map
+		}
+
+		/// <summary>
+		/// Looks for nearest non-empty cell in the specific radius
+		/// </summary>
+		/// <param name="centerCoords"></param>
+		/// <param name="radius"></param>
+		/// <returns></returns>
+		public static MapCoord FindNearestCell(MapCoord centerCoords, int radius, MapNames mapName)
+		{
+			Queue<MapCoord> queue = new Queue<MapCoord>();
+			List<MapCoord> visited = new List<MapCoord>();
+			AddNearbyCellsToQueue(ref queue, centerCoords);
+
+			while (queue.Count > 0)
+			{
+				var currCell = queue.Dequeue();
+				visited.Add(currCell);
+				int dx = currCell.x - centerCoords.x;
+				int dy = currCell.y - centerCoords.y;
+				if (dx * dx + dy * dy > radius * radius) continue;
+
+				if (GetCellInMap(mapName, currCell) != CellType.Empty) 
+					return currCell;
+
+				AddNearbyCellsToQueue(ref queue, currCell, visited);
+			}
+			return centerCoords;
 		}
 
 		#region Debug
@@ -193,7 +221,7 @@ namespace MapSpace
 
 
 
-		private static void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords)
+		private static void AddNearbyCellsToQueue(ref Queue<MapCoord> queue, MapCoord currCoords, List<MapCoord> visited = null)
 		{
 			List<int> range = new List<int>() { -1, 0, 1 };
 			foreach (int i in range)
@@ -202,7 +230,7 @@ namespace MapSpace
 				{
 					if (i == 0 && j == 0) continue;
 					MapCoord newCoords = new MapCoord(currCoords.x + i, currCoords.y + j);
-					if (IsOutOfMap(newCoords)) continue;
+					if (IsOutOfMap(newCoords) || (visited != null && visited.Contains(newCoords))) continue;
 					queue.Enqueue(newCoords);
 				}
 			}
