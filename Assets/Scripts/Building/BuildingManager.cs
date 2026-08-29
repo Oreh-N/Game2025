@@ -108,9 +108,6 @@ public class BuildingManager : MonoBehaviour
 	#region Data transfering
 	public static void AddBuilding(Building b, int teamID)
 	{
-		if (!MainController.Instance.Ready)
-			return;
-
 		Team t = MainController.Instance.GetTeam(teamID);
 		if (t) t.RegisterBuilding(b);
 		else Debug.Log("Couldn't register the building");

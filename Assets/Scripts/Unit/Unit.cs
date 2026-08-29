@@ -38,6 +38,11 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		{ UpdatePanelInfo(); }
 	}
 
+	public virtual void Setup(int teamId) 
+	{
+		SetTeam(teamId); 
+		UnitManager.RegisterUnit(this);
+	}
 
 
 	public virtual void MouseDownAct()

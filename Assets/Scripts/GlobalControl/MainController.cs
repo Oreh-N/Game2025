@@ -119,33 +119,34 @@ public class MainController : MonoBehaviour
 	//		for (int j = 0; j < size.y; j++)
 	//		{
 	//			Vector2Int mpos = new Vector2Int(i, j);
-	//			/**/if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.WorkerUnit)
+	//			/*/
+	//			var basicCell = MLayers.GetBasicCellInMap(mapName, mpos);
+	//			if (basicCell == Map.CellType.WorkerUnit)
 	//			{
 	//				Gizmos.color = Color.blanchedAlmond;
-	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize()); 
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
 	//			}
-	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.MainBuild)
+	//			if (basicCell == Map.CellType.MainBuild)
 	//			{
 	//				Gizmos.color = Color.darkRed;
 	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
 	//			}
-	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.Spawner)
+	//			if (basicCell == Map.CellType.Spawner)
 	//			{
 	//				Gizmos.color = Color.blueViolet;
 	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
 	//			}
-	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.Warehouse)
+	//			if (basicCell == Map.CellType.Warehouse)
 	//			{
 	//				Gizmos.color = Color.deepPink;
 	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
 	//			}
-	//			if (MLayers.GetBasicCellInMap(mapName, mpos) == Map.CellType.BasicTower)
+	//			if (basicCell == Map.CellType.BasicTower)
 	//			{
 	//				Gizmos.color = Color.greenYellow;
 	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
 	//			}/*/
 
-	//			// DOESNT WORK
 	//			if (MLayers.GetCellInMap(mapName, mpos) != Map.CellType.Empty)
 	//			{
 	//				int teamId = MLayers.GetCellTeamID(mapName, mpos);

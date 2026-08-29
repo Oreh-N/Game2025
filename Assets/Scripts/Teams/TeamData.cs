@@ -15,7 +15,7 @@ public class TeamData
 	//__________________
 	// Members/Buildings
 	public List<Building> Buildings = new List<Building>();
-	public List<Unit> Members = new List<Unit>();
+	public List<Unit> Units = new List<Unit>();
 	//___________________
 	// Team identifier
 	public Vector3 BaseCenter = new Vector3(0,0,0);

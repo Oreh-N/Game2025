@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using static UnityEditor.PlayerSettings;
 
 
@@ -121,10 +122,10 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		{ 
 			var unit = Creator.CreateUnit(Prefabs.WorkerPref, 
 				data.BaseCenter - new Vector3(15 + 5 * i, 0, 15 + 5 * i)).GetComponent<Unit>();
-			if (unit) unit.SetTeam(data.ID);
+			if (unit) unit.Setup(data.ID);
 		}
 		return this;
-		// FIX UNIT SPAWN
+		
 	}
 
 	// _______________________________________________________________
@@ -171,10 +172,10 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	}
 
 	public Building GetClosestTeamBuild(Vector3 pos)
-	{ return GetClosestTeamObj<Building>(pos, data.Buildings); }
+	{ Debug.Log($"Build count: {data.Buildings.Count}"); return GetClosestTeamObj<Building>(pos, data.Buildings); }
 
 	public Unit GetClosestTeamUnit(Vector3 pos)
-	{ return GetClosestTeamObj<Unit>(pos, data.Members); }
+	{ Debug.Log($"Units count: {data.Units.Count}"); return GetClosestTeamObj<Unit>(pos, data.Units); }
 
 	public void ChangeInteractableObject(IInteractable obj) { data.CurrInteractObject = obj; }
 
@@ -184,9 +185,18 @@ public abstract class Team : MonoBehaviour, ILootContainer
 
 	public Color GetColor() { return data.TeamColor; }
 
-	public void RegisterBuilding(Building building) { data.Buildings.Add(building); Debug.Log("Building added"); }
+	public void RegisterBuilding(Building building) 
+	{ data.Buildings.Add(building); Debug.Log($"Building {building.GetType()} added"); }
 
-	public void RemoveBuilding(Building building) { data.Buildings.Remove(building); }
+	public void RemoveBuilding(Building building) 
+	{ data.Buildings.Remove(building); Debug.Log($"Building {building.GetType()} removed"); }
+
+
+	public void RegisterUnit(Unit unit) 
+	{ data.Units.Add(unit); Debug.Log($"Unit {unit.GetType()} added"); }
+
+	public void RemoveUnit(Unit unit) 
+	{ data.Units.Remove(unit); Debug.Log($"Unit {unit.GetType()} removed"); }
 
 	public Vector3 GetCenter() { return data.BaseCenter; }
 

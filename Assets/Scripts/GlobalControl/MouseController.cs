@@ -28,7 +28,6 @@ public class MouseController : MonoBehaviour
 	void LeftClick()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		Debug.Log("LeftClick");
 
 		if (MainController.groundPlane.Raycast(ray, out float distance))
 		{
@@ -59,6 +58,7 @@ public class MouseController : MonoBehaviour
 		var mapPos = Map.WorldToMap(pos);
 		var cellT = Ms.GetBasicCellInMap(Ms.MapNames.EnvMap, mapPos);
 		int teamID = Ms.GetCellTeamID(Ms.MapNames.EnvMap, mapPos);
+		Debug.Log($"We are in the {teamID} team");
 		if (MainController.Instance.TeamCount() < teamID) return GetBasicObj(cellT);
 		var team = MainController.Instance.GetTeam(teamID);
 		if (Ms.IsBuilding(mapPos)) 
@@ -73,7 +73,7 @@ public class MouseController : MonoBehaviour
 
 	private Component GetBasicObj(Map.CellType cellT)
 	{
-		Debug.Log("Basic");
+		Debug.Log($"Basic {cellT}");
 		return null;
 	}
 }

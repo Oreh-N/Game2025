@@ -24,12 +24,13 @@ public class Spawner : Building
 
 
 	// Actions________________________________________________
-	public void Spawn(GameObject unit)
+	public void Spawn(GameObject unitPrefab)
     {
         var spawn_pos = new Vector3(transform.localPosition.x, transform.position.y,
 									transform.localPosition.z - 4);
-        var unit_obj = Creator.CreateUnit(unit, spawn_pos);
-		((ITeamMember)unit_obj.GetComponent<Unit>()).SetTeam(Data.TeamID);
+        var unit_obj = Creator.CreateUnit(unitPrefab, spawn_pos);
+		var unit = unit_obj.GetComponent<Unit>();
+		unit.Setup(Data.TeamID);
     }
 
 	public override void Interact()

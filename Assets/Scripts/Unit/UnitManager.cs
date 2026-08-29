@@ -24,6 +24,11 @@ public static class UnitManager
 		return null;
 	}
 
+	public static void RegisterUnit(Unit unit)
+	{
+		var t = MainController.Instance.GetTeam(unit.GetTeamID());
+		if (t) t.RegisterUnit(unit);
+	}
 	public static string GetTeamName(Unit unit)
 	{
 		return unit.GetTeamName();

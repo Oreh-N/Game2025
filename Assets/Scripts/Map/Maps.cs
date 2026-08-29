@@ -52,13 +52,16 @@ namespace MapSpace.MapLayers
 		public static bool IsBuilding(Vector2Int pos)
 		{
 			int num = (int)GetBasicCellInMap(MapNames.EnvMap, pos);
-			if (500 < num && num < 529) return true;
+			Debug.Log($"Cell num (building check): {num}");
+			if (500 <= num && num < 530) return true;
 			return false;
 		}
 		public static bool IsUnit(Vector2Int pos)
 		{
 			int num = (int)GetBasicCellInMap(MapNames.EnvMap, pos);
-			if (530 < num && num < 559) return true;
+			Debug.Log($"Cell num (unit check): {num}");
+
+			if (530 <= num && num < 560) return true;
 			return false;
 		}
 
