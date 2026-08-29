@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 
 /// <summary>
@@ -7,9 +9,11 @@ using UnityEngine.UI;
 /// </summary>
 public class UIManager : MonoBehaviour
 {
+	// Should be in the same order panels placed in AllPanels
+	public enum PanelNames { MoneyP, WarningP, WoodP, UnitP, MainBuildingP, WarehouseP, SpawnerP, OptionsP, BuildingP }
 	public static UIManager Instance;
 	UIManagerData data = new UIManagerData();
-	public bool Ready { get; private set; } = false;
+
 
 	private void Awake()
 	{
@@ -18,31 +22,77 @@ public class UIManager : MonoBehaviour
 		else
 		{ Instance = this; }
 
-		FindAllPanels();
+		Setup();
 		data.DefaultCursor = Prefabs.DefaultCursor;
 		data.DeclineCursor = Prefabs.DeclineCursor;
 	}
 
-	void FindAllPanels()
+	void Setup()
 	{
-		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.MoneyPanelTag));
-		data.MoneyPanel = data.AllPanels[0];
-		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.WarningPanelTag));
-		data.WarningPanel = data.AllPanels[1];
-		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.WoodPanelTag));
-		data.WoodPanel = data.AllPanels[2];
-		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.UnitPanelTag));
-		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.MainBuildingPanelTag));
-		data.AllPanels.Add(GameObject.FindGameObjectWithTag(PubNames.WarehousePanelTag));
+		// The amount of prefixes MUST BE equel to AllPanels count, at least empty string should be there
+		AddPanel(PubNames.MoneyPanelName, "Gold: ");
+		AddPanel(PubNames.WarningPanelName, "");
+		AddPanel(PubNames.WoodPanelName, "Wood: ");
+		AddPanel(PubNames.UnitPanelName, "");
+		AddPanel(PubNames.MainBuildingPanelName, "");
+		AddPanel(PubNames.WarehousePanelName, "");
+		AddPanel(PubNames.SpawnerPanelName, "");
+		AddPanel(PubNames.OptionsPanelName, "");
+		AddPanel(PubNames.BuildingPanelName, "");
+
+		foreach (var p in data.AllPanels) { p.SetActive(false); }
+		data.AlwaysActivePanels = new List<PanelNames>() 
+		{PanelNames.MoneyP, PanelNames.WoodP, PanelNames.OptionsP};
+		TurnOnInitPanels();
+		SetupButtons();
+	}
+
+	void SetupButtons()
+	{
+		Prefabs.AddChildrenFromFolder(data.Buttons, "BuildingButts");
+		AssignBuildingButtons(data.Buttons);
+		List<GameObject> optButts = new List<GameObject>();
+		Prefabs.AddChildrenFromFolder(optButts, PubNames.OptionsPanelName);
+		data.Buttons.AddRange(optButts);
+		AssignOptionButtons(optButts);
+	}
+
+	private void AssignOptionButtons(List<GameObject> optButts)
+	{
+		optButts[0].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(GetPanel(PanelNames.BuildingP)));
+		optButts[1].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(GetPanel(PanelNames.UnitP)));
+	}
+
+	void AssignBuildingButtons(List<GameObject> buttons)
+	{
+		foreach (var button in buttons)
+		{
+			var prefab = Prefabs.NameToPrefab(button.name);
+			button.GetComponent<Button>().onClick.AddListener(() => MapController.Instance.SpawnMovableBuild
+			(prefab, Player.Instance.GetID()));
+		}
+	}
+
+	private void TurnOnInitPanels()
+	{
+		foreach (var pName in data.AlwaysActivePanels)
+		{ GetPanel(pName).SetActive(true); }
+		GetPanel(PanelNames.BuildingP).SetActive(true);
+	}
+
+	void AddPanel(string name, string prefix)
+	{
+		data.AllPanels.Add(GameObject.Find(name));
+		data.Prefixes.Add(prefix);
 	}
 
 	private void Start()
 	{
-		if (data.WarningPanel)
-		{ data.WarningPanel.SetActive(false); }
+		if (GetPanel(PanelNames.WarningP))
+		{ GetPanel(PanelNames.WarningP).SetActive(false); }
 		else
 		{ Debug.Log("Warning panel not found!"); }
-		Ready = true;
+		data.Ready = true;
 	}
 
 	private void Update()
@@ -54,52 +104,26 @@ public class UIManager : MonoBehaviour
 
 	}
 
+	public bool Ready() { return data.Ready; }
 
 	// Actions_________________________________________
-	public void SetPanelText(string text, int panelID)
-	{
-		var t = GetPanel(panelID).GetComponentInChildren<Text>();
-		t.text = text;
-	}
 
 	public void HideAllPanels()
 	{
-		foreach (GameObject panel in data.AllPanels)
-		{ panel.SetActive(false); }
+		for (int i = 0; i < data.AllPanels.Count; i++)
+		{
+			if (!data.AlwaysActivePanels.Contains((PanelNames)i))
+				data.AllPanels[i].SetActive(false); 
+		}
 	}
 
-	public void UpdatePanel(int panelID, string newText)
+	public void UpdatePanel(PanelNames name, string newText)
 	{
-		var panel = GetPanel(panelID);
+		var panel = GetPanel(name);
 		if (panel == null)
-		{ Debug.Log("Warning panel is null"); return; }
+		{ Debug.Log($"{name} panel is null"); return; }
 		panel.SetActive(true);
-		panel.GetComponent<Text>().text = newText;
-	}
-
-	public void UpdateWarningPanel(string warning)
-	{
-		if (data.WarningPanel == null)
-		{ Debug.Log("Warning panel is null"); return; }
-		data.WarningPanel.SetActive(true);
-		data.WarningPanel.GetComponent<Text>().text = warning;
-	}
-
-	public void UpdateMoneyPanel(int new_num)
-	{
-		if (data.MoneyPanel == null)
-		{ Debug.Log("Money panel is null"); return; }
-		var text = data.MoneyPanel.GetComponent<Text>();
-
-		text.text = $"Gold: {new_num.ToString()}";
-	}
-
-	public void UpdateWoodPanel(int wood_num)
-	{
-		if (data.MoneyPanel == null)
-		{ Debug.Log("Wood panel is null"); return; }
-		var text = data.WoodPanel.GetComponent<Text>();
-		text.text = $"Wood: {wood_num.ToString()}";
+		panel.GetComponent<Text>().text = data.Prefixes[(int)name] + newText;
 	}
 
 	public void EnableDisablePanel(GameObject panel)
@@ -107,8 +131,7 @@ public class UIManager : MonoBehaviour
 		if (panel == null)
 		{ Debug.Log($"{panel.tag} panel is null!"); return; }
 
-		foreach (var p in data.AllPanels)
-		{ p.SetActive(false); }
+		HideAllPanels();
 
 		if (panel.activeSelf)
 			panel.SetActive(false);
@@ -138,12 +161,8 @@ public class UIManager : MonoBehaviour
 		return null;
 	}
 
-	public GameObject GetPanel(int panelID)
-	{
-		if (data.AllPanels.Count == 0) return null;
-		return data.AllPanels[panelID];
-	}
-
+	public GameObject GetPanel(PanelNames name) 
+	{ return data.AllPanels[(int)name]; }
 
 	// ________________________________________________
 }

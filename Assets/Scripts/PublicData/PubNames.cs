@@ -25,4 +25,17 @@ public static class PubNames
 	public const string TopPanelTag = "TopPanel";
 	public const string TreeTag = "Tree";
 	public const string UnitTag = "Unit";
+
+	// Panels names
+	public const string MainBuildingPanelName = "MainBuildingPanel";
+	public const string OptionsPanelName = "OptionsPanel";
+	public const string UnitPanelName = "SelectedUnitPanel";
+	public const string BuildingPanelName = "BuildingPanel";
+	public const string SpawnerPanelName = "SpawnerPanel";
+	public const string WarehousePanelName = "WarehousePanel";
+	public const string MoneyPanelName = "MoneyPanel";
+	public const string WoodPanelName = "WoodPanel";
+	public const string WarningPanelName = "WarningPanel";
+
+
 }

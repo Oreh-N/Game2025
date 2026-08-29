@@ -1861,7 +1861,7 @@ GameObject:
   m_Component:
   - component: {fileID: 745695216}
   m_Layer: 5
-  m_Name: Options
+  m_Name: OptionsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2347,12 +2347,12 @@ GameObject:
   m_Component:
   - component: {fileID: 928828195}
   m_Layer: 5
-  m_Name: SpawnerBar
+  m_Name: SpawnerPanel
   m_TagString: Spawner0Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &928828195
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3457,12 +3457,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1281880669}
   m_Layer: 5
-  m_Name: SelectedUnit
+  m_Name: SelectedUnitPanel
   m_TagString: UnitPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1281880669
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3577,12 +3577,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1373716974}
   m_Layer: 5
-  m_Name: MainBuilding
+  m_Name: MainBuildingPanel
   m_TagString: MainBuildingPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1373716974
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3742,7 +3742,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1456794603
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4198,7 +4198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1640472796}
   m_Layer: 5
-  m_Name: Building
+  m_Name: BuildingPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4649,7 +4649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1716341124
 RectTransform:
   m_ObjectHideFlags: 0

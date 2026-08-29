@@ -26,9 +26,9 @@ public class Shop
 
 			if (buyer.Pay(price))
 			{ return true; }
-			else UIManager.Instance.UpdateWarningPanel("Not enought money");
+			else UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Not enought money");
 		}
-		else UIManager.Instance.UpdateWarningPanel($"There is no {itemName} item");
+		else UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, $"There is no {itemName} item");
 		return false;
 	}
 

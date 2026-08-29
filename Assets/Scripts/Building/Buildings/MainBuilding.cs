@@ -12,10 +12,11 @@ public class MainBuilding : Building, ILootContainer
 	private new void Awake()
 	{
 		base.Awake();
-		Data.IsPlaced = true;
-		Data.Name = "MainBuilding";
-		Data.Size = new Vector2Int(13, 13);
-		Data.CellType = MapSpace.Map.CellType.MainBuild;
+		data.IsPlaced = true;
+		data.Name = "MainBuilding";
+		data.Size = new Vector2Int(13, 13);
+		data.CellType = MapSpace.Map.CellType.MainBuild;
+		data.PanelName = UIManager.PanelNames.MainBuildingP;
 	}
 
 	private new void Start()
@@ -44,12 +45,12 @@ public class MainBuilding : Building, ILootContainer
 	public override void UpdatePanelInfo()
 	{
 		string text = "";
-		text = $"{Data.Name}\nTeam: {UnitManager.GetTeamName(Data.TeamID)}\nHealth: {HealthSys.GetHealth()}\n";
+		text = $"{data.Name}\nTeam: {UnitManager.GetTeamName(data.TeamID)}\nHealth: {HealthSys.GetHealth()}\n";
 		foreach (var item in LootCounter)
 		{
 			text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
 		}
-		BuildingManager.Instance.UpdatePanelText(text, Data.PanelID);
+		BuildingManager.Instance.UpdatePanelText(data.PanelName, text);
 	}
 
 	public Inventory GetInventory()

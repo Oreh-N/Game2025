@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 public class Prefabs
@@ -35,6 +36,18 @@ public class Prefabs
 		if ("Warehouse0" == name) return WareHousePref;
 
 		return null;
+	}
+
+
+	public static void AddChildrenFromFolder(List<GameObject> addToList, string folder)
+	{
+		var buttsFolder = GameObject.Find(folder);
+		var count = buttsFolder.transform.childCount;
+		for (int i = 0; i < count; i++)
+		{
+			var button = buttsFolder.transform.GetChild(i);
+			addToList.Add(button.gameObject);
+		}
 	}
 }
 

@@ -76,7 +76,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		}
 		else
 		{
-			UIManager.Instance.UpdateWarningPanel("Not enough gold");
+			UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Not enough gold");
 			return false;
 		}
 	}
@@ -172,10 +172,10 @@ public abstract class Team : MonoBehaviour, ILootContainer
 	}
 
 	public Building GetClosestTeamBuild(Vector3 pos)
-	{ Debug.Log($"Build count: {data.Buildings.Count}"); return GetClosestTeamObj<Building>(pos, data.Buildings); }
+	{ return GetClosestTeamObj<Building>(pos, data.Buildings); }
 
 	public Unit GetClosestTeamUnit(Vector3 pos)
-	{ Debug.Log($"Units count: {data.Units.Count}"); return GetClosestTeamObj<Unit>(pos, data.Units); }
+	{ return GetClosestTeamObj<Unit>(pos, data.Units); }
 
 	public void ChangeInteractableObject(IInteractable obj) { data.CurrInteractObject = obj; }
 

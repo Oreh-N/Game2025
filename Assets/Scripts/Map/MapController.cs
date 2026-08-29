@@ -67,7 +67,7 @@ public class MapController : MonoBehaviour {
 	public void SpawnMovableBuild(GameObject build, int teamID)
 	{
 		if (data.CurrBuilding && !data.CurrBuilding.IsPlaced())
-		{ UIManager.Instance.UpdateWarningPanel("Place or delete current building first"); return; }
+		{ UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Place or delete current building first"); return; }
 
 		//if (!Player.Instance.Shop_.TryBuyItem(build.GetName(), Player.Instance.MainBuilding_))
 		//{ return; }

@@ -9,7 +9,7 @@ public class TeamData
 {
 	public static int FreeID = 0;
 	// Sources
-	public Inventory LootCounter = new Inventory { { LootType.Wood, 0 } };
+	public Inventory LootCounter = new Inventory { { LootType.Wood, 0 }, {LootType.Gold, 500 } };
 	public IInteractable CurrInteractObject;
 	public Shop Shop_ = new Shop();
 	//__________________
@@ -17,7 +17,7 @@ public class TeamData
 	public List<Building> Buildings = new List<Building>();
 	public List<Unit> Units = new List<Unit>();
 	//___________________
-	// Team identifier
+	// Team identifiers
 	public Vector3 BaseCenter = new Vector3(0,0,0);
 	public float BuildingRadius = 50;
 	public string TeamName = "";

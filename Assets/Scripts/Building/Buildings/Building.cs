@@ -6,20 +6,16 @@ using UnityEngine.EventSystems;
 
 public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember, IMyPlaceableOnMap
 {
-	protected BuildingData Data = new BuildingData();
+	protected BuildingData data = new BuildingData();
 	public HealthSystem HealthSys { get; protected set; } = new HealthSystem();
 
 
 
 	public void Awake()
 	{
-		//BoxCollider box = GetComponent<BoxCollider>();
-		//Data.Size = new Vector2Int(Mathf.CeilToInt(box.size.x * transform.localScale.x + 1),
-		//						   Mathf.CeilToInt(box.size.y * transform.localScale.y + 1));
-		//box.enabled = false;
 		HealthSys.SetHealth(100);
-		Data.RendererChildren = GetComponentsInChildren<Renderer>();
-		if (Data.RendererChildren == null) Debug.Log("No renderers in this building");
+		data.RendererChildren = GetComponentsInChildren<Renderer>();
+		if (data.RendererChildren == null) Debug.Log("No renderers in this building");
 	}
 
 	public void Start()
@@ -38,34 +34,34 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 
 
-	public MapSpace.Map.CellType GetCellID()	// Maybe its better to make it interface method (for placeable on map objects like units and buildings)???
-	{ return (MapSpace.Map.CellType)(Data.TeamID * 100 + (int)Data.CellType); }
+	public Map.CellType GetCellID()	// Maybe its better to make it interface method (for placeable on map objects like units and buildings)???
+	{ return (Map.CellType)(data.TeamID * 100 + (int)data.CellType); }
 
 	public virtual void Construct()
 	{
-		Team t = MainController.Instance.GetTeam(Data.TeamID);
-		if (!t) { Debug.Log($"Team {Data.TeamID} doesn't exist!"); return; }
+		Team t = MainController.Instance.GetTeam(data.TeamID);
+		if (!t) { Debug.Log($"Team {data.TeamID} doesn't exist!"); return; }
 		Destroy(gameObject.GetComponent<Movable>());
 		ColorBuilding(t.GetColor());
 
 		Map.FillMapAreaSquare(Map.WorldToMap(GetPos()),
 			GetSize(), Map.CombineTeamCell(GetCellID(), GetTeamID()) , Map.MapNames.EnvMap);
-		Data.IsPlaced = true;
+		data.IsPlaced = true;
 
-		BuildingManager.AddBuilding(this, Data.TeamID);
+		BuildingManager.AddBuilding(this, data.TeamID);
 	}
 
 
 	public void ColorBuilding(Color color)
 	{
-		if (Data.RendererChildren == null) return;
-		foreach (Renderer rend in Data.RendererChildren)
+		if (data.RendererChildren == null) return;
+		foreach (Renderer rend in data.RendererChildren)
 		{ rend.material.color = color; }
 	}
 
 	private void OnDestroy()
 	{
-		BuildingManager.RemoveBuilding(this, Data.TeamID);
+		BuildingManager.RemoveBuilding(this, data.TeamID);
 	}
 
 
@@ -74,10 +70,10 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		if (EventSystem.current.IsPointerOverGameObject())
 			return;
 
-		if (Data.IsPlaced)
+		if (data.IsPlaced)
 		{
-			BuildingManager.SetInteractableObj(this, Data.TeamID);
-			BuildingManager.ShowPanel(Data.PanelID);
+			BuildingManager.SetInteractableObj(this, data.TeamID);
+			BuildingManager.ShowPanel(data.PanelName);
 		}
 	}
 
@@ -89,20 +85,20 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	#region Data transfering
 
-	public Map.CellType GetCellType() {  return Data.CellType; }
-	public bool IsPlaced() { return Data.IsPlaced; }
+	public Map.CellType GetCellType() {  return data.CellType; }
+	public bool IsPlaced() { return data.IsPlaced; }
 
-	public int GetTeamID() { return Data.TeamID; }
+	public int GetTeamID() { return data.TeamID; }
 
-	public string GetName() { return Data.Name; }
+	public string GetName() { return data.Name; }
 
-	public Vector2Int GetSize() { return Data.Size; }
+	public Vector2Int GetSize() { return data.Size; }
 
-	public void SetTeam(int teamID) { Data.TeamID = teamID; }
+	public void SetTeam(int teamID) { data.TeamID = teamID; }
 
 	public Vector3 GetPos() { return transform.position; }
 
-	public Renderer[] GetRendererChildren() { return Data.RendererChildren; }
+	public Renderer[] GetRendererChildren() { return data.RendererChildren; }
 
 	#endregion 
 }

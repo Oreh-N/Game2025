@@ -57,7 +57,7 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	{
 		if (pos.y < -5)
 		{
-			UIManager.Instance.UpdateWarningPanel($"The {data.Name} fell off a map");
+			UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, $"The {data.Name} fell off a map");
 			return true;
 		}
 		return false;

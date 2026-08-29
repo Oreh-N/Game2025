@@ -1,13 +1,7 @@
-using static UnityEditor.Timeline.TimelinePlaybackControls;
-using static UnityEngine.UI.CanvasScaler;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine.Tilemaps;
-using System.Collections;
 using UnityEngine;
 using MapSpace;
-using System;
-using UnityEngine.UI;
+using PN = UIManager.PanelNames;
 
 
 public class BuildingManager : MonoBehaviour
@@ -26,40 +20,17 @@ public class BuildingManager : MonoBehaviour
 
 	private void Start()
 	{
-		FindBuildingButtons(data.Buttons);
-		AssignButtons();
 		data.Ready = true;
 	}
 
 	public bool Ready() { return data.Ready; }
-
-	void AssignButtons()
-	{
-		foreach (var button in data.Buttons)
-		{
-			var prefab = Prefabs.NameToPrefab(button.name);
-			button.GetComponent<Button>().onClick.AddListener(() => MapController.Instance.SpawnMovableBuild	
-			(prefab, Player.Instance.GetID()));
-		}
-	}
-
-	void FindBuildingButtons(List<GameObject> buttons)
-	{
-		var buttsFolder = GameObject.Find("BuildingButts");
-		var count = buttsFolder.transform.childCount;
-		for (int i = 0; i < count; i++)
-		{
-			var button = buttsFolder.transform.GetChild(i);
-			data.Buttons.Add(button.gameObject);
-		}
-	}
 
 
 	#region Interaction with player
 	public static void ShowMessage(string m)
 	{
 		if (m == null) return;
-		UIManager.Instance.UpdateWarningPanel(m);
+		UIManager.Instance.UpdatePanel(PN.WarningP, m);
 	}
 
 
@@ -68,18 +39,18 @@ public class BuildingManager : MonoBehaviour
 		GetTeam(teamID).ChangeInteractableObject(b);
 	}
 
-	public void UpdatePanelText(string t, int panelID)
+	public void UpdatePanelText(PN panelName, string t)
 	{
-		UIManager.Instance.SetPanelText(t, panelID);
+		UIManager.Instance.UpdatePanel(panelName, t);
 	}
 
 
-	public static void ShowPanel(int panelID)
+	public static void ShowPanel(PN panelName)
 	{
-		var p = UIManager.Instance.GetPanel(panelID);
+		var p = UIManager.Instance.GetPanel(panelName);
 		if (p != null)
 		{ UIManager.Instance.EnableDisablePanel(p); }
-		else { UIManager.Instance.UpdateWarningPanel("Try to access a null panel"); }
+		else { UIManager.Instance.UpdatePanel(PN.WarningP, "Try to access a null panel"); }
 	}
 
 	#endregion

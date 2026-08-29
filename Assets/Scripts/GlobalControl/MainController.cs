@@ -43,7 +43,7 @@ public class MainController : MonoBehaviour
 		yield return new WaitUntil(() => Map.Ready());
 
 		managers.AddComponent<UIManager>();
-		yield return new WaitUntil(() => UIManager.Instance.Ready);
+		yield return new WaitUntil(() => UIManager.Instance.Ready());
 
 		managers.AddComponent<Player>();
 		yield return new WaitUntil(() => Player.Instance.Ready());
@@ -101,60 +101,60 @@ public class MainController : MonoBehaviour
 
 	public int TeamCount() { return _teams.Length; }
 
-	/**/
-	private void OnDrawGizmos()
-	{
-		if (!Application.isPlaying || !Ready) return;
+	///**/
+	//private void OnDrawGizmos()
+	//{
+	//	if (!Application.isPlaying || !Ready) return;
 
-		var mapName = Map.MapNames.EnvMap;
-		//var size = Chunk.GetSize();
-		var size = Map.GetSize();
+	//	var mapName = Map.MapNames.EnvMap;
+	//	//var size = Chunk.GetSize();
+	//	var size = Map.GetSize();
 
-		for (int i = 0; i < size.x; i++)
-			for (int j = 0; j < size.y; j++)
-			{
-				Vector2Int mpos = new Vector2Int(i, j);
-				/*/
-				var basicCell = MLayers.GetBasicCellInMap(mapName, mpos);
-				if (basicCell == Map.CellType.WorkerUnit)
-				{
-					Gizmos.color = Color.blanchedAlmond;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (basicCell == Map.CellType.MainBuild)
-				{
-					Gizmos.color = Color.darkRed;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (basicCell == Map.CellType.Spawner)
-				{
-					Gizmos.color = Color.blueViolet;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (basicCell == Map.CellType.Warehouse)
-				{
-					Gizmos.color = Color.deepPink;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}
-				if (basicCell == Map.CellType.BasicTower)
-				{
-					Gizmos.color = Color.greenYellow;
-					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-				}/*/
+	//	for (int i = 0; i < size.x; i++)
+	//		for (int j = 0; j < size.y; j++)
+	//		{
+	//			Vector2Int mpos = new Vector2Int(i, j);
+	//			/*/
+	//			var basicCell = MLayers.GetBasicCellInMap(mapName, mpos);
+	//			if (basicCell == Map.CellType.WorkerUnit)
+	//			{
+	//				Gizmos.color = Color.blanchedAlmond;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (basicCell == Map.CellType.MainBuild)
+	//			{
+	//				Gizmos.color = Color.darkRed;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (basicCell == Map.CellType.Spawner)
+	//			{
+	//				Gizmos.color = Color.blueViolet;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (basicCell == Map.CellType.Warehouse)
+	//			{
+	//				Gizmos.color = Color.deepPink;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}
+	//			if (basicCell == Map.CellType.BasicTower)
+	//			{
+	//				Gizmos.color = Color.greenYellow;
+	//				Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//			}/*/
 
-				if (Map.GetCellType(mapName, mpos) != Map.CellType.Empty)
-				{
-					int teamId = Map.GetCellTeamID(mapName, mpos);
-					if (TeamCount() > teamId)
-					{
-						Team t = GetTeam(teamId);
-						Gizmos.color = t.GetColor();
-						Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
-					}
-				}
-				/**/
-			}
-	}
-	/**/
+	//			if (Map.GetCellType(mapName, mpos) != Map.CellType.Empty)
+	//			{
+	//				int teamId = Map.GetCellTeamID(mapName, mpos);
+	//				if (TeamCount() > teamId)
+	//				{
+	//					Team t = GetTeam(teamId);
+	//					Gizmos.color = t.GetColor();
+	//					Gizmos.DrawCube(Map.MapToWorld(mpos), Map.GetCellSize());
+	//				}
+	//			}
+	//			/**/
+	//		}
+	//}
+	///**/
 }
 

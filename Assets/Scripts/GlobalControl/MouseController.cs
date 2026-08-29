@@ -62,13 +62,11 @@ public class MouseController : MonoBehaviour
 		}
 		var cellT = Map.GetBasicCellInMap(Map.MapNames.EnvMap, mapPos);
 		int teamID = Map.GetCellTeamID(Map.MapNames.EnvMap, mapPos);
-		Debug.Log($"We are in the {teamID} team");
 		var team = MainController.Instance.GetTeam(teamID);
 		if (Map.IsBuilding(mapPos)) 
 			return team.GetClosestTeamBuild(pos);
 		if (Map.IsUnit(mapPos))
 			return team.GetClosestTeamUnit(pos);
-		Debug.Log("Didn't find anything");
 		return null;
 	}
 }

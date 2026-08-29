@@ -20,6 +20,7 @@ public class Player : Team
 	private new void Start()
 	{
 		base.Start();
+		
 		data.Ready = true;
 	}
 
@@ -38,7 +39,7 @@ public class Player : Team
 		if (data.LootCounter.ContainsKey(LootType.Wood))
 		{ wood_count = data.LootCounter[LootType.Wood]; }
 
-		UIManager.Instance.UpdateWoodPanel(wood_count);
+		UIManager.Instance.UpdatePanel(UIManager.PanelNames.WoodP, wood_count.ToString());
 
 	}
 

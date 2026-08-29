@@ -7,13 +7,13 @@ public interface IHavePanel
 	public virtual void UpdatePanelInfo(GameObject panel)
 	{
 		if (panel == null)
-		{ UIManager.Instance.UpdateWarningPanel("Panel here is null"); }
+		{ UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Panel here is null"); }
 	}
 
 	public void ShowPanel(GameObject panel)
 	{
 		if (panel == null)
-		{ UIManager.Instance.UpdateWarningPanel("Panel here is null"); }
+		{ UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Panel here is null"); }
 		UIManager.Instance.EnableDisablePanel(panel);
 		UpdatePanelInfo(panel);
 	}
