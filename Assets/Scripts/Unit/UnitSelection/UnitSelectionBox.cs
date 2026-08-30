@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 // Z tutorialu
 
-public class UnitSelectionBox : MonoBehaviour
+public class UnitSelectionBox : MonoBehaviour, IListener
 {
 	[SerializeField] RectTransform _boxVisual;
 
@@ -19,22 +19,15 @@ public class UnitSelectionBox : MonoBehaviour
 
 	private void Start()
 	{
+		StartCoroutine(((IListener)this).StartListening());
 		_startPosition = Vector2.zero;
 		_endPosition = Vector2.zero;
 	}
 
 	private void Update()
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-		if (Input.GetMouseButtonDown(0))
-		{
-			_startPosition = Input.mousePosition;
-			_selectionBox = new Rect();
-		}
-
 		// When Dragging
-		if (Input.GetMouseButton(0))
+		if (_startPosition != Vector2.zero && Input.GetMouseButton(0))
 		{ BoxSelection(); }
 
 		if (Input.GetMouseButtonUp(0))
@@ -94,28 +87,40 @@ public class UnitSelectionBox : MonoBehaviour
 
 	void DrawSelection()
 	{
-		if (Input.mousePosition.x < _startPosition.x)
+		var mousePos = Input.mousePosition;
+
+		if (mousePos.x < _startPosition.x)
 		{
-			_selectionBox.xMin = Input.mousePosition.x;
+			_selectionBox.xMin = mousePos.x;
 			_selectionBox.xMax = _startPosition.x;
 		}
 		else
 		{
 			_selectionBox.xMin = _startPosition.x;
-			_selectionBox.xMax = Input.mousePosition.x;
+			_selectionBox.xMax = mousePos.x;
 		}
 
 
-		if (Input.mousePosition.y < _startPosition.y)
+		if (mousePos.y < _startPosition.y)
 		{
-			_selectionBox.yMin = Input.mousePosition.y;
+			_selectionBox.yMin = mousePos.y;
 			_selectionBox.yMax = _startPosition.y;
 		}
 		else
 		{
 			_selectionBox.yMin = _startPosition.y;
-			_selectionBox.yMax = Input.mousePosition.y;
+			_selectionBox.yMax = mousePos.y;
 		}
 	}
+
+	public void MouseHitMapAction(int button)
+	{
+		if (0 == button)
+		{
+			_startPosition = Input.mousePosition;
+			_selectionBox = new Rect();
+		}
+	}
+
 	// __________________________________________________________
 }

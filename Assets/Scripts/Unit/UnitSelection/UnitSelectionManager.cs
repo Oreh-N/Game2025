@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 // Z tutorialu
-public class UnitSelectionManager : MonoBehaviour
+public class UnitSelectionManager : MonoBehaviour, IListener
 {
 	public static UnitSelectionManager Instance { get; set; }
 
@@ -15,8 +12,8 @@ public class UnitSelectionManager : MonoBehaviour
 
 	public GameObject GroundMarker;
 
-	LayerMask _ground;
-	LayerMask _units;
+	
+
 	public bool Ready { get; private set; } = false;
 
 
@@ -27,19 +24,19 @@ public class UnitSelectionManager : MonoBehaviour
 		else
 		{ Instance = this; }
 
-		_ground = LayerMask.GetMask(PubNames.GroundLayer);
-		_units = LayerMask.GetMask(PubNames.UnitsLayer);
+
 		Ready = true;
+	}
+
+	private void Start()
+	{
+		StartCoroutine(((IListener)this).StartListening());
 	}
 
 	private void Update()
 	{
 		if (!MainController.Instance.Ready) return;
 
-		if (Input.GetMouseButtonDown(0))
-		{ TrySelectUnits(); }
-		else if (Input.GetMouseButtonDown(1) && UnitsSelected.Count > 0)
-		{ TrySetNextPos(); }
 	}
 
 
@@ -50,22 +47,23 @@ public class UnitSelectionManager : MonoBehaviour
 	/// </summary>
 	private void TrySelectUnits()
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		GameObject comp = MouseController.Instance.GetObjOnMousePos();
 
-		RaycastHit hit;
-		// If we are hitting a unit
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _units, QueryTriggerInteraction.Ignore))
+		if (comp)
 		{
-			if (Input.GetKey(KeyCode.LeftShift))
-			{ MultiSelect(hit.collider.gameObject); }
-			else
-			{ SelectByClicking(hit.collider.gameObject); }
+			Unit unit = comp.GetComponent<Unit>();
+
+			// If we are hitting a unit
+			if (unit)
+			{
+				if (Input.GetKey(KeyCode.LeftShift))
+				{ MultiSelect(unit.gameObject); }
+				else
+				{ SelectByClicking(unit.gameObject); }
+			}
 		}
-		else  // Deselect all units
-		{
-			if (!Input.GetKey(KeyCode.LeftShift))
-			{ DeselectAll(); }
-		}
+		else if (!Input.GetKey(KeyCode.LeftShift))
+		{ DeselectAll(); }
 	}
 
 	private void MultiSelect(GameObject unit)
@@ -129,16 +127,22 @@ public class UnitSelectionManager : MonoBehaviour
 	/// </summary>
 	private void TrySetNextPos()
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Vector3 worldPos = MouseController.GetMouseWorldPos();
 
-		RaycastHit hit;
-		// If we are hitting a ground with right button
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _ground))
+		if (Vector3.zero != worldPos)
 		{
-			GroundMarker.transform.position = new Vector3(hit.point.x, .1f, hit.point.z);
+			GroundMarker.transform.position = worldPos;
 			GroundMarker.SetActive(false);
 			GroundMarker.SetActive(true);
 		}
 	}
+
+	public void MouseHitMapAction(int button)
+	{
+		if (button == 0) TrySelectUnits();
+		if (button == 1 && UnitsSelected.Count > 0)
+		{ TrySetNextPos(); }
+	}
+
 	// ___________________________________________________________
 }

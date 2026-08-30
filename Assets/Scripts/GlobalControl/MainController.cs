@@ -41,6 +41,8 @@ public class MainController : MonoBehaviour
 	{
 		managers.AddComponent<MapController>();
 		yield return new WaitUntil(() => Map.Ready());
+		
+		managers.AddComponent<MouseController>();
 
 		managers.AddComponent<UIManager>();
 		yield return new WaitUntil(() => UIManager.Instance.Ready());
@@ -69,7 +71,6 @@ public class MainController : MonoBehaviour
 		managers.AddComponent<MapSpace.EnvManager>();   // TEAMS HAVE TO BE CREATED FIRST!
 		yield return new WaitUntil(() => EnvManager.Instance.Ready);
 
-		managers.AddComponent<MouseController>();
 		foreach (var t in _teams) t.CreateBase();
 		Ready = true;
 	}
@@ -83,11 +84,10 @@ public class MainController : MonoBehaviour
 	/// <returns>Returns team if exists, else returns null</returns>
 	public Team GetTeam(int teamID)
 	{
-		if (teamID < 0)
+		if (_teams == null || teamID < 0 || teamID >= _teams.Length)
 			return null;
-		if (_teams != null && teamID < _teams.Length)
+		if (teamID < _teams.Length)
 			return _teams[teamID];
-		Debug.LogWarning("Team with ID " + teamID + " does not exist.");
 		return null;
 	}
 

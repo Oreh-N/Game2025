@@ -5,7 +5,7 @@ using MNames = MapSpace.Map.MapNames;
 
 
 [RequireComponent(typeof(Unit))]
-public class UnitMovement : MonoBehaviour
+public class UnitMovement : MonoBehaviour, IListener
 {
 	bool _isMoving = false;
 	bool _findNextStepPos = false;
@@ -27,14 +27,12 @@ public class UnitMovement : MonoBehaviour
 			transform.position = Map.MapToWorld(pos);
 			Debug.Log(pos);
 		}
+		StartCoroutine(((IListener)this).StartListening());
 	}
 
 	private void Update()
 	{
 		if (!MainController.Instance.Ready) return;
-
-		if (Input.GetMouseButtonDown(1))
-		{ FindTargetPosition(); }
 
 		if (_findNextStepPos)
 		{
@@ -132,12 +130,12 @@ public class UnitMovement : MonoBehaviour
 
 	private void FindTargetPosition()
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var pos = MouseController.GetMouseWorldPos();
+
 		if (UnitSelectionManager.Instance.UnitsSelected.Count > 0 &&
 			UnitSelectionManager.Instance.UnitsSelected.Contains(gameObject) &&
-			MainController.groundPlane.Raycast(ray, out float distance))
+			Vector3.zero != pos)
 		{
-			var pos = ray.GetPoint(distance);
 			if (Map.IsOutOfMap(pos) || 
 				!CellIsEmpty(Map.WorldToMap(pos)))
 			{ return; }
@@ -151,6 +149,12 @@ public class UnitMovement : MonoBehaviour
 	public void SetTargetPositionInGroup(Vector3 targetPos)
 	{
 		SetTargetPos(targetPos);
+	}
+
+	public void MouseHitMapAction(int button)
+	{
+		if (1 == button)
+		{ FindTargetPosition(); }
 	}
 
 

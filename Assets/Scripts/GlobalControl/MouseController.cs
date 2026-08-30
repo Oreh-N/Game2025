@@ -1,9 +1,11 @@
 ﻿using MapSpace;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MouseController : MonoBehaviour
 {
 	public static MouseController Instance { get; private set; }
+	List<IListener> _listeners = new List<IListener>();
 
 
 	private void Awake()
@@ -21,19 +23,38 @@ public class MouseController : MonoBehaviour
 			LeftClick();
 
 		}
+		else if (Input.GetMouseButtonDown(1))
+		{ RightClick(); }
 	}
+
+	public void AddListener(IListener listener) { _listeners.Add(listener); }
+
+	public void RemoveListener(IListener listener) { _listeners.Remove(listener); }
+
+	public void InformListeners(int mouseButt)
+	{
+		foreach (var l in _listeners)
+		{ l.MouseHitMapAction(mouseButt); }
+	}
+
+	void RightClick() { InformListeners(1); }
 
 	void LeftClick()
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		InformListeners(0);
+		Vector3 pos = GetMouseWorldPos();
 
-		if (MainController.groundPlane.Raycast(ray, out float distance))
+		if (Vector3.zero != pos && !Map.IsOutOfMap(pos))
 		{
-			var pos = ray.GetPoint(distance);
-			if (Map.IsOutOfMap(pos)) return;
-			Component obj = GetObjOnPos(pos);
-			
-			if (obj && obj is IInteractable) ((IInteractable)obj).MouseDownAct();
+			GameObject obj = GetObjOnMousePos();
+
+			if (obj)
+			{
+				var interactObj = obj.GetComponent<IInteractable>();
+
+				if (interactObj != null)
+				{ interactObj.MouseDownAct(); }
+			}
 		}
 
 	}
@@ -41,7 +62,7 @@ public class MouseController : MonoBehaviour
 	/// <summary>
 	/// Get position of the mouse cursor on the world landscape
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>Returns zero vector if didn't hit the ground</returns>
 	public static Vector3 GetMouseWorldPos()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -51,23 +72,13 @@ public class MouseController : MonoBehaviour
 		return Vector3.zero;
 	}
 
-	private Component GetObjOnPos(Vector3 pos)
+	public GameObject GetObjOnMousePos()
 	{
+		Vector3 pos = GetMouseWorldPos();
+		if (Vector3.zero == pos || Map.IsOutOfMap(pos)) { return null; }
 		var mapPos = Map.WorldToMap(pos);
-		if (Map.GetCellType(Map.MapNames.EnvMap, mapPos) == Map.CellType.Empty)
-		{
-			mapPos = Map.FindNearestCell(mapPos, 4, Map.MapNames.EnvMap);
-			if (Map.GetCellType(Map.MapNames.EnvMap, mapPos) == Map.CellType.Empty)
-			{ return null; }
-		}
-		var cellT = Map.GetBasicCellInMap(Map.MapNames.EnvMap, mapPos);
-		int teamID = Map.GetCellTeamID(Map.MapNames.EnvMap, mapPos);
-		var team = MainController.Instance.GetTeam(teamID);
-		if (Map.IsBuilding(mapPos)) 
-			return team.GetClosestTeamBuild(pos);
-		if (Map.IsUnit(mapPos))
-			return team.GetClosestTeamUnit(pos);
-		return null;
+
+		return Map.GetGameObjectOnMap(mapPos);
 	}
 }
 

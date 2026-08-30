@@ -28,12 +28,10 @@ public static class UnitGroupMovement
 
 	private static void FindTargets()
 	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Vector3 pos = MouseController.GetMouseWorldPos();
 
-		if (MainController.groundPlane.Raycast(ray, out float distance))
+		if (Vector3.zero != pos && !Map.IsOutOfMap(pos))
 		{
-			var pos = ray.GetPoint(distance);
-			if (Map.IsOutOfMap(pos)) { return; }
 			int distBetween = 5;
 			var preferedDir = new Vector3(-1, 0, -0.5f);
 			// units will be assambled on square area

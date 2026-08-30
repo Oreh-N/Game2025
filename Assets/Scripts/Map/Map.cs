@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 using static MapSpace.Map;
+using static UnityEditor.PlayerSettings;
 using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
 
@@ -87,14 +88,14 @@ namespace MapSpace
 		public static bool IsBuilding(MapCoord pos)
 		{
 			int num = (int)GetBasicCellInMap(MapNames.EnvMap, pos);
-			Debug.Log($"Cell num (building check): {num}");
+			//Debug.Log($"Cell num (building check): {num}");
 			if (500 <= num && num < 530) return true;
 			return false;
 		}
 		public static bool IsUnit(MapCoord pos)
 		{
 			int num = (int)GetBasicCellInMap(MapNames.EnvMap, pos);
-			Debug.Log($"Cell num (unit check): {num}");
+			//Debug.Log($"Cell num (unit check): {num}");
 
 			if (530 <= num && num < 560) return true;
 			return false;
@@ -160,6 +161,33 @@ namespace MapSpace
 			return true;
 		}
 
+		public static GameObject GetGameObjectOnMap(MapCoord mapPos)
+		{// If player didn't hit needed cell preciesly then we will look if this cell was near the click position and return it
+			if (GetCellType(MapNames.EnvMap, mapPos) == CellType.Empty)	
+			{
+				mapPos = FindNearestCell(mapPos, 4, MapNames.EnvMap);
+				if (GetCellType(MapNames.EnvMap, mapPos) == CellType.Empty)
+				{ return null; }
+			}
+
+			var cellT = GetBasicCellInMap(MapNames.EnvMap, mapPos);
+			int teamID = GetCellTeamID(MapNames.EnvMap, mapPos);
+			var team = MainController.Instance.GetTeam(teamID);
+			if (team == null) return null;
+
+			if (IsBuilding(mapPos))
+			{
+				var building = team.GetClosestTeamBuild(MapToWorld(mapPos));
+				return building ? building.gameObject : null;
+			}
+			else if (IsUnit(mapPos))
+			{
+				var unit = team.GetClosestTeamUnit(MapToWorld(mapPos));
+				return unit ? unit.gameObject : null;
+			}
+
+			return null;
+		}
 
 
 		public static CellType GetCellType(MapNames name, MapCoord pos)
@@ -311,7 +339,7 @@ namespace MapSpace
 			Debug.Log("List______________________");
 			foreach (var i in list)
 			{
-				Debug.Log(i);
+				Debug.Log($"Item {i.GetType()}");
 			}
 			Debug.Log("__________________________");
 

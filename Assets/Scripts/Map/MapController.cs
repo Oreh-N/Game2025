@@ -1,4 +1,5 @@
 ﻿using MapSpace;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
@@ -6,7 +7,7 @@ using Map = MapSpace.Map;
 
 
 
-public class MapController : MonoBehaviour {
+public class MapController : MonoBehaviour, IListener {
 	public static MapController Instance;
 	MapControllerData data = new MapControllerData();
 
@@ -19,6 +20,7 @@ public class MapController : MonoBehaviour {
 		{ Instance = this; }
 
 		data.CurrBuilding = null;
+		StartCoroutine(((IListener)this).StartListening());
 	}
 
 
@@ -26,27 +28,11 @@ public class MapController : MonoBehaviour {
 	{
 		if (!data.AllowBuilding || !data.CurrBuilding || !MainController.Instance.Ready) return;
 
-		CheckPlace(data.CurrBuilding);
-
-		if (data.CurrBuilding && Input.GetMouseButtonDown(0))
-		{
-			if (CanBePlaced(data.CurrBuilding))
-			{ PlaceBuilding(data.CurrBuilding, MainController.Instance.GetTeam(data.CurrBuilding.GetTeamID())); }
-		}
-		else if (Input.GetKeyDown(KeyCode.Escape))
-		{
-			UIManager.Instance.ChangeCursor(true);
-			int returnPrice = Player.Instance.data.Shop_.GetItemPrice(data.CurrBuilding.GetName());
-			if (returnPrice > 0)
-			{ /*Player.Instance.data.MainBuilding_.Earn(returnPrice);*/ }
-			Destroy(data.CurrBuilding.gameObject);
-		}
+		ShowIfFit(data.CurrBuilding);
 	}
 
 
 	# region Grid
-	const int _areaPadding = 3;
-	const int _startPadding = 1;
 
 	public bool CanBePlaced(Building build)
 	{
@@ -111,7 +97,7 @@ public class MapController : MonoBehaviour {
 
 
 
-	private void CheckPlace(Building b)
+	private void ShowIfFit(Building b)
 	{
 		if (!CanBePlaced(b))
 		{
@@ -125,6 +111,24 @@ public class MapController : MonoBehaviour {
 			BuildingManager.ColorCurrBuilding(b, Color.green);
 		}
 	}
+
+	public void MouseHitMapAction(int button)
+	{
+		if (data.CurrBuilding && 0 == button)
+		{
+			if (CanBePlaced(data.CurrBuilding))
+			{ PlaceBuilding(data.CurrBuilding, MainController.Instance.GetTeam(data.CurrBuilding.GetTeamID())); }
+		}
+		else if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			UIManager.Instance.ChangeCursor(true);
+			int returnPrice = Player.Instance.data.Shop_.GetItemPrice(data.CurrBuilding.GetName());
+			if (returnPrice > 0)
+			{ /*Player.Instance.data.MainBuilding_.Earn(returnPrice);*/ }
+			Destroy(data.CurrBuilding.gameObject);
+		}
+	}
+
 	#endregion
 
 }
