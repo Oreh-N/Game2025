@@ -44,12 +44,12 @@ public class MeleeUnit : UnitSelf<MeleeUnit>
 
 	public override void Interact()
 	{ 
-		((IHavePanel)this).ShowPanel(data.Panel);
+		((IHavePanel)this).ShowPanel(data.PanelName);
 	}
 
 	public override void UpdatePanelInfo()
 	{
-		Text[] panels = data.Panel.GetComponentsInChildren<Text>(true);
-		panels[0].text = $"Unit name: {data.Name}\nTeam: {UnitManager.GetTeamName(data.TeamID)}\nHealth: {data.Health}";
+		//Text[] panels = data.Panel.GetComponentsInChildren<Text>(true);
+		//panels[0].text = $"Unit name: {data.Name}\nTeam: {UnitManager.GetTeamName(data.TeamID)}\nHealth: {data.Health}";
 	}
 }

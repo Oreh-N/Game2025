@@ -26,6 +26,30 @@ public class UIManager : MonoBehaviour
 		data.DefaultCursor = Prefabs.DefaultCursor;
 		data.DeclineCursor = Prefabs.DeclineCursor;
 	}
+	private void Start()
+	{
+		if (GetPanel(PanelNames.WarningP))
+		{ GetPanel(PanelNames.WarningP).SetActive(false); }
+		else
+		{ Debug.Log("Warning panel not found!"); }
+		data.Ready = true;
+	}
+
+	private void Update()
+	{
+		if (!MainController.Instance.Ready) return;
+		if (!data.FollowedTeam) data.FollowedTeam = Player.Instance;
+		UpdateTopPanel();
+
+
+	}
+
+	void UpdateTopPanel()
+	{
+		UpdatePanel(PanelNames.MoneyP, data.FollowedTeam.GetInventory()[LootType.Gold].ToString());
+		UpdatePanel(PanelNames.WoodP, data.FollowedTeam.GetInventory()[LootType.Wood].ToString());
+		
+	}
 
 	void Setup()
 	{
@@ -59,8 +83,8 @@ public class UIManager : MonoBehaviour
 
 	private void AssignOptionButtons(List<GameObject> optButts)
 	{
-		optButts[0].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(GetPanel(PanelNames.BuildingP)));
-		optButts[1].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(GetPanel(PanelNames.UnitP)));
+		optButts[0].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(PanelNames.BuildingP));
+		optButts[1].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(PanelNames.UnitP));
 	}
 
 	void AssignBuildingButtons(List<GameObject> buttons)
@@ -86,24 +110,6 @@ public class UIManager : MonoBehaviour
 		data.Prefixes.Add(prefix);
 	}
 
-	private void Start()
-	{
-		if (GetPanel(PanelNames.WarningP))
-		{ GetPanel(PanelNames.WarningP).SetActive(false); }
-		else
-		{ Debug.Log("Warning panel not found!"); }
-		data.Ready = true;
-	}
-
-	private void Update()
-	{
-		if (!MainController.Instance.Ready) return;
-		if (!data.FollowedTeam) data.FollowedTeam = Player.Instance;
-		
-
-
-	}
-
 	public bool Ready() { return data.Ready; }
 
 	// Actions_________________________________________
@@ -126,11 +132,17 @@ public class UIManager : MonoBehaviour
 		panel.GetComponent<Text>().text = data.Prefixes[(int)name] + newText;
 	}
 
-	public void EnableDisablePanel(GameObject panel)
+	// This pannel has unique formatting
+	public void UpdateUnitPanel(string unitName, Inventory unitInv)
 	{
-		if (panel == null)
-		{ Debug.Log($"{panel.tag} panel is null!"); return; }
+		UpdatePanel(PanelNames.UnitP, $"Name: {unitName}\n\n\n\nBag: {unitInv}");
+	}
 
+	public Team GetFollowedTeam() { return data.FollowedTeam; }
+
+	public void EnableDisablePanel(UIManager.PanelNames panelName)
+	{
+		var panel = GetPanel(panelName);
 		HideAllPanels();
 
 		if (panel.activeSelf)

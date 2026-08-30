@@ -27,7 +27,7 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		if (data.IsDefeated)
 		{ Debug.Log($"Team {data.TeamName} was defeated"); }
 
-		RecalculateLoot();
+		UpdateLoot();
 	}
 
 	public bool Ready()
@@ -87,27 +87,23 @@ public abstract class Team : MonoBehaviour, ILootContainer
 		{ data.LootCounter[LootType.Gold] += money; }
 	}
 
-	public void RecalculateLoot()
+	public void UpdateLoot()
 	{
-		data.LootCounter.Clear();
+		Inventory updInv = new Inventory();
+		updInv.AddAllLootTypes();
 
 		foreach (var build in data.Buildings)
 		{
 			if (build is not ILootContainer)
 			{ continue; }
 
-			Inventory inv = ((ILootContainer)build).GetInventory();
-			foreach (var loot in inv)
-			{
-				if (data.LootCounter.ContainsKey(loot.Key))
-				{ data.LootCounter[loot.Key] += loot.Value; }
-				else
-				{ data.LootCounter.Add(loot.Key, loot.Value); }
-
-			}
-
+			foreach (var loot in ((ILootContainer)build).GetInventory()) // There might be more buildings that keeps loot
+			{ updInv[loot.Key] += loot.Value; }
 		}
+		data.LootCounter = updInv;
 	}
+
+	public IInteractable GetInteractableObj() { return data.CurrInteractObject; }
 
 	public Team CreateBase()
 	{

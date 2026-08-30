@@ -4,17 +4,14 @@ using UnityEngine;
 
 public interface IHavePanel
 {
-	public virtual void UpdatePanelInfo(GameObject panel)
+	public virtual void UpdatePanelInfo(UIManager.PanelNames panelName)
 	{
-		if (panel == null)
-		{ UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Panel here is null"); }
+		UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Calling from interface");
 	}
 
-	public void ShowPanel(GameObject panel)
+	public void ShowPanel(UIManager.PanelNames panelName)
 	{
-		if (panel == null)
-		{ UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Panel here is null"); }
-		UIManager.Instance.EnableDisablePanel(panel);
-		UpdatePanelInfo(panel);
+		UIManager.Instance.EnableDisablePanel(panelName);
+		UpdatePanelInfo(panelName);
 	}
 }

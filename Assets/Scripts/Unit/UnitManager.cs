@@ -34,9 +34,9 @@ public static class UnitManager
 		return unit.GetTeamName();
 	}
 
-	public static string GetPlayerTeamName()
+	public static int GetPlayerTeamID()
 	{
-		return Player.Instance.GetTeamName();
+		return Player.Instance.GetID();
 	}
 	// __________________________________________________________________________________
 	public static void HitUnit(Unit injuredUnit, int damage)

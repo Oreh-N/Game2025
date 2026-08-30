@@ -28,7 +28,7 @@ public class WorkerUnit : UnitSelf<WorkerUnit>
 
 	public override void UpdatePanelInfo()
 	{
-		Debug.Log("UpdatePanelInfo not ready yet. WorkerUNIT");
+		UIManager.Instance.UpdateUnitPanel(data.Name, data.LootCounter);
 
 	}
 }

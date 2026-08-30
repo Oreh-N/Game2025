@@ -47,10 +47,7 @@ public class BuildingManager : MonoBehaviour
 
 	public static void ShowPanel(PN panelName)
 	{
-		var p = UIManager.Instance.GetPanel(panelName);
-		if (p != null)
-		{ UIManager.Instance.EnableDisablePanel(p); }
-		else { UIManager.Instance.UpdatePanel(PN.WarningP, "Try to access a null panel"); }
+		UIManager.Instance.EnableDisablePanel(panelName);
 	}
 
 	#endregion

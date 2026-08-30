@@ -4,8 +4,8 @@
 public class UnitData
 {
 	public MapSpace.Map.CellType CellType = MapSpace.Map.CellType.Unit;
+	public UIManager.PanelNames PanelName = UIManager.PanelNames.UnitP;
 	public Inventory LootCounter = new Inventory();
-	public GameObject Panel;
 	public int TeamID;
 	
 	public bool NowInteracting;

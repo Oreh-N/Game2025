@@ -23,16 +23,14 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	public void Update()
 	{
 		if (!MainController.Instance.Ready) return;
-		if (!data.Panel) data.Panel = UIManager.Instance.GetPanelWithTag(PubNames.UnitPanelTag);
 
 		if (IsOutOfMap(transform.position) || data.Health <= 0)
 		{
 			Destroy(GetComponent<Unit>());
 			Destroy(gameObject);
 		}
-		if (data.Panel != null && !data.Panel.activeSelf)
-		{ data.NowInteracting = false; }
-		if (data.NowInteracting && UnitManager.GetTeamName(data.TeamID) == UnitManager.GetPlayerTeamName())
+		if (UnitManager.GetTeam(data.TeamID).GetInteractableObj() == ((IInteractable)this)
+			&& data.TeamID == UIManager.Instance.GetFollowedTeam().GetID())
 		{ UpdatePanelInfo(); }
 	}
 
@@ -46,7 +44,7 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	public virtual void MouseDownAct()
 	{
 		UnitManager.GetTeam(data.TeamID).ChangeInteractableObject(this);
-		((IHavePanel)this).ShowPanel(data.Panel);
+		((IHavePanel)this).ShowPanel(data.PanelName);
 	}
 
 	private bool IsOutOfMap(Vector3 pos)
@@ -71,14 +69,15 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 		UnitSelectionManager.Instance.UnitsSelected.Remove(gameObject);
 	}
 
+	public virtual void TakeDamage(float damage)
+	{ data.Health -= damage; }
+
+	// _________________________________________________________________
 	public int GetTeamID()
 	{ return data.TeamID; }
 
 	public MapSpace.Map.CellType GetCellType()
 	{ return data.CellType; }
-
-	public virtual void TakeDamage(float damage)
-	{ data.Health -= damage; }
 
 	public abstract void UpdatePanelInfo();
 
@@ -91,7 +90,6 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	public string GetTeamName()
 	{ return UnitManager.GetTeamName(data.TeamID); }
 
-	// _________________________________________________________________
 }
 
 public abstract class UnitSelf<TSelf> : Unit where TSelf : Unit { }
