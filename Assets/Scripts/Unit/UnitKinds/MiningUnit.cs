@@ -30,34 +30,9 @@ public class MiningUnit : UnitSelf<MiningUnit>
 		base.Update();
 	}
 
-	// Visual_________________________________________________
-	public override void UpdatePanelInfo()
-	{
-		//Text[] panels = data.Panel.GetComponentsInChildren<Text>(true);
-		//panels[0].text = $"Unit name: {data.Name}\nTeam: {BuildingManager.GetTeamName(data.TeamID)}\nHealth: {data.Health}";
-		//panels[1].text = InventoryContentToStr();
-		//Button[] buttons = panels[2].gameObject.GetComponentsInChildren<Button>();
-		//for (int i = 0; i < buttons.Length; i++)
-		//{
-		//	if (i < _abilities.Count())
-		//	{ buttons[i].GetComponentInChildren<Text>().text = _abilities[i]; }
-		//	else
-		//	{ buttons[i].gameObject.SetActive(false); }
-		//}
-	}
-
-	private string InventoryContentToStr()
-	{
-		string text = "Bag:\n";
-		foreach (var loot in data.LootCounter)
-		{  text += $"{Loot.LootNames[(int)loot.Key]}: {loot.Value}\n"; }
-
-		return text;
-	}
 
 	public override void Interact()
 	{ 
-		((IHavePanel)this).ShowPanel(data.PanelName);
 	}
 	// _______________________________________________________
 }

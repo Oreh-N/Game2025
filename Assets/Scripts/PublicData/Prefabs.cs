@@ -28,6 +28,8 @@ public class Prefabs
 	public static Texture2D InteractCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/InteractCursor0.png");
 	public static Texture2D DeclineCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/DeclineCursor.png");
 
+
+
 	public static GameObject NameToPrefab(string name)
 	{
 		if ("DefBuild1" == name) return DefBuildPref;
@@ -36,18 +38,6 @@ public class Prefabs
 		if ("Warehouse0" == name) return WareHousePref;
 
 		return null;
-	}
-
-
-	public static void AddChildrenFromFolder(List<GameObject> addToList, string folder)
-	{
-		var buttsFolder = GameObject.Find(folder);
-		var count = buttsFolder.transform.childCount;
-		for (int i = 0; i < count; i++)
-		{
-			var button = buttsFolder.transform.GetChild(i);
-			addToList.Add(button.gameObject);
-		}
 	}
 }
 

@@ -36,6 +36,22 @@ public static class PubNames
 	public const string MoneyPanelName = "MoneyPanel";
 	public const string WoodPanelName = "WoodPanel";
 	public const string WarningPanelName = "WarningPanel";
+	public const string DefaultPanelName = "DefaultPanel";
+
+	// Folders
+	public const string OptButtsF = "OptionsButts";
+	public const string BuildButtsF = "BuildingButts";
 
 
+
+	public static void TakeChildrenFromFolder(List<GameObject> addToList, string folder)
+	{
+		var buttsFolder = GameObject.Find(folder);
+		var count = buttsFolder.transform.childCount;
+		for (int i = 0; i < count; i++)
+		{
+			var button = buttsFolder.transform.GetChild(i);
+			addToList.Add(button.gameObject);
+		}
+	}
 }

@@ -8,6 +8,7 @@ public class UIManagerData
 	public List<GameObject> AllPanels = new List<GameObject>();
 	public List<UIManager.PanelNames> AlwaysActivePanels;
 	public List<string> Prefixes = new List<string>();
+	public IHavePanel CurrentObj;
 
 	public bool Is_default_cursor = true;
 	public Texture2D DeclineCursor;

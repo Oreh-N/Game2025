@@ -41,21 +41,10 @@ public class MainBuilding : Building, ILootContainer
 	}
 
 
-	// Visual_________________________________________________
-	public override void UpdatePanelInfo()
-	{
-		string text = "";
-		text = $"{data.Name}\nTeam: {UnitManager.GetTeamName(data.TeamID)}\nHealth: {HealthSys.GetHealth()}\n";
-		foreach (var item in LootCounter)
-		{
-			text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
-		}
-		BuildingManager.Instance.UpdatePanelText(data.PanelName, text);
-	}
+
 
 	public Inventory GetInventory()
 	{
 		return LootCounter;
 	}
-	// ________________________________________________________
 }

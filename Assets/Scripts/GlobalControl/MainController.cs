@@ -63,8 +63,8 @@ public class MainController : MonoBehaviour
 		// NAMES MUST BE DIFFERENT!!! (otherwise rewrites existed controller)
 		_teams = new Team[3] {
 			Player.Instance.Setup(new Vector2Int(50, 50), Color.violetRed, "Nuts"),
-			CreateEnemy(new Vector2Int(700,800), Color.lightSeaGreen, ":3"),
-			CreateEnemy(new Vector2Int(100, 300), Color.darkBlue, "Alice")
+			CreateEnemy(new Vector2Int(700,800), Color.darkGreen, ":3"),
+			CreateEnemy(new Vector2Int(50, 150), Color.darkBlue, "Alice")
 		};
 
 
@@ -107,15 +107,15 @@ public class MainController : MonoBehaviour
 	//	if (!Application.isPlaying || !Ready) return;
 
 	//	var mapName = Map.MapNames.EnvMap;
-	//	//var size = Chunk.GetSize();
-	//	var size = Map.GetSize();
+	//	var size = Chunk.GetSize();
+	//	//var size = Map.GetSize();
 
 	//	for (int i = 0; i < size.x; i++)
 	//		for (int j = 0; j < size.y; j++)
 	//		{
 	//			Vector2Int mpos = new Vector2Int(i, j);
-	//			/*/
-	//			var basicCell = MLayers.GetBasicCellInMap(mapName, mpos);
+	//			/**/
+	//			var basicCell = Map.GetBasicCellInMap(mapName, mpos);
 	//			if (basicCell == Map.CellType.WorkerUnit)
 	//			{
 	//				Gizmos.color = Color.blanchedAlmond;

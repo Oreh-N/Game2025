@@ -36,7 +36,5 @@ public class Spawner : Building
 	public override void Interact()
 	{ }
 
-	public override void UpdatePanelInfo()
-	{ }
 	// _______________________________________________________
 }

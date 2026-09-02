@@ -10,7 +10,6 @@ public class TeamData
 	public static int FreeID = 0;
 	// Sources
 	public Inventory LootCounter = new Inventory { { LootType.Wood, 0 }, {LootType.Gold, 500 } };
-	public IInteractable CurrInteractObject;
 	public Shop Shop_ = new Shop();
 	//__________________
 	// Members/Buildings

@@ -25,9 +25,4 @@ public class SpyUnit : UnitSelf<SpyUnit>
 		Debug.Log("Interact not ready yet. SpyUNIT");
 	}
 
-	public override void UpdatePanelInfo()
-	{
-		Debug.Log("UpdatePanelInfo not ready yet. SpyUNIT");
-
-	}
 }

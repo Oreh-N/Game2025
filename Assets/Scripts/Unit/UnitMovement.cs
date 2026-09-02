@@ -5,7 +5,7 @@ using MNames = MapSpace.Map.MapNames;
 
 
 [RequireComponent(typeof(Unit))]
-public class UnitMovement : MonoBehaviour, IListener
+public class UnitMovement : MonoBehaviour, IMouseListener
 {
 	bool _isMoving = false;
 	bool _findNextStepPos = false;
@@ -27,7 +27,7 @@ public class UnitMovement : MonoBehaviour, IListener
 			transform.position = Map.MapToWorld(pos);
 			Debug.Log(pos);
 		}
-		StartCoroutine(((IListener)this).StartListening());
+		StartCoroutine(((IMouseListener)this).StartListening());
 	}
 
 	private void Update()

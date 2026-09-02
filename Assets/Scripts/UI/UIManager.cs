@@ -7,10 +7,10 @@ using System.Collections.Generic;
 /// <summary>
 /// Use UI to display information to the player
 /// </summary>
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviour, IMouseListener
 {
 	// Should be in the same order panels placed in AllPanels
-	public enum PanelNames { MoneyP, WarningP, WoodP, UnitP, MainBuildingP, WarehouseP, SpawnerP, OptionsP, BuildingP }
+	public enum PanelNames { MoneyP, WarningP, WoodP, UnitP, MainBuildingP, WarehouseP, SpawnerP, OptionsP, BuildingP, DefaultP }
 	public static UIManager Instance;
 	UIManagerData data = new UIManagerData();
 
@@ -26,12 +26,14 @@ public class UIManager : MonoBehaviour
 		data.DefaultCursor = Prefabs.DefaultCursor;
 		data.DeclineCursor = Prefabs.DeclineCursor;
 	}
+
 	private void Start()
 	{
 		if (GetPanel(PanelNames.WarningP))
 		{ GetPanel(PanelNames.WarningP).SetActive(false); }
 		else
 		{ Debug.Log("Warning panel not found!"); }
+		StartCoroutine(((IMouseListener)this).StartListening());
 		data.Ready = true;
 	}
 
@@ -39,16 +41,31 @@ public class UIManager : MonoBehaviour
 	{
 		if (!MainController.Instance.Ready) return;
 		if (!data.FollowedTeam) data.FollowedTeam = Player.Instance;
+
 		UpdateTopPanel();
 
+		if (data.CurrentObj != null)
+		{
+			var obj = data.CurrentObj;
+
+			if (obj is Unit)
+			{ UpdateUnitPanel(obj as Unit); }
+			else if (obj is MainBuilding)
+			{ UpdateMainBuildPanel(obj as MainBuilding); }
+			else if (obj is Warehouse)
+			{ UpdatePanel(((Warehouse)obj).GetPanelName(), ((Warehouse)obj).GetInventory().ToString()); }
+			else
+			{ UpdatePanel(obj); }
+		}
 
 	}
+
+	public void SetCurrentObj(IHavePanel obj) { data.CurrentObj = obj; }
 
 	void UpdateTopPanel()
 	{
 		UpdatePanel(PanelNames.MoneyP, data.FollowedTeam.GetInventory()[LootType.Gold].ToString());
 		UpdatePanel(PanelNames.WoodP, data.FollowedTeam.GetInventory()[LootType.Wood].ToString());
-		
 	}
 
 	void Setup()
@@ -59,24 +76,26 @@ public class UIManager : MonoBehaviour
 		AddPanel(PubNames.WoodPanelName, "Wood: ");
 		AddPanel(PubNames.UnitPanelName, "");
 		AddPanel(PubNames.MainBuildingPanelName, "");
-		AddPanel(PubNames.WarehousePanelName, "");
+		AddPanel(PubNames.WarehousePanelName, "Containment:\n");
 		AddPanel(PubNames.SpawnerPanelName, "");
 		AddPanel(PubNames.OptionsPanelName, "");
 		AddPanel(PubNames.BuildingPanelName, "");
+		AddPanel(PubNames.DefaultPanelName, "");
 
 		foreach (var p in data.AllPanels) { p.SetActive(false); }
-		data.AlwaysActivePanels = new List<PanelNames>() 
-		{PanelNames.MoneyP, PanelNames.WoodP, PanelNames.OptionsP};
+		data.AlwaysActivePanels = new List<PanelNames>()
+		{PanelNames.MoneyP, PanelNames.WoodP, PanelNames.OptionsP, PanelNames.WarningP};
+
 		TurnOnInitPanels();
 		SetupButtons();
 	}
 
 	void SetupButtons()
 	{
-		Prefabs.AddChildrenFromFolder(data.Buttons, "BuildingButts");
+		PubNames.TakeChildrenFromFolder(data.Buttons, PubNames.BuildButtsF);
 		AssignBuildingButtons(data.Buttons);
 		List<GameObject> optButts = new List<GameObject>();
-		Prefabs.AddChildrenFromFolder(optButts, PubNames.OptionsPanelName);
+		PubNames.TakeChildrenFromFolder(optButts, PubNames.OptionsPanelName);
 		data.Buttons.AddRange(optButts);
 		AssignOptionButtons(optButts);
 	}
@@ -85,6 +104,7 @@ public class UIManager : MonoBehaviour
 	{
 		optButts[0].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(PanelNames.BuildingP));
 		optButts[1].GetComponent<Button>().onClick.AddListener(() => EnableDisablePanel(PanelNames.UnitP));
+		UpdatePanel(PanelNames.WarningP, "Have added functions to option buttons");
 	}
 
 	void AssignBuildingButtons(List<GameObject> buttons)
@@ -114,36 +134,55 @@ public class UIManager : MonoBehaviour
 
 	// Actions_________________________________________
 
-	public void HideAllPanels()
+	public void HidePanels()
 	{
 		for (int i = 0; i < data.AllPanels.Count; i++)
 		{
 			if (!data.AlwaysActivePanels.Contains((PanelNames)i))
-				data.AllPanels[i].SetActive(false); 
+			{ data.AllPanels[i].SetActive(false); /*Debug.Log($"Hide {(PanelNames)i} panel");*/ }
 		}
 	}
 
 	public void UpdatePanel(PanelNames name, string newText)
 	{
+		if (!data.AlwaysActivePanels.Contains(name))
+		{ HidePanels(); }
+
 		var panel = GetPanel(name);
 		if (panel == null)
 		{ Debug.Log($"{name} panel is null"); return; }
 		panel.SetActive(true);
-		panel.GetComponent<Text>().text = data.Prefixes[(int)name] + newText;
+		var textComp = panel.GetComponent<Text>();
+
+		if (textComp == null) textComp = panel.GetComponentInChildren<Text>();
+		textComp.text = data.Prefixes[(int)name] + newText;
+	}
+
+	public void UpdatePanel(IHavePanel obj)
+	{
+		UpdatePanel(obj.GetPanelName(), $"Name: {obj.GetName()}\nTeam: {obj.GetTeamName()}");
 	}
 
 	// This pannel has unique formatting
-	public void UpdateUnitPanel(string unitName, Inventory unitInv)
+	public void UpdateUnitPanel(Unit unit)
 	{
-		UpdatePanel(PanelNames.UnitP, $"Name: {unitName}\n\n\n\nBag: {unitInv}");
+		UpdatePanel(PanelNames.UnitP, $"Name: {unit.GetName()}\n" +
+			$"Team: {unit.GetTeamName()}\nBag: {unit.GetInventory().ToString()}");
+	}
+
+	public void UpdateMainBuildPanel(MainBuilding build)
+	{
+		string text = "";
+		text = $"{build.GetName()}\nTeam: {build.GetTeamName()}\nHealth: NO\nBag: {build.GetInventory()}";
+		UpdatePanel(build.GetPanelName(), text);
 	}
 
 	public Team GetFollowedTeam() { return data.FollowedTeam; }
 
-	public void EnableDisablePanel(UIManager.PanelNames panelName)
+	public void EnableDisablePanel(PanelNames panelName)
 	{
 		var panel = GetPanel(panelName);
-		HideAllPanels();
+		HidePanels();
 
 		if (panel.activeSelf)
 			panel.SetActive(false);
@@ -173,8 +212,20 @@ public class UIManager : MonoBehaviour
 		return null;
 	}
 
-	public GameObject GetPanel(PanelNames name) 
+	public GameObject GetPanel(PanelNames name)
 	{ return data.AllPanels[(int)name]; }
+
+	public void MouseHitMapAction(int button)
+	{
+		if (0 == button)
+		{
+			var obj = MouseController.Instance.GetObjOnMousePos();
+			if (obj != null)
+			{ data.CurrentObj = obj.GetComponent<IHavePanel>(); }
+			else 
+			{ data.CurrentObj = null; }
+		}
+	}
 
 	// ________________________________________________
 }

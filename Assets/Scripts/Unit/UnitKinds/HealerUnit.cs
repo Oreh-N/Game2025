@@ -25,9 +25,4 @@ public class HealerUnit : UnitSelf<HealerUnit>
 		Debug.Log("Interact not ready yet. HealerUNIT");
 	}
 
-	public override void UpdatePanelInfo()
-	{
-		Debug.Log("UpdatePanelInfo not ready yet. HealerUNIT");
-
-	}
 }

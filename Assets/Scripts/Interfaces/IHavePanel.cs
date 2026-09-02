@@ -2,16 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHavePanel
+public interface IHavePanel : IInteractable
 {
-	public virtual void UpdatePanelInfo(UIManager.PanelNames panelName)
-	{
-		UIManager.Instance.UpdatePanel(UIManager.PanelNames.WarningP, "Calling from interface");
-	}
-
-	public void ShowPanel(UIManager.PanelNames panelName)
-	{
-		UIManager.Instance.EnableDisablePanel(panelName);
-		UpdatePanelInfo(panelName);
-	}
+	public UIManager.PanelNames GetPanelName();
+	public string GetName();
+	public string GetTeamName();
 }

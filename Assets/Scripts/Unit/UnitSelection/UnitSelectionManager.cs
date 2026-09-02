@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 // Z tutorialu
-public class UnitSelectionManager : MonoBehaviour, IListener
+public class UnitSelectionManager : MonoBehaviour, IMouseListener
 {
 	public static UnitSelectionManager Instance { get; set; }
 
@@ -30,7 +30,7 @@ public class UnitSelectionManager : MonoBehaviour, IListener
 
 	private void Start()
 	{
-		StartCoroutine(((IListener)this).StartListening());
+		StartCoroutine(((IMouseListener)this).StartListening());
 	}
 
 	private void Update()

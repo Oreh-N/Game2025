@@ -37,20 +37,9 @@ public class Warehouse : Building, ILootContainer
 	// _______________________________________________________
 
 
-	// Visual_________________________________________________
-	public override void UpdatePanelInfo()
-	{
-		string text = "Containment:\n";
-		foreach (var item in LootCounter)
-		{
-			text += Loot.LootNames[(int)item.Key] + " : " + item.Value.ToString() + "\n";
-		}
-		BuildingManager.ShowMessage(text);
-	}
 
 	public Inventory GetInventory()
 	{
 		return LootCounter;
 	}
-	// _______________________________________________________
 }

@@ -26,9 +26,4 @@ public class WorkerUnit : UnitSelf<WorkerUnit>
 		Debug.Log("Interact not ready yet. WorkerUNIT");
 	}
 
-	public override void UpdatePanelInfo()
-	{
-		UIManager.Instance.UpdateUnitPanel(data.Name, data.LootCounter);
-
-	}
 }

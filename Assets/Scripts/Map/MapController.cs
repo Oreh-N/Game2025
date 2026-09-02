@@ -7,7 +7,7 @@ using Map = MapSpace.Map;
 
 
 
-public class MapController : MonoBehaviour, IListener {
+public class MapController : MonoBehaviour, IMouseListener {
 	public static MapController Instance;
 	MapControllerData data = new MapControllerData();
 
@@ -20,8 +20,10 @@ public class MapController : MonoBehaviour, IListener {
 		{ Instance = this; }
 
 		data.CurrBuilding = null;
-		StartCoroutine(((IListener)this).StartListening());
 	}
+
+	private void Start()
+	{ StartCoroutine(((IMouseListener)this).StartListening()); }
 
 
 	private void Update()
@@ -29,6 +31,15 @@ public class MapController : MonoBehaviour, IListener {
 		if (!data.AllowBuilding || !data.CurrBuilding || !MainController.Instance.Ready) return;
 
 		ShowIfFit(data.CurrBuilding);
+
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			UIManager.Instance.ChangeCursor(true);
+			int returnPrice = Player.Instance.data.Shop_.GetItemPrice(data.CurrBuilding.GetName());
+			if (returnPrice > 0)
+			{ /*Player.Instance.data.MainBuilding_.Earn(returnPrice);*/ }
+			Destroy(data.CurrBuilding.gameObject);
+		}
 	}
 
 
@@ -119,14 +130,7 @@ public class MapController : MonoBehaviour, IListener {
 			if (CanBePlaced(data.CurrBuilding))
 			{ PlaceBuilding(data.CurrBuilding, MainController.Instance.GetTeam(data.CurrBuilding.GetTeamID())); }
 		}
-		else if (Input.GetKeyDown(KeyCode.Escape))
-		{
-			UIManager.Instance.ChangeCursor(true);
-			int returnPrice = Player.Instance.data.Shop_.GetItemPrice(data.CurrBuilding.GetName());
-			if (returnPrice > 0)
-			{ /*Player.Instance.data.MainBuilding_.Earn(returnPrice);*/ }
-			Destroy(data.CurrBuilding.gameObject);
-		}
+		
 	}
 
 	#endregion

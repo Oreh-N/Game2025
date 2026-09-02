@@ -34,22 +34,6 @@ public class BuildingManager : MonoBehaviour
 	}
 
 
-	public static void SetInteractableObj(Building b, int teamID)
-	{
-		GetTeam(teamID).ChangeInteractableObject(b);
-	}
-
-	public void UpdatePanelText(PN panelName, string t)
-	{
-		UIManager.Instance.UpdatePanel(panelName, t);
-	}
-
-
-	public static void ShowPanel(PN panelName)
-	{
-		UIManager.Instance.EnableDisablePanel(panelName);
-	}
-
 	#endregion
 
 
@@ -91,10 +75,7 @@ public class BuildingManager : MonoBehaviour
 	{
 		ILootContainer.MoveSpecificLoot(from.GetInventory(), to.GetInventory(), content);
 	}
-	public static bool TeamIsInteracting(int teamID)
-	{
-		return GetTeam(teamID).Interacting();
-	}
+
 
 	public static string GetTeamName(int teamID)
 	{

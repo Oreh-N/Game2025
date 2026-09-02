@@ -2,7 +2,7 @@ using UnityEngine;
 
 
 
-public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHavePanel, ITeamMember
+public abstract class Unit : MonoBehaviour, ILootContainer, IHavePanel, ITeamMember
 {
 	protected UnitData data = new UnitData();
 
@@ -29,9 +29,6 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 			Destroy(GetComponent<Unit>());
 			Destroy(gameObject);
 		}
-		if (UnitManager.GetTeam(data.TeamID).GetInteractableObj() == ((IInteractable)this)
-			&& data.TeamID == UIManager.Instance.GetFollowedTeam().GetID())
-		{ UpdatePanelInfo(); }
 	}
 
 	public virtual void Setup(int teamId) 
@@ -43,8 +40,7 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 
 	public virtual void MouseDownAct()
 	{
-		UnitManager.GetTeam(data.TeamID).ChangeInteractableObject(this);
-		((IHavePanel)this).ShowPanel(data.PanelName);
+
 	}
 
 	private bool IsOutOfMap(Vector3 pos)
@@ -79,8 +75,6 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	public MapSpace.Map.CellType GetCellType()
 	{ return data.CellType; }
 
-	public abstract void UpdatePanelInfo();
-
 	public Inventory GetInventory()
 	{ return data.LootCounter; }
 
@@ -90,6 +84,11 @@ public abstract class Unit : MonoBehaviour, IInteractable, ILootContainer, IHave
 	public string GetTeamName()
 	{ return UnitManager.GetTeamName(data.TeamID); }
 
+	public UIManager.PanelNames GetPanelName()
+	{ return data.PanelName; }
+
+	public string GetName()
+	{ return data.Name; }
 }
 
 public abstract class UnitSelf<TSelf> : Unit where TSelf : Unit { }

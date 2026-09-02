@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MouseController : MonoBehaviour
 {
 	public static MouseController Instance { get; private set; }
-	List<IListener> _listeners = new List<IListener>();
+	List<IMouseListener> _listeners = new List<IMouseListener>();
 
 
 	private void Awake()
@@ -27,9 +27,9 @@ public class MouseController : MonoBehaviour
 		{ RightClick(); }
 	}
 
-	public void AddListener(IListener listener) { _listeners.Add(listener); }
+	public void AddListener(IMouseListener listener) { _listeners.Add(listener); }
 
-	public void RemoveListener(IListener listener) { _listeners.Remove(listener); }
+	public void RemoveListener(IMouseListener listener) { _listeners.Remove(listener); }
 
 	public void InformListeners(int mouseButt)
 	{
@@ -42,21 +42,16 @@ public class MouseController : MonoBehaviour
 	void LeftClick()
 	{
 		InformListeners(0);
-		Vector3 pos = GetMouseWorldPos();
 
-		if (Vector3.zero != pos && !Map.IsOutOfMap(pos))
+		GameObject obj = GetObjOnMousePos();
+
+		if (obj)
 		{
-			GameObject obj = GetObjOnMousePos();
+			var interactObj = obj.GetComponent<IInteractable>();
 
-			if (obj)
-			{
-				var interactObj = obj.GetComponent<IInteractable>();
-
-				if (interactObj != null)
-				{ interactObj.MouseDownAct(); }
-			}
+			if (interactObj != null)
+			{ interactObj.MouseDownAct(); }
 		}
-
 	}
 
 	/// <summary>

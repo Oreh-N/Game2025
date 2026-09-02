@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 // Z tutorialu
 
-public class UnitSelectionBox : MonoBehaviour, IListener
+public class UnitSelectionBox : MonoBehaviour, IMouseListener
 {
 	[SerializeField] RectTransform _boxVisual;
 
@@ -19,7 +19,7 @@ public class UnitSelectionBox : MonoBehaviour, IListener
 
 	private void Start()
 	{
-		StartCoroutine(((IListener)this).StartListening());
+		StartCoroutine(((IMouseListener)this).StartListening());
 		_startPosition = Vector2.zero;
 		_endPosition = Vector2.zero;
 	}

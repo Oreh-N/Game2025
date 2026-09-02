@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
-using static MapSpace.Map;
-using static UnityEditor.PlayerSettings;
-using Color = UnityEngine.Color;
 using MapCoord = UnityEngine.Vector2Int;
 
 

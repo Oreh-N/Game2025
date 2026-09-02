@@ -25,9 +25,4 @@ public class MageUnit : UnitSelf<MageUnit>
 		Debug.Log("Interact not ready yet. MageUNIT");
 	}
 
-	public override void UpdatePanelInfo()
-	{
-		Debug.Log("UpdatePanelInfo not ready yet. MageUNIT");
-
-	}
 }

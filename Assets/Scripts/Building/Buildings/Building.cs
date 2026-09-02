@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 
 
-public abstract class Building : MonoBehaviour, IInteractable, IConstructable, IHavePanel, ITeamMember, IMyPlaceableOnMap
+public abstract class Building : MonoBehaviour, IConstructable, IHavePanel, ITeamMember, IMyPlaceableOnMap
 {
 	protected BuildingData data = new BuildingData();
 	public HealthSystem HealthSys { get; protected set; } = new HealthSystem();
@@ -26,10 +26,6 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 	{
 		if (HealthSys.GetHealth() <= 0)
 		{ Destroy(gameObject); }
-		//if (IsOverBuilding()) { }
-		//UpdatePanelInfo();
-		//if (!BuildingManager.TeamIsInteracting(Data.TeamID))
-		//{ Data.NowInteracting = false; }
 	}
 
 
@@ -70,18 +66,10 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 		if (EventSystem.current.IsPointerOverGameObject())
 			return;
 
-		if (data.IsPlaced)
-		{
-			BuildingManager.SetInteractableObj(this, data.TeamID);
-			BuildingManager.ShowPanel(data.PanelName);
-		}
 	}
 
 	public virtual void Interact()
 	{ BuildingManager.ShowMessage("Building class Interact shouldn't be called"); }
-
-	public virtual void UpdatePanelInfo()
-	{ BuildingManager.ShowMessage("Building class UpdatePanelInfo shouldn't be called"); }
 
 	#region Data transfering
 
@@ -100,5 +88,11 @@ public abstract class Building : MonoBehaviour, IInteractable, IConstructable, I
 
 	public Renderer[] GetRendererChildren() { return data.RendererChildren; }
 
-	#endregion 
+	public UIManager.PanelNames GetPanelName()
+	{ return data.PanelName; }
+
+	public string GetTeamName()
+	{ return BuildingManager.GetTeamName(data.TeamID) ; }
+
+	#endregion
 }
