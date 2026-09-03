@@ -20,7 +20,7 @@ public class Spawner : Building
 
 	}
 	private new void Update()
-	{ }
+	{ base.Update(); }
 
 
 	// Actions________________________________________________

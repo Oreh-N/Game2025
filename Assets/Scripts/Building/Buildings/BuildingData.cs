@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using MapSpace;
+using UnityEngine.UI;
 
 
 public class BuildingData
@@ -13,4 +14,7 @@ public class BuildingData
 
 	public bool NowInteracting;
 	public bool IsPlaced;
+	public float BuildingTime = 10;
+	public Slider BuildingSlider;
+	public GameObject Canvas;
 }

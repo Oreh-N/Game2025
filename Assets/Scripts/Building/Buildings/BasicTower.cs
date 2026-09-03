@@ -32,6 +32,7 @@ public class BasicTower : Building
 	// Fill panel part
 	private new void Update()
 	{
+		base.Update();
 		//_cooldown += Time.deltaTime;
 		//if (!_allowAttack && _cooldown >= _attackCooldown)
 		//{ _allowAttack = true; }

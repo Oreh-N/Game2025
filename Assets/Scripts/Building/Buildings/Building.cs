@@ -1,6 +1,8 @@
 using MapSpace;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 
@@ -26,12 +28,40 @@ public abstract class Building : MonoBehaviour, IConstructable, IHavePanel, ITea
 	{
 		if (HealthSys.GetHealth() <= 0)
 		{ Destroy(gameObject); }
+
+		if (data.BuildingSlider)
+		{
+			data.BuildingSlider.value += Time.deltaTime;
+			if (data.BuildingSlider.value >= data.BuildingSlider.maxValue)
+			{
+				Destroy(data.Canvas.gameObject);
+				data.BuildingSlider = null;
+				data.Canvas = null;
+			}
+		}
 	}
 
 
 
-	public Map.CellType GetCellID()	// Maybe its better to make it interface method (for placeable on map objects like units and buildings)???
+	public Map.CellType GetCellID() // Maybe its better to make it interface method (for placeable on map objects like units and buildings)???
 	{ return (Map.CellType)(data.TeamID * 100 + (int)data.CellType); }
+
+	IEnumerator StartBuilding()
+	{
+		SetupSlider();
+		yield return new WaitUntil(() => data.BuildingSlider == null);
+		data.IsPlaced = true;
+		BuildingManager.AddBuilding(this, data.TeamID);
+	}
+
+	void SetupSlider()
+	{
+		data.Canvas = Creator.CreateCanvasWithSlider(transform);
+		var slider = data.Canvas.GetComponentInChildren<Slider>();
+		slider.maxValue = data.BuildingTime;
+		slider.value = 0;
+		data.BuildingSlider = slider;
+	}
 
 	public virtual void Construct()
 	{
@@ -41,10 +71,9 @@ public abstract class Building : MonoBehaviour, IConstructable, IHavePanel, ITea
 		ColorBuilding(t.GetColor());
 
 		Map.FillMapAreaSquare(Map.WorldToMap(GetPos()),
-			GetSize(), Map.CombineTeamCell(GetCellID(), GetTeamID()) , Map.MapNames.EnvMap);
-		data.IsPlaced = true;
-
-		BuildingManager.AddBuilding(this, data.TeamID);
+			GetSize(), Map.CombineTeamCell(GetCellID(), GetTeamID()), Map.MapNames.EnvMap);
+		if (this is not MainBuilding)
+		{ StartCoroutine(StartBuilding()); }
 	}
 
 
@@ -73,7 +102,7 @@ public abstract class Building : MonoBehaviour, IConstructable, IHavePanel, ITea
 
 	#region Data transfering
 
-	public Map.CellType GetCellType() {  return data.CellType; }
+	public Map.CellType GetCellType() { return data.CellType; }
 	public bool IsPlaced() { return data.IsPlaced; }
 
 	public int GetTeamID() { return data.TeamID; }
@@ -92,7 +121,7 @@ public abstract class Building : MonoBehaviour, IConstructable, IHavePanel, ITea
 	{ return data.PanelName; }
 
 	public string GetTeamName()
-	{ return BuildingManager.GetTeamName(data.TeamID) ; }
+	{ return BuildingManager.GetTeamName(data.TeamID); }
 
 	#endregion
 }

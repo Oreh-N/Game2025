@@ -23,6 +23,8 @@ public class Prefabs
 	#endregion
 
 	public static GameObject Tree1 { get; private set; } = Resources.Load<GameObject>($"Prefabs/Environment/Tree1");
+	public static GameObject Slider { get; private set; } = Resources.Load<GameObject>($"Prefabs/UI/Slider");
+	public static GameObject SliderUI { get; private set; } = Resources.Load<GameObject>($"Prefabs/UI/SliderUI");
 
 	public static Texture2D DefaultCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/DefaultCursor0.png");
 	public static Texture2D InteractCursor = Resources.Load<Texture2D>("My2DAssets/Cursors/InteractCursor0.png");

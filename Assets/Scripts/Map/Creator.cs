@@ -36,6 +36,13 @@ namespace MapSpace
 			return GameObject.Instantiate(buildPrefab, pos,
 			buildPrefab.transform.rotation, _buildingFolder.transform);
 		}
+
+		public static GameObject CreateCanvasWithSlider(Transform parent)
+		{
+			var canvas = GameObject.Instantiate(Prefabs.SliderUI, parent, false);
+			canvas.transform.localPosition = Vector3.zero;
+			return canvas;
+		}
 	}
 }
 
